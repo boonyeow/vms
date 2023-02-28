@@ -2,6 +2,8 @@ package com.vms.repository;
 import com.vms.model.Account;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Optional;
+
 public interface AccountRepository extends CrudRepository<Account, Long> {
-    public Account findByEmail(String email);
+    Optional<Account> findByEmail(String email);
 }

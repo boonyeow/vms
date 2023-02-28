@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
@@ -20,9 +22,9 @@ public class AccountController {
     }
 
     @GetMapping("/searchByEmail")
-    public ResponseEntity<Account> getAccountByEmail(@RequestParam(value="email") String email){
-        Account account = accountService.getAccountByEmail(email);
-        if(account == null){
+    public ResponseEntity<Optional<Account>> getAccountByEmail(@RequestParam(value="email") String email){
+        Optional<Account> account = accountService.getAccountByEmail(email);
+        if(account.isEmpty()){
             throw new RuntimeException("account not found");
         }
         return ResponseEntity.ok(account);

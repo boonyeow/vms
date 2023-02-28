@@ -17,12 +17,12 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    public Account getAccountByEmail(String email){
+    public Optional<Account> getAccountByEmail(String email){
         return accountRepository.findByEmail(email);
     }
 
     public boolean createAccount(Account account){
-        if(getAccountByEmail(account.getEmail()) == null){
+        if(getAccountByEmail(account.getEmail()).isEmpty()){
             // creating for the first time
             accountRepository.save(account);
             return true;
@@ -38,4 +38,6 @@ public class AccountService {
         }
         return false;
     }
+
+
 }
