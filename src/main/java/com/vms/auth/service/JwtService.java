@@ -1,8 +1,6 @@
-package com.vms.config;
+package com.vms.auth.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +15,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "6E3272357538782F4125442A472D4B6150645367566B59703373367639792442";
+    private static final String SECRET_KEY = "6E3272357538782F4125442A472D4B6150645367566B59703373367639792442"; // TODO: add to application.properties
     public String extractEmail(String jwt){
         return extractClaim(jwt, Claims::getSubject);
     }
@@ -32,7 +30,7 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
-        // Construct jwt token
+        // Construct bearer token
         // Set relevant detail then sign with secret key using HS256
         return Jwts
                 .builder()
@@ -45,6 +43,7 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String jwt, UserDetails userDetails){
+        // Verify subject and expiration in given token
         final String email = extractEmail(jwt);
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(jwt));
     }

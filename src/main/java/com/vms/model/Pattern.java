@@ -1,7 +1,12 @@
 package com.vms.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "pattern")
 public class Pattern {
@@ -14,21 +19,4 @@ public class Pattern {
 
     @Column(nullable = false, unique = true)
     private String pattern;
-
-
-    // Getters
-    public String getName() {
-        return name;
-    }
-    public String getPattern() {
-        return pattern;
-    }
-
-    // Setters
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
 }

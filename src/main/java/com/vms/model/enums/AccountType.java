@@ -1,4 +1,4 @@
-package com.vms.model;
+package com.vms.model.enums;
 
 public enum AccountType {
     ADMIN,

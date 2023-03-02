@@ -1,7 +1,11 @@
 package com.vms.model;
 
+import com.vms.model.enums.AccountType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="account")
 public class Account implements UserDetails {
@@ -26,42 +34,17 @@ public class Account implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(name="account_type", nullable = false)
     private AccountType accountType;
 
-    // Getters
-    public String getName() {
-        return name;
-    }
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public String getPassword(){ return password; }
-
+    @OneToMany(mappedBy = "account")
+    private List<Token> tokens;
     @Override
     public String getUsername() {
         return email;
     }
-
-    public AccountType getAccountType() {
-        return accountType;
-    }
-
-    // Setters
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public void setPassword(String password) {this.password = password;}
-    public void setAccountType(AccountType accountType) {
-        this.accountType = accountType;
-    }
-
 
     // UserDetails interface
     @Override
@@ -88,6 +71,4 @@ public class Account implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-
 }

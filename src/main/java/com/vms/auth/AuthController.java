@@ -1,13 +1,13 @@
 package com.vms.auth;
 
-import com.vms.service.AuthService;
+import com.vms.auth.dto.AuthDto;
+import com.vms.auth.dto.JwtDto;
+import com.vms.auth.dto.RegisterDto;
+import com.vms.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,12 +18,12 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<JwtDto> register(@RequestBody RegisterDto request){
         return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request){
+    public ResponseEntity<JwtDto> authenticate(@RequestBody AuthDto request){
         return ResponseEntity.ok(authService.authenticate(request));
     }
 }
