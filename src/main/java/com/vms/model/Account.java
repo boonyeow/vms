@@ -2,6 +2,11 @@ package com.vms.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+
 @Entity
 @Table(name="account")
 public class Account {
@@ -24,6 +29,9 @@ public class Account {
 
     @Column(name="account_type", nullable = false)
     private AccountType accountType;
+
+    @ManyToMany(mappedBy = "authorizedUsers")
+    private Set<FormSection> authorizedFormSections = new HashSet<>();
 
     // Getters
     public String getName() {
