@@ -23,7 +23,11 @@ public class FormService {
     public boolean createForm(FormDto request){
         if(formRepository.findByName(request.getName()).isEmpty()){
             // creating for the first time
-            Form form = Form.builder().name(request.getName()).description(request.getDescription()).isFinished(false).build();
+            Form form = Form.builder()
+                    .name(request.getName())
+                    .description(request.getDescription())
+                    .isFinished(request.isFinished())
+                    .build();
             formRepository.save(form);
             return true;
         }

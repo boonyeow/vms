@@ -31,12 +31,12 @@ public class FormController {
 //    }
 
     @PostMapping
-    public ResponseEntity<FormDto> createForm(@RequestBody FormDto formDto) {
-        boolean isCreated = formService.createForm(formDto);
+    public ResponseEntity<FormDto> createForm(@RequestBody FormDto request) {
+        boolean isCreated = formService.createForm(request);
         if(!isCreated){
             throw new RuntimeException("form not created");
         }
-        return ResponseEntity.ok(formDto);
+        return ResponseEntity.ok(request);
     }
 
     @PutMapping("/{id}")
