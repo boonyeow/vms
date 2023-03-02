@@ -22,6 +22,7 @@ public class AccountService {
     }
 
     public boolean createAccount(Account account){
+
         if(getAccountByEmail(account.getEmail()).isEmpty()){
             // creating for the first time
             accountRepository.save(account);
