@@ -41,6 +41,13 @@ public class Account implements UserDetails {
 
     @OneToMany(mappedBy = "account")
     private List<Token> tokens;
+
+    @ManyToMany(mappedBy = "authorizedAccounts")
+    private List<Form> authorizedForms;
+
+    @ManyToMany(mappedBy = "authorizedAccounts")
+    private List<FormSection> authorizedFormSections;
+
     @Override
     public String getUsername() {
         return email;

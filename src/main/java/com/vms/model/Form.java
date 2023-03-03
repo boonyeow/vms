@@ -3,6 +3,9 @@ package com.vms.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,8 +24,17 @@ public class Form {
     @Column(nullable = false)
     private String description;
 
-    // Make Formsection
-
     @Column(name = "is_finished", nullable = false)
     private boolean isFinished;
+
+    // If an instance of form is deleted, all associated form sections will be deleted
+    @OneToMany(mappedBy = "form", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FormSection> formSections;
+
+
+    @ManyToMany
+    @JoinTable(name = "form_account",
+            joinColumns = @JoinColumn(name = "form_id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id"))
+    private List<Account> authorizedAccounts;
 }

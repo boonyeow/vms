@@ -21,24 +21,5 @@ public class AccountService {
         return accountRepository.findByEmail(email);
     }
 
-    public boolean createAccount(Account account){
-
-        if(getAccountByEmail(account.getEmail()).isEmpty()){
-            // creating for the first time
-            accountRepository.save(account);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean deleteAccount(Long id){
-        Optional<Account> optionalAccount = accountRepository.findById(id);
-        if (optionalAccount.isPresent()){
-            accountRepository.delete(optionalAccount.get());
-            return true;
-        }
-        return false;
-    }
-
-
+    public Optional<Account> getAccountById(Long id){ return accountRepository.findById(id); }
 }

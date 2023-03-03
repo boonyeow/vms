@@ -2,12 +2,16 @@ package com.vms.controller;
 
 import com.vms.dto.FormDto;
 import com.vms.model.Form;
+import com.vms.model.FormSection;
 import com.vms.service.FormService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api/form")
+@RequestMapping("/api/forms")
 public class FormController {
 
     private FormService formService;
@@ -21,14 +25,10 @@ public class FormController {
         return ResponseEntity.ok(formService.getAllForms());
     }
 
-//    @GetMapping("/searchByFormName")
-//    public ResponseEntity<FormDto> getFormByFormName(@RequestParam(value = "formName") String formName) {
-//        Form form = formService.(formName);
-//        if (form == null) {
-//            throw new RuntimeException("form not found");
-//        }
-//        return ResponseEntity.ok(form);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<FormDto> getFormById(@PathVariable Long id){
+        return  ResponseEntity.ok(formService.getFormDtoById(id));
+    }
 
     @PostMapping
     public ResponseEntity<FormDto> createForm(@RequestBody FormDto request) {

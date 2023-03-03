@@ -30,21 +30,4 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
-    @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
-        boolean isCreated = accountService.createAccount(account);
-        if(!isCreated){
-            throw new RuntimeException("account not created");
-        }
-        return ResponseEntity.ok(account);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable Long id){
-        boolean isDeleted = accountService.deleteAccount(id);
-        if(!isDeleted){
-            throw new RuntimeException("account not deleted");
-        }
-        return ResponseEntity.noContent().build();
-    }
 }
