@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FormSectionService {
@@ -123,5 +124,21 @@ public class FormSectionService {
         }
         formSection.getAuthorizedAccounts().removeAll(accountsToRemove);
         formSectionRepository.save(formSection);
+    }
+
+    public FormSectionDto getFormSectionDtoById(Long formSectionId){
+        FormSection formSection = getFormSectionById(formSectionId);
+
+        return FormSectionDto.builder()
+                .authorizedAccountIds(formSection.getAuthorizedAccounts().stream().map(Account::getId).collect(Collectors.toList()))
+                .build();
+    }
+
+
+    public FormSection getFormSectionById(Long formSectionId){
+        FormSection formSection = formSectionRepository.findById(formSectionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Form section not found")
+                );
+        return formSection;
     }
 }
