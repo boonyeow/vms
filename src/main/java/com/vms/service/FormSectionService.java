@@ -36,7 +36,13 @@ public class FormSectionService {
         for(Long id: authorizedAccountIds){
             Account account = accountService.getAccountById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
-            authorizedAccounts.add(account);
+            if (!authorizedAccounts.contains(account)) {
+                authorizedAccounts.add(account);
+            } else {
+                throw new RuntimeException("Duplicated accounts provided");
+            }
+            // See whether want check Forms authorizedAccounts
+            // A simple if forms not authorized, you cant authorize them here in form_section
         }
 
         if(authorizedAccounts.isEmpty()){
@@ -72,7 +78,11 @@ public class FormSectionService {
         List<Long> ids = request.getAuthorizedAccountIds();
         for(Long id : ids){
             Account account = accountService.getAccountById(id).orElseThrow();
-            authorizedAccounts.add(account);
+            if (!authorizedAccounts.contains(account)) {
+                authorizedAccounts.add(account);
+            } else {
+                throw new RuntimeException("Duplicated accounts provided");
+            }
         }
         formSection.setAuthorizedAccounts(authorizedAccounts);
     }
@@ -87,8 +97,13 @@ public class FormSectionService {
         for(String email : emails){
             Account account = accountService.getAccountByEmail(email)
                     .orElseThrow(() -> new ResourceNotFoundException("Account " + email + " not found"));
-            formSection.getAuthorizedAccounts().add(account);
+            if (!formSection.getAuthorizedAccounts().contains(account)) {
+                formSection.getAuthorizedAccounts().add(account);
+            } else {
+                throw new RuntimeException("Duplicated accounts detected");
+            }
         }
+        formSectionRepository.save(formSection);
     }
 
     public void removeAuthorizedAccount(Long formId, Long formSectionId, List<String> emails){
@@ -107,5 +122,6 @@ public class FormSectionService {
             accountsToRemove.add(account);
         }
         formSection.getAuthorizedAccounts().removeAll(accountsToRemove);
+        formSectionRepository.save(formSection);
     }
 }

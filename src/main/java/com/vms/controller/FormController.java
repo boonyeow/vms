@@ -50,13 +50,26 @@ public class FormController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteForm(@PathVariable Long id){
-        boolean isDeleted = formService.deleteAccount(id);
+        boolean isDeleted = formService.deleteForm(id);
         if(!isDeleted){
             throw new RuntimeException("form not deleted");
         }
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{id}/authorized_accounts")
+    public ResponseEntity<Void> addAuthorizedAccount(@PathVariable Long id,
+                                                     @RequestBody List<String> emails) {
+        formService.addAuthorizedAccount(id, emails);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/authorized_accounts")
+    public ResponseEntity<Void> removeAuthorizedAccount(@PathVariable Long id,
+                                                        @RequestBody List<String> emails) {
+        formService.removeAuthorizedAccount(id, emails);
+        return ResponseEntity.ok().build();
+    }
 
 
 }
