@@ -1,10 +1,8 @@
 package com.vms.service;
 
-import com.vms.dto.FormDto;
-import com.vms.dto.FormResponseDto;
-import com.vms.dto.FormSectionDto;
-import com.vms.dto.FormSectionResponseDto;
+import com.vms.dto.*;
 import com.vms.model.Account;
+import com.vms.model.Field;
 import com.vms.model.FormSection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -12,9 +10,7 @@ import org.springframework.stereotype.Service;
 import com.vms.model.Form;
 import com.vms.repository.FormRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FormService {
@@ -41,10 +37,12 @@ public class FormService {
                     throw new RuntimeException("Duplicated accounts provided");
                 }
             }
+
             Form form = Form.builder()
                     .name(request.getName())
                     .description(request.getDescription())
                     .isFinished(request.isFinished())
+                    .formSections(new ArrayList<>())
                     .authorizedAccounts(authorizedAccounts)
                     .build();
             formRepository.save(form);
@@ -111,10 +109,33 @@ public class FormService {
         for(FormSection fs: formSections){
             fsDtoList.add(FormSectionResponseDto.builder()
                     .id(fs.getId())
+                    .fields(getFieldDtoList(fs.getFields()))
                     .authorizedAccounts(accountService.getAccountDtoList(fs.getAuthorizedAccounts()))
                     .build()
             );
         }
         return fsDtoList;
     }
+
+    private List<FieldDto> getFieldDtoList(List<Field> fields){
+        List<FieldDto> fieldDtoList = new ArrayList<>();
+        for(Field f:fields){
+            Map<String, Field> nextFields = f.getNextFields();
+            Map<String, Long> dtoNextFields = new HashMap<>();
+            for(String option : nextFields.keySet()){
+                dtoNextFields.put(option, nextFields.get(option).getId());
+            }
+            fieldDtoList.add(FieldDto.builder()
+                    .name(f.getName())
+                    .label(f.getLabel())
+                    .helpText(f.getHelpText())
+                    .isRequired(f.getIsRequired())
+                    .fieldType(f.getFieldType())
+                    .options(f.getOptions())
+                    .nextFields(dtoNextFields)
+                    .build());
+        }
+        return fieldDtoList;
+    }
+
 }

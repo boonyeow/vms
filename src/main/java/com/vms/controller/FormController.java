@@ -5,6 +5,7 @@ import com.vms.dto.FormResponseDto;
 import com.vms.model.Form;
 import com.vms.model.FormSection;
 import com.vms.service.FormService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,8 @@ import java.util.Optional;
 @RequestMapping("/api/forms")
 public class FormController {
 
+    @Autowired
     private FormService formService;
-
-    public FormController(FormService formService) {
-        this.formService = formService;
-    }
-
     @GetMapping
     public ResponseEntity<Iterable<Form>> getAllForms() {
         return ResponseEntity.ok(formService.getAllForms());

@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Data
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +26,6 @@ public class FormSection {
             inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> authorizedAccounts;
 
-//    @OneToMany(mappedBy = "form_section", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Field> fields;
+    @OneToMany(mappedBy = "formSection", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Field> fields;
 }

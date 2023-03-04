@@ -118,4 +118,7 @@ public class FormSectionService {
         return formSection;
     }
 
+    public void saveFormSection(FormSection formSection){
+        formSectionRepository.save(formSection);
+    }
 }

@@ -1,9 +1,7 @@
 package com.vms.dto;
 
 import lombok.*;
-
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -11,5 +9,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class FormSectionDto {
     private Long id;
+    private List<FieldDto> fields;
     private List<Long> authorizedAccountIds;
 }

@@ -11,5 +11,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class FormSectionResponseDto {
     private Long id;
+    private List<FieldDto> fields;
     private List<AccountDto> authorizedAccounts;
 }
