@@ -25,6 +25,6 @@ public class FormSection {
             inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> authorizedAccounts;
 
-    @OneToMany(mappedBy = "form_section", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Field> formFields;
+//    @OneToMany(mappedBy = "form_section", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Field> fields;
 }

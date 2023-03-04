@@ -4,6 +4,7 @@ import com.vms.model.enums.AccountType;
 import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDto {

@@ -1,8 +1,9 @@
 package com.vms.service;
 
 import com.vms.dto.FormDto;
+import com.vms.dto.FormResponseDto;
 import com.vms.dto.FormSectionDto;
-import com.vms.exception.EntityNotFoundException;
+import com.vms.dto.FormSectionResponseDto;
 import com.vms.model.Account;
 import com.vms.model.FormSection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import com.vms.repository.FormRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class FormService {
@@ -87,56 +87,15 @@ public class FormService {
         return false;
     }
 
-    public void addAuthorizedAccount(Long formId, List<String> emails){
-        Form form = formRepository.findById(formId).orElseThrow(() -> new RuntimeException("Form not found"));
-        if(form.isFinished()){
-            throw new RuntimeException("Form has been finalized, no updates allowed");
-        };
-        for(String email : emails){
-            Account account = accountService.getAccountByEmail(email)
-                    .orElseThrow(() -> new ResourceNotFoundException("Account " + email + " not found"));
-            if (!form.getAuthorizedAccounts().contains(account)) {
-                form.getAuthorizedAccounts().add(account);
-            } else {
-                throw new RuntimeException("Duplicated accounts detected");
-            }
-        }
-        formRepository.save(form);
-    }
-    public void removeAuthorizedAccount(Long formId, List<String> emails){
-        Form form = formRepository.findById(formId).orElseThrow(() -> new RuntimeException("Form not found"));
-        if(form.isFinished()){
-            throw new RuntimeException("Form has been finalized, no updates allowed");
-        }
-
-        List<Account> accountsToRemove = new ArrayList<>();
-        for(String email: emails){
-            Account account = accountService.getAccountByEmail(email)
-                    .orElseThrow(() -> new ResourceNotFoundException("Account " + email + " not found"));
-            accountsToRemove.add(account);
-        }
-        form.getAuthorizedAccounts().removeAll(accountsToRemove);
-        formRepository.save(form);
-    }
-
-    public FormDto getFormDtoById(Long formId){
+    public FormResponseDto getFormDtoById(Long formId){
         Form form = getFormById(formId);
 
         List<FormSection> formSections = form.getFormSections();
-        List<FormSectionDto> fsDtoList = new ArrayList<>();
-
-        for(FormSection fs : formSections){
-            FormSectionDto fsDto = FormSectionDto.builder()
-                    .id(fs.getId())
-                    .authorizedAccountIds(fs.getAuthorizedAccounts().stream().map(Account::getId).collect(Collectors.toList()))
-                    .build();
-            fsDtoList.add(fsDto);
-        }
-        return FormDto.builder()
+        return FormResponseDto.builder()
                 .name(form.getName())
                 .description(form.getDescription())
-                .formSections(fsDtoList)
-                .authorizedAccountIds(form.getAuthorizedAccounts().stream().map(Account::getId).collect(Collectors.toList()))
+                .formSections(getFormSectionDtoList(form.getFormSections()))
+                .authorizedAccounts(accountService.getAccountDtoList(form.getAuthorizedAccounts()))
                 .build();
     }
 
@@ -145,5 +104,17 @@ public class FormService {
                 .orElseThrow(() -> new ResourceNotFoundException("Form not found")
                 );
         return form;
+    }
+
+    private List<FormSectionResponseDto> getFormSectionDtoList(List<FormSection> formSections){
+        List<FormSectionResponseDto> fsDtoList = new ArrayList<>();
+        for(FormSection fs: formSections){
+            fsDtoList.add(FormSectionResponseDto.builder()
+                    .id(fs.getId())
+                    .authorizedAccounts(accountService.getAccountDtoList(fs.getAuthorizedAccounts()))
+                    .build()
+            );
+        }
+        return fsDtoList;
     }
 }

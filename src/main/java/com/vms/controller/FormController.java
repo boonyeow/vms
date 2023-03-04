@@ -1,6 +1,7 @@
 package com.vms.controller;
 
 import com.vms.dto.FormDto;
+import com.vms.dto.FormResponseDto;
 import com.vms.model.Form;
 import com.vms.model.FormSection;
 import com.vms.service.FormService;
@@ -26,7 +27,7 @@ public class FormController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FormDto> getFormById(@PathVariable Long id){
+    public ResponseEntity<FormResponseDto> getFormById(@PathVariable Long id){
         return  ResponseEntity.ok(formService.getFormDtoById(id));
     }
 
@@ -56,20 +57,4 @@ public class FormController {
         }
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/{id}/authorized_accounts")
-    public ResponseEntity<Void> addAuthorizedAccount(@PathVariable Long id,
-                                                     @RequestBody List<String> emails) {
-        formService.addAuthorizedAccount(id, emails);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}/authorized_accounts")
-    public ResponseEntity<Void> removeAuthorizedAccount(@PathVariable Long id,
-                                                        @RequestBody List<String> emails) {
-        formService.removeAuthorizedAccount(id, emails);
-        return ResponseEntity.ok().build();
-    }
-
-
 }

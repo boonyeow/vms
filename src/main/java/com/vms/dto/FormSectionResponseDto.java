@@ -9,7 +9,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FormSectionDto {
+public class FormSectionResponseDto {
     private Long id;
-    private List<Long> authorizedAccountIds;
+    private List<AccountDto> authorizedAccounts;
 }

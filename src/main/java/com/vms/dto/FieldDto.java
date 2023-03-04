@@ -32,5 +32,5 @@ public class FieldDto {
     private List<String> options;
 
     @JsonProperty("nextFields")
-    private Map<String, FieldDto> nextFields;
+    private Map<String, Long> nextFields;
 }
