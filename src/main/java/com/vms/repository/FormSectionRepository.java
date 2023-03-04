@@ -9,4 +9,6 @@ import java.util.List;
 public interface FormSectionRepository extends CrudRepository<FormSection, Long> {
     @Query("SELECT fs FROM FormSection fs LEFT JOIN FETCH fs.authorizedAccounts a WHERE fs.form.id = :formId")
     List<FormSection> findAllByFormIdWithAccounts(Long formId);
+
+    List<FormSection> findByFormId(Long formId);
 }

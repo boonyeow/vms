@@ -26,8 +26,17 @@ public class FormSectionService {
     @Autowired
     private FormService formService;
 
-    public Iterable<FormSection> findAllByFormIdWithAccounts(Long formId){
-        return formSectionRepository.findAllByFormIdWithAccounts(formId);
+    public Iterable<FormSectionDto> getAllFormSectionsDtoByFormId(Long formId) {
+        List<FormSection> formSection = formSectionRepository.findByFormId(formId);
+        List<FormSectionDto> fsDtoList = new ArrayList<>();
+        for (FormSection fs : formSection) {
+            FormSectionDto fsDto = FormSectionDto.builder()
+                    .id(fs.getId())
+                    .authorizedAccountIds(fs.getAuthorizedAccounts().stream().map(Account::getId).collect(Collectors.toList()))
+                    .build();
+            fsDtoList.add(fsDto);
+        }
+        return fsDtoList;
     }
 
     public void createFormSection(Long formId, FormSectionDto request) {
@@ -71,6 +80,9 @@ public class FormSectionService {
         Form form = formService.getFormById(formId);
         FormSection formSection = formSectionRepository.findById(sectionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Form section not found"));
+        if (form != formSection.getForm()) {
+            throw new RuntimeException("Form ID provided does not match the Form section's associated Form");
+        }
         if(form.isFinished()){
             throw new RuntimeException("Form has been finalized, no updates allowed");
         }
@@ -86,6 +98,7 @@ public class FormSectionService {
             }
         }
         formSection.setAuthorizedAccounts(authorizedAccounts);
+        formSectionRepository.save(formSection);
     }
 
     public void addAuthorizedAccount(Long formId, Long formSectionId, List<String> emails){

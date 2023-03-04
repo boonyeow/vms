@@ -1,5 +1,7 @@
 package com.vms.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +31,7 @@ public class Form {
 
     // If an instance of form is deleted, all associated form sections will be deleted
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<FormSection> formSections;
 
 
@@ -36,5 +39,6 @@ public class Form {
     @JoinTable(name = "form_account",
             joinColumns = @JoinColumn(name = "form_id"),
             inverseJoinColumns = @JoinColumn(name = "account_id"))
+    @JsonBackReference
     private List<Account> authorizedAccounts;
 }

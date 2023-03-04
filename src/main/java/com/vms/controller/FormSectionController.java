@@ -18,8 +18,8 @@ public class FormSectionController {
     private FormSectionService formSectionService;
 
     @GetMapping
-    public ResponseEntity<Iterable<FormSection>> findAllByFormIdWithAccounts(@PathVariable Long formId){
-        return ResponseEntity.ok(formSectionService.findAllByFormIdWithAccounts(formId));
+    public ResponseEntity<Iterable<FormSectionDto>> findAllByFormIdWithAccounts(@PathVariable Long formId){
+        return ResponseEntity.ok(formSectionService.getAllFormSectionsDtoByFormId(formId));
     }
 
     @PostMapping
@@ -47,7 +47,7 @@ public class FormSectionController {
     @PostMapping("/{sectionId}/authorized_accounts")
     public ResponseEntity<Void> addAuthorizedAccount(@PathVariable Long formId,
                                                   @PathVariable Long sectionId,
-                                                  @RequestParam List<String> emails) {
+                                                  @RequestBody List<String> emails) {
         formSectionService.addAuthorizedAccount(formId, sectionId, emails);
         return ResponseEntity.ok().build();
     }
@@ -55,7 +55,7 @@ public class FormSectionController {
     @DeleteMapping("/{sectionId}/authorized_accounts")
     public ResponseEntity<Void> removeAuthorizedAccount(@PathVariable Long formId,
                                                       @PathVariable Long sectionId,
-                                                      @RequestParam List<String> emails) {
+                                                      @RequestBody List<String> emails) {
         formSectionService.removeAuthorizedAccount(formId, sectionId, emails);
         return ResponseEntity.ok().build();
     }
