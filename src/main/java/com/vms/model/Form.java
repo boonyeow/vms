@@ -31,10 +31,12 @@ public class Form {
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FormSection> formSections;
 
-
     @ManyToMany
     @JoinTable(name = "form_account",
             joinColumns = @JoinColumn(name = "form_id"),
             inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> authorizedAccounts;
+
+    @ManyToMany(mappedBy = "forms")
+    private List<Workflow> workflows;
 }

@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (requests)  -> requests
                                 .requestMatchers( "/api/auth/authenticate").permitAll()
-                                .requestMatchers( "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**").hasAuthority(AccountType.ADMIN.name())
+                                .requestMatchers( "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**, /api/workflows, /api/workflows/**").hasAuthority(AccountType.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET,"/api/patterns").hasAnyAuthority(AccountType.VENDOR.name(), AccountType.APPROVER.name())
                                 .anyRequest().authenticated()
                 )
