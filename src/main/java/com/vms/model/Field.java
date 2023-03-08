@@ -30,6 +30,9 @@ public class Field {
 //    @Column(nullable = true)
 //    private Pattern pattern;
 
+    @OneToOne(mappedBy = "field", cascade = CascadeType.ALL)
+    private FieldResponse fieldResponse;
+
     @Enumerated(EnumType.STRING)
     private FieldType fieldType;
 

@@ -48,6 +48,9 @@ public class Account implements UserDetails {
     @ManyToMany(mappedBy = "authorizedAccounts")
     private List<FormSection> authorizedFormSections;
 
+    @OneToMany(mappedBy = "submitter")
+    private List<FormSubmission> submittedFormSubmissions;
+
     @Override
     public String getUsername() {
         return email;

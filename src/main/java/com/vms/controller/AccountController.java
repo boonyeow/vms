@@ -1,6 +1,7 @@
 package com.vms.controller;
 
 import com.vms.model.Account;
+import com.vms.dto.FormSubmissionDTO;
 
 import com.vms.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/accounts")
-public class    AccountController {
+public class AccountController {
 
     @Autowired
     private AccountService accountService;
@@ -28,6 +29,11 @@ public class    AccountController {
             throw new RuntimeException("account not found");
         }
         return ResponseEntity.ok(account);
+    }
+
+    @GetMapping("/{accountId}/form-submissions")
+    public ResponseEntity<Iterable<FormSubmissionDTO>> getFormSubmissionsByAccountId(@PathVariable Long accountId) {
+        return ResponseEntity.ok(accountService.getFormSubmissionsByAccountID(accountId));
     }
 
 }
