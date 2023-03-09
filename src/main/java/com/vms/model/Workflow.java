@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @Builder
@@ -27,14 +28,23 @@ public class Workflow {
     private int progress;
 
     @Column(nullable = false)
-    private Boolean isDraft;
+    private Boolean isFinal;
+
+    // @ElementCollection
+    private List<Long> approvalSequence;
 
     @ManyToMany
-    @JoinTable(name = "workflow_form",
+    @JoinTable(name = "workflow_account",
             joinColumns = @JoinColumn(name = "workflow_id"),
-            inverseJoinColumns = @JoinColumn(name = "form_id"))
-    private List<Form> forms;
+            inverseJoinColumns = @JoinColumn(name = "account_id"))
+    private Set<Account> authorizedAccounts;
 
-    @ElementCollection
-    private List<Long> formOrder;
+//    @ManyToMany
+//    @JoinTable(name = "workflow_form",
+//            joinColumns = @JoinColumn(name = "workflow_id"),
+//            inverseJoinColumns = @JoinColumn(name = "form_id"))
+//    private List<Form> forms;
+//
+//    @ElementCollection
+//    private List<Long> formOrder;
 }

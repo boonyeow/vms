@@ -42,14 +42,20 @@ public class Account implements UserDetails {
     @OneToMany(mappedBy = "account")
     private List<Token> tokens;
 
+    // TO REMOVE
     @ManyToMany(mappedBy = "authorizedAccounts")
     private List<Form> authorizedForms;
 
+    // TO REMOVE
     @ManyToMany(mappedBy = "authorizedAccounts")
     private List<FormSection> authorizedFormSections;
 
+    // TO REMOVE
     @OneToMany(mappedBy = "submitter")
     private List<FormSubmission> submittedFormSubmissions;
+
+    @ManyToMany(mappedBy = "authorizedAccounts")
+    private List<Workflow> authorizedWorkflows;
 
     @Override
     public String getUsername() {

@@ -1,5 +1,6 @@
 package com.vms.model;
 
+import com.vms.model.keys.FormCompositeKey;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,9 +15,8 @@ import java.util.List;
 @Table(name = "form")
 public class Form {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private FormCompositeKey id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -24,12 +24,8 @@ public class Form {
     @Column(nullable = false)
     private String description;
 
-    @Column(name = "is_finished", nullable = false)
-    private boolean isFinished;
-
-    // If an instance of form is deleted, all associated form sections will be deleted
-    @OneToMany(mappedBy = "form", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FormSection> formSections;
+    @Column(name = "is_final", nullable = false)
+    private boolean isFinal;
 
     @ManyToMany
     @JoinTable(name = "form_account",

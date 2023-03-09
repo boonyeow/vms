@@ -17,12 +17,4 @@ public class WorkflowDto {
     private Long id;
 
     private String name;
-
-    private int progress;
-
-    private Boolean isDraft;
-
-    private List<Long> formsId;
-
-    private List<Long> formOrder;
 }
