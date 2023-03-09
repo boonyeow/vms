@@ -19,9 +19,9 @@ public class WorkflowResponseDto {
 
     private int progress;
 
-    private Boolean isDraft;
+    private boolean isFinal;
 
     private List<WorkflowFormDto> forms;
 
-    private List<Long> formOrder;
+    private List<Long> approvalSequence;
 }

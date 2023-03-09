@@ -19,7 +19,7 @@ import java.util.Set;
 public class Workflow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -28,9 +28,9 @@ public class Workflow {
     private int progress;
 
     @Column(nullable = false)
-    private Boolean isFinal;
+    private boolean isFinal;
 
-    // @ElementCollection
+    @ElementCollection
     private List<Long> approvalSequence;
 
     @ManyToMany
@@ -39,12 +39,12 @@ public class Workflow {
             inverseJoinColumns = @JoinColumn(name = "account_id"))
     private Set<Account> authorizedAccounts;
 
-//    @ManyToMany
-//    @JoinTable(name = "workflow_form",
-//            joinColumns = @JoinColumn(name = "workflow_id"),
-//            inverseJoinColumns = @JoinColumn(name = "form_id"))
-//    private List<Form> forms;
-//
-//    @ElementCollection
-//    private List<Long> formOrder;
+    @ManyToMany
+    @JoinTable(name = "workflow_form",
+            joinColumns = @JoinColumn(name = "workflow_id"),
+            inverseJoinColumns = {
+                    @JoinColumn(name = "form_id", referencedColumnName = "id"),
+                    @JoinColumn(name = "form_revisionNo", referencedColumnName = "revisionNo") }
+    )
+    private List<Form> forms;
 }

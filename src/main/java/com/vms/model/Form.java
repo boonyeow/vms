@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -18,7 +19,7 @@ public class Form {
     @EmbeddedId
     private FormCompositeKey id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -29,10 +30,12 @@ public class Form {
 
     @ManyToMany
     @JoinTable(name = "form_account",
-            joinColumns = @JoinColumn(name = "form_id"),
+            joinColumns = {
+                    @JoinColumn(name = "form_id", referencedColumnName = "id"),
+                    @JoinColumn(name = "form_revisionNo", referencedColumnName = "revisionNo") },
             inverseJoinColumns = @JoinColumn(name = "account_id"))
     private List<Account> authorizedAccounts;
 
     @ManyToMany(mappedBy = "forms")
-    private List<Workflow> workflows;
+    private Set<Workflow> workflows;
 }

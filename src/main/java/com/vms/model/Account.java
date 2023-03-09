@@ -2,10 +2,7 @@ package com.vms.model;
 
 import com.vms.model.enums.AccountType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,17 +39,16 @@ public class Account implements UserDetails {
     @OneToMany(mappedBy = "account")
     private List<Token> tokens;
 
-    // TO REMOVE
     @ManyToMany(mappedBy = "authorizedAccounts")
     private List<Form> authorizedForms;
 
     // TO REMOVE
-    @ManyToMany(mappedBy = "authorizedAccounts")
-    private List<FormSection> authorizedFormSections;
+//    @ManyToMany(mappedBy = "authorizedAccounts")
+//    private List<FormSection> authorizedFormSections;
 
     // TO REMOVE
-    @OneToMany(mappedBy = "submitter")
-    private List<FormSubmission> submittedFormSubmissions;
+//    @OneToMany(mappedBy = "submitter")
+//    private List<FormSubmission> submittedFormSubmissions;
 
     @ManyToMany(mappedBy = "authorizedAccounts")
     private List<Workflow> authorizedWorkflows;

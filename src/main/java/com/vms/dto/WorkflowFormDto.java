@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkflowFormDto {
-    @JsonProperty("form_id")
-    private Long form_id;
+    @JsonProperty("formId")
+    private Long formId;
+
+    @JsonProperty("revisionId")
+    private Integer revisionId;
 
     @JsonProperty("name")
     private String name;

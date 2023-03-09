@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import com.vms.model.enums.*;
+import java.util.*;
+import com.vms.model.enums.FieldType;
 
 @Data
 @Builder
@@ -16,7 +16,7 @@ import com.vms.model.enums.*;
 @AllArgsConstructor
 @Entity
 @Table(name="field")
-public class Field {
+public class Field{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,13 +25,6 @@ public class Field {
     private String label;
     private Boolean isRequired;
     private String helpText;
-
-    // Omit pattern first
-//    @Column(nullable = true)
-//    private Pattern pattern;
-
-    @OneToOne(mappedBy = "field", cascade = CascadeType.ALL)
-    private FieldResponse fieldResponse;
 
     @Enumerated(EnumType.STRING)
     private FieldType fieldType;
@@ -70,8 +63,4 @@ public class Field {
         this.options = options;
         this.nextFields = nextFields;
     }
-
-    @ManyToOne
-    @JoinColumn(name="formsection_id")
-    private FormSection formSection;
 }

@@ -17,12 +17,10 @@ public class FormDto {
     @JsonProperty("description")
     private String description;
 
-    @JsonProperty("isFinished")
-    private boolean isFinished;
+    @JsonProperty("isFinal")
+    private boolean isFinal;
 
     @JsonProperty("authorizedAccountIds")
     private List<Long> authorizedAccountIds;
 
-    @JsonProperty("sectionIds")
-    private List<FormSectionDto> formSections;
 }

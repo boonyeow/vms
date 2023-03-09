@@ -13,24 +13,11 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FieldDto {
-    @JsonProperty("name")
     private String name;
-
-    @JsonProperty("label")
     private String label;
-
-    @JsonProperty("helpText")
     private String helpText;
-
-    @JsonProperty("isRequired")
     private boolean isRequired;
-
-    @JsonProperty("fieldType")
     private FieldType fieldType;
-
-    @JsonProperty("options")
     private List<String> options;
-
-    @JsonProperty("nextFields")
-    private Map<String, Long> nextFields;
+    private Map<String, Long> nextFieldsId;
 }

@@ -1,5 +1,6 @@
 package com.vms.model.keys;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,16 +18,9 @@ import java.io.Serializable;
 @Embeddable
 public class FormCompositeKey implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Integer revisionNo;
+    @Column(nullable = false)
+    private long id;
 
-    public FormCompositeKey(Integer revisionNo) {
-        this.revisionNo = revisionNo;
-    }
-
-//    public FormCompositeKey(Long id, Integer revisionNo) {
-//        this.id = id;
-//        this.revisionNo = revisionNo;
-//    }
-
+    @Column(nullable = false)
+    private int revisionNo;
 }

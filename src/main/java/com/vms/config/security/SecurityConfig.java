@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (requests)  -> requests
                                 .requestMatchers( "/api/auth/authenticate").permitAll()
-                                .requestMatchers( "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**, /api/workflows, /api/workflows/**").hasAuthority(AccountType.ADMIN.name())
+                                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                              .requestMatchers( "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**, /api/workflows, /api/workflows/**").hasAuthority(AccountType.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET,"/api/patterns").hasAnyAuthority(AccountType.VENDOR.name(), AccountType.APPROVER.name())
                                 .anyRequest().authenticated()
                 )
@@ -41,7 +43,8 @@ public class SecurityConfig {
                 .logout()
                 .logoutUrl("/api/auth/logout")
                 .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
+                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                .and().headers().frameOptions().disable();
         return http.build();
     }
 }
