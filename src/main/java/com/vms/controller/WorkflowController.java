@@ -1,7 +1,9 @@
 package com.vms.controller;
 
+import com.vms.dto.FormRequestDto;
 import com.vms.dto.WorkflowDto;
 import com.vms.dto.WorkflowResponseDto;
+import com.vms.model.keys.FormCompositeKey;
 import com.vms.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +50,22 @@ public class WorkflowController {
     public ResponseEntity<Void> updateWorkflow(@PathVariable Long id,
                                                @RequestBody WorkflowDto request){
         workflowService.updateWorkflow(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/addForm")
+    public ResponseEntity<Void> addFormToWorkflow(@PathVariable Long id,
+                                                  @RequestBody FormRequestDto request){
+        FormCompositeKey fck = FormCompositeKey.builder().id(request.getId()).revisionNo(request.getRevisionNo()).build();
+        workflowService.addFormToWorkflow(fck, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/removeForm")
+    public ResponseEntity<Void> removeFormFromWorkflow(@PathVariable Long id,
+                                                       @RequestBody FormRequestDto request){
+        FormCompositeKey fck = FormCompositeKey.builder().id(request.getId()).revisionNo(request.getRevisionNo()).build();
+        workflowService.removeFormFromWorkflow(fck, id);
         return ResponseEntity.ok().build();
     }
 }

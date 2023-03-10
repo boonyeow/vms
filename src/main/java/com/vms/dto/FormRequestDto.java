@@ -1,5 +1,7 @@
 package com.vms.dto;
 
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,16 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkflowFormDto {
-    @JsonProperty("formId")
-    private Long formId;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class FormRequestDto {
+    @JsonProperty("id")
+    private Long id;
     @JsonProperty("revisionNo")
-    private Integer revisionNo;
-
-    @JsonProperty("name")
-    private String name;
-
-    @JsonProperty("description")
-    private String description;
+    private int revisionNo;
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 public class FormSubmission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)

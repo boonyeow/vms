@@ -37,14 +37,14 @@ public class FormController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{id}/{revisionId}/duplicate")
+    @PostMapping("/{id}/{revisionNo}/duplicate")
     public ResponseEntity<Void> duplicateForm(@PathVariable Long id,
                                               @PathVariable int revisionNo){
         formService.duplicateForm(new FormCompositeKey(id, revisionNo));
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}/{revisionId}")
+    @PutMapping("/{id}/{revisionNo}")
     public ResponseEntity<Void> updateForm(@PathVariable Long id,
                                            @PathVariable int revisionNo,
                                            @RequestBody FormDto request,
@@ -54,7 +54,15 @@ public class FormController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}/{revisionId}/authorizedAccount")
+    @DeleteMapping("/{id}/{revisionNo}")
+    public ResponseEntity<Void> deleteForm(@PathVariable Long id,
+                                           @PathVariable int revisionNo){
+        FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
+        formService.deleteForm(fck);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/{revisionNo}/authorizedAccount")
     public ResponseEntity<Void> updateAuthorizedAccount(@PathVariable Long id,
                                                         @PathVariable int revisionNo,
                                                         @RequestBody List<String> emails) {
