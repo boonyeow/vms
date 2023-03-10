@@ -8,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "pattern")
-public class Pattern {
+@Table(name = "regex")
+public class Regex {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,4 +19,7 @@ public class Pattern {
 
     @Column(nullable = false, unique = true)
     private String pattern;
+
+    //   @OneToMany(mappedBy = "regex")
+    //   private List<Field> fields;
 }
