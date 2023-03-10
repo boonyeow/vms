@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/fields")
+@RequestMapping("/api/fields")
 public class FieldController {
     @Autowired
     private FieldService fieldService;
