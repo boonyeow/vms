@@ -65,8 +65,8 @@ public class WorkflowService {
         workflow.setFinal(true);
         workflowRepository.save(workflow);
     }
-    public void updateWorkflow(WorkflowDto request){
-        Workflow workflow = getWorkflowById(request.getId());
+    public void updateWorkflow(Long id, WorkflowDto request){
+        Workflow workflow = getWorkflowById(id);
         workflow.setName(request.getName());
         workflow.setFinal(request.isFinal());
         workflowRepository.save(workflow);

@@ -1,5 +1,6 @@
 package com.vms.controller;
 
+import com.vms.dto.WorkflowDto;
 import com.vms.dto.WorkflowResponseDto;
 import com.vms.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,12 @@ public class WorkflowController {
     @GetMapping("/{id}")
     public ResponseEntity<WorkflowResponseDto> getWorkflowById(@PathVariable Long id){
         return ResponseEntity.ok(workflowService.getWorkflowDtoById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateWorkflow(@PathVariable Long id,
+                                               @RequestBody WorkflowDto request){
+        workflowService.updateWorkflow(id, request);
+        return ResponseEntity.ok().build();
     }
 }

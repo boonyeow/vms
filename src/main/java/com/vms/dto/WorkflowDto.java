@@ -1,5 +1,6 @@
 package com.vms.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vms.model.Form;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,9 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkflowDto {
-    private Long id;
-
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("isFinal")
     private boolean isFinal;
 }

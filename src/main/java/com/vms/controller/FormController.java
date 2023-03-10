@@ -23,9 +23,9 @@ public class FormController {
         return ResponseEntity.ok(forms);
     }
 
-    @GetMapping("/{id}/{revisionId}")
+    @GetMapping("/{id}/{revisionNo}")
     public ResponseEntity<FormResponseDto> getFormByID(@PathVariable Long id,
-                                                       @PathVariable Integer revisionNo){
+                                                       @PathVariable int revisionNo){
         FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
         FormResponseDto form = formService.getFormDtoByFck(fck);
         return ResponseEntity.ok(form);
@@ -39,26 +39,26 @@ public class FormController {
 
     @PostMapping("/{id}/{revisionId}/duplicate")
     public ResponseEntity<Void> duplicateForm(@PathVariable Long id,
-                                              @PathVariable Integer revisionId){
-        formService.duplicateForm(new FormCompositeKey(id, revisionId));
+                                              @PathVariable int revisionNo){
+        formService.duplicateForm(new FormCompositeKey(id, revisionNo));
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}/{revisionId}")
     public ResponseEntity<Void> updateForm(@PathVariable Long id,
-                                           @PathVariable Integer revisionId,
+                                           @PathVariable int revisionNo,
                                            @RequestBody FormDto request,
                                            @RequestParam boolean applyChanges){
-        FormCompositeKey fck = new FormCompositeKey(id, revisionId);
+        FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
         formService.updateForm(fck, request, applyChanges);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}/{revisionId}/authorizedAccount")
     public ResponseEntity<Void> updateAuthorizedAccount(@PathVariable Long id,
-                                                        @PathVariable Integer revisionId,
+                                                        @PathVariable int revisionNo,
                                                         @RequestBody List<String> emails) {
-        formService.updateFormAuthorizedAccounts(new FormCompositeKey(id, revisionId), emails);
+        formService.updateFormAuthorizedAccounts(new FormCompositeKey(id, revisionNo), emails);
         return ResponseEntity.ok().build();
     }
 }
