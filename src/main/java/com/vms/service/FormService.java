@@ -160,7 +160,7 @@ public class FormService {
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
                 .options(field.getOptions())
-                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
+//                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
                 .formId(field.getForm().getId())
                 .build();
     }

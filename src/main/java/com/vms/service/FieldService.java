@@ -1,6 +1,7 @@
 package com.vms.service;
 
 import com.vms.dto.FieldDto;
+import com.vms.dto.FieldRequestDto;
 import com.vms.model.Field;
 import com.vms.model.Form;
 import com.vms.model.keys.FormCompositeKey;
@@ -21,16 +22,15 @@ public class FieldService {
     @Autowired
     private FieldRepository fieldRepository;
 
-    public void createField(FieldDto request, Form form){
-        Map<String, Field> nextFields = getNextFieldsFromDto(request.getNextFieldsId());
+    public void createField(FieldRequestDto request, Form form){
         Field field = Field.builder()
                 .name(request.getName())
                 .label(request.getLabel())
                 .helpText(request.getHelpText())
-                .isRequired(request.isRequired())
+                .isRequired(request.getIsRequired())
                 .fieldType(request.getFieldType())
                 .options(request.getOptions())
-                .nextFields(nextFields)
+//                .nextFields(request.getNextFields())
                 .form(form)
                 .build();
         fieldRepository.save(field);
@@ -85,7 +85,7 @@ public class FieldService {
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
                 .options(field.getOptions())
-                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
+//                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
                 .formId(field.getForm().getId())
                 .build();
     }

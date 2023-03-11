@@ -1,6 +1,7 @@
 package com.vms.controller;
 
 import com.vms.dto.FieldDto;
+import com.vms.dto.FieldRequestDto;
 import com.vms.model.Field;
 import com.vms.model.Form;
 import com.vms.model.keys.FormCompositeKey;
@@ -21,17 +22,10 @@ public class FieldController {
     @Autowired
     private FormRepository formRepository;
 
-//    @PostMapping
-//    public ResponseEntity<Void> createField(@RequestBody FieldDto request, @RequestParam("formId") Long formId, @RequestParam("RevisionNo") int RevisionNo) {
-//        FormCompositeKey fck = new FormCompositeKey(formId, RevisionNo);
-//        Form form = formRepository.findById(fck).orElseThrow(() -> new RuntimeException("Form not found"));
-//        fieldService.createField(request, form);
-//        return ResponseEntity.ok().build();
-//    }
 
-    @PostMapping
-    public ResponseEntity<Void> createField(@RequestBody FieldDto request, @RequestParam("formId") Long formId, @RequestParam("RevisionNo") int RevisionNo) {
-        FormCompositeKey fck = new FormCompositeKey(formId, RevisionNo);
+    @PostMapping("/create")
+    public ResponseEntity<Void> createField(@RequestBody FieldRequestDto request, @RequestParam String formId, @RequestParam String revisionNo) {
+        FormCompositeKey fck = new FormCompositeKey(Long.parseLong(formId), Integer.parseInt(revisionNo));
         Form form = formRepository.findById(fck).orElseThrow(() -> new RuntimeException("Form not found"));
         fieldService.createField(request, form);
         return ResponseEntity.ok().build();
@@ -55,9 +49,4 @@ public class FieldController {
         return ResponseEntity.ok(field);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Field> getFieldById(@PathVariable Long id) {
-        Field field = fieldService.getFieldById(id);
-        return ResponseEntity.ok(field);
-    }
 }

@@ -20,7 +20,6 @@ public class FormCompositeKey implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
-
     @Column(nullable = false)
     private int revisionNo;
 }
