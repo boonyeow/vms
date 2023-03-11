@@ -21,14 +21,14 @@ public class FormSubmissionResponseDto {
     private Long id;
 
     @JsonProperty("workflow_id")
-    private Workflow workflow;
+    private FormSubmissionWorkflowDto workflow;
 
     @JsonProperty("fck")
-    private Form form;
+    private FormSubmissionFormDto form;
 
     @JsonProperty("status")
     private StatusType status;
 
     @JsonProperty("submittedBy")
-    private Account submittedBy;
+    private AccountDto submittedBy;
 }

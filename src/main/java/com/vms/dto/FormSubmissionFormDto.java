@@ -1,6 +1,7 @@
 package com.vms.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vms.model.keys.FormCompositeKey;
 import lombok.*;
 
 import java.util.List;
@@ -10,7 +11,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FormDto {
+public class FormSubmissionFormDto {
+    @JsonProperty("id")
+    private FormCompositeKey id;
+
     @JsonProperty("name")
     private String name;
 
@@ -19,8 +23,4 @@ public class FormDto {
 
     @JsonProperty("isFinal")
     private boolean isFinal;
-
-//    @JsonProperty("authorizedAccountIds")
-//    private List<Long> authorizedAccountIds;
-
 }

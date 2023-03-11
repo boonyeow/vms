@@ -1,7 +1,6 @@
 package com.vms.service;
 
-import com.vms.dto.FormSubmissionDto;
-import com.vms.dto.FormSubmissionResponseDto;
+import com.vms.dto.*;
 import com.vms.model.Account;
 import com.vms.model.Form;
 import com.vms.model.FormSubmission;
@@ -88,12 +87,41 @@ public class FormSubmissionService {
         List<FormSubmissionResponseDto> fsrDtoList = new ArrayList<>();
 
         for (FormSubmission formSubmission : formSubmissions) {
+
+            // Workflow Response Dto
+            Workflow workflow = formSubmission.getWorkflow();
+            FormSubmissionWorkflowDto formSubmissionWorkflowDto = FormSubmissionWorkflowDto.builder()
+                    .id(workflow.getId())
+                    .name(workflow.getName())
+                    .progress(workflow.getProgress())
+                    .isFinal(workflow.isFinal())
+                    .approvalSequence(workflow.getApprovalSequence())
+                    .build();
+
+            // Form Response Dto
+            Form form = formSubmission.getForm();
+            FormSubmissionFormDto formSubmissionFormDto = FormSubmissionFormDto.builder()
+                    .id(form.getId())
+                    .name(form.getName())
+                    .description(form.getDescription())
+                    .isFinal(form.isFinal())
+                    .build();
+
+            // Account Dto
+            Account account = formSubmission.getSubmittedBy();
+            AccountDto accountDto = AccountDto.builder()
+                    .id(account.getId())
+                    .name(account.getName())
+                    .email(account.getEmail())
+                    .accountType(account.getAccountType())
+                    .build();
+
             FormSubmissionResponseDto fsr = FormSubmissionResponseDto.builder()
                     .id(formSubmission.getId())
-                    .workflow(formSubmission.getWorkflow())
-                    .form(formSubmission.getForm())
+                    .workflow(formSubmissionWorkflowDto)
+                    .form(formSubmissionFormDto)
                     .status(formSubmission.getStatus())
-                    .submittedBy(formSubmission.getSubmittedBy())
+                    .submittedBy(accountDto)
                     .build();
             fsrDtoList.add(fsr);
         }
