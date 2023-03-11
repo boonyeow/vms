@@ -4,6 +4,7 @@ import com.vms.dto.FieldDto;
 import com.vms.dto.FieldRequestDto;
 import com.vms.model.Field;
 import com.vms.model.Form;
+import com.vms.model.Regex;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.model.enums.FieldType;
 import com.vms.repository.FieldRepository;
@@ -22,6 +23,9 @@ public class FieldService {
     @Autowired
     private FieldRepository fieldRepository;
 
+    @Autowired
+    private RegexService regexService;
+
     public void createField(FieldRequestDto request, Form form){
         Field field = Field.builder()
                 .name(request.getName())
@@ -33,6 +37,12 @@ public class FieldService {
 //                .nextFields(request.getNextFields())
                 .form(form)
                 .build();
+
+        if(request.getFieldType().equals(FieldType.TEXTBOX)){
+            Regex regex = regexService.getRegexById(request.getRegexId());
+            field.setRegex(regex);
+        }
+
         fieldRepository.save(field);
     }
 

@@ -21,5 +21,6 @@ public class FieldDto {
     private FieldType fieldType;
     private List<String> options;
 //    private Map<String, Long> nextFieldsId;
+
     private FormCompositeKey formId;
 }

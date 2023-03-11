@@ -3,6 +3,8 @@ package com.vms.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,6 +22,6 @@ public class Regex {
     @Column(nullable = false, unique = true)
     private String pattern;
 
-    //   @OneToMany(mappedBy = "regex")
-    //   private List<Field> fields;
+    @OneToMany(mappedBy = "regex")
+    private List<Field> fields;
 }

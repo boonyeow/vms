@@ -2,6 +2,8 @@ package com.vms.model;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +31,10 @@ public class Field{
     @Enumerated(EnumType.STRING)
     private FieldType fieldType;
 
+    @ManyToOne
+    @Nullable
+    @JoinColumn(name = "regex_id")
+    private Regex regex;
     @Column(nullable = true)
     private List<String> options;
 

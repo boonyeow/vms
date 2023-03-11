@@ -18,6 +18,7 @@ public class RegexService {
         if(regexRepository.existsByPattern(request.getPattern())){
             throw new RuntimeException("Existing pattern found");
         }
+
         Regex regex = Regex.builder()
                 .name(request.getName())
                 .pattern(request.getPattern())
@@ -27,10 +28,11 @@ public class RegexService {
 
     public void deleteRegex(Long id){
         Regex regex = getRegexById(id);
-//        if(regex.getFields().isEmpty()){
-         //   // Reject delete if it violates referential integrity
-//            throw new RuntimeException("Not allowed. Please ensure no other fields are using the regex before deleting.");
-//        }
+        if(regex.getFields().isEmpty()){
+            // Reject delete if it violates referential integrity
+            throw new RuntimeException("Not allowed. Please ensure no other fields are using the regex before deleting.");
+        }
+
         regexRepository.delete(regex);
     }
 
@@ -39,10 +41,12 @@ public class RegexService {
         if(regexRepository.existsByPattern(request.getPattern())){
             throw new RuntimeException("Existing pattern found");
         }
-        //   if(regex.getFields().isEmpty()){
-        //   Check for referential integrity violation
-        //   throw new RuntimeException("Not allowed. Please ensure no other fields are using the regex before deleting.");
-        //   }
+
+        if(regex.getFields().isEmpty()){
+            // Check for referential integrity violation
+           throw new RuntimeException("Not allowed. Please ensure no other fields are using the regex before deleting.");
+        }
+
         regex.setName(request.getName());
         regex.setPattern(request.getPattern());
         regexRepository.save(regex);
