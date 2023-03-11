@@ -2,7 +2,10 @@ package com.vms.controller;
 
 import com.vms.dto.FieldDto;
 import com.vms.model.Field;
+import com.vms.model.Form;
+import com.vms.model.keys.FormCompositeKey;
 import com.vms.service.FieldService;
+import com.vms.repository.FormRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +18,22 @@ import java.util.List;
 public class FieldController {
     @Autowired
     private FieldService fieldService;
+    @Autowired
+    private FormRepository formRepository;
+
+//    @PostMapping
+//    public ResponseEntity<Void> createField(@RequestBody FieldDto request, @RequestParam("formId") Long formId, @RequestParam("RevisionNo") int RevisionNo) {
+//        FormCompositeKey fck = new FormCompositeKey(formId, RevisionNo);
+//        Form form = formRepository.findById(fck).orElseThrow(() -> new RuntimeException("Form not found"));
+//        fieldService.createField(request, form);
+//        return ResponseEntity.ok().build();
+//    }
 
     @PostMapping
-    public ResponseEntity<Void> createField(@RequestBody FieldDto request) {
-        fieldService.createField(request);
+    public ResponseEntity<Void> createField(@RequestBody FieldDto request, @RequestParam("formId") Long formId, @RequestParam("RevisionNo") int RevisionNo) {
+        FormCompositeKey fck = new FormCompositeKey(formId, RevisionNo);
+        Form form = formRepository.findById(fck).orElseThrow(() -> new RuntimeException("Form not found"));
+        fieldService.createField(request, form);
         return ResponseEntity.ok().build();
     }
 

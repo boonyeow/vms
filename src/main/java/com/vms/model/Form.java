@@ -38,4 +38,8 @@ public class Form {
 
     @ManyToMany(mappedBy = "forms")
     private Set<Workflow> workflows;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "form")
+    private List<Field> fields;
+
 }

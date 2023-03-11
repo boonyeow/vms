@@ -2,8 +2,11 @@ package com.vms.service;
 
 import com.vms.dto.FieldDto;
 import com.vms.model.Field;
+import com.vms.model.Form;
+import com.vms.model.keys.FormCompositeKey;
 import com.vms.model.enums.FieldType;
 import com.vms.repository.FieldRepository;
+import com.vms.repository.FormRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +21,7 @@ public class FieldService {
     @Autowired
     private FieldRepository fieldRepository;
 
-    public void createField(FieldDto request){
+    public void createField(FieldDto request, Form form){
         Map<String, Field> nextFields = getNextFieldsFromDto(request.getNextFieldsId());
         Field field = Field.builder()
                 .name(request.getName())
@@ -28,6 +31,7 @@ public class FieldService {
                 .fieldType(request.getFieldType())
                 .options(request.getOptions())
                 .nextFields(nextFields)
+                .form(form)
                 .build();
         fieldRepository.save(field);
     }
@@ -82,6 +86,7 @@ public class FieldService {
                 .fieldType(field.getFieldType())
                 .options(field.getOptions())
                 .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
+                .formId(field.getForm().getId())
                 .build();
     }
 

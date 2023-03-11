@@ -2,6 +2,7 @@ package com.vms.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vms.model.enums.FieldType;
+import com.vms.model.keys.FormCompositeKey;
 import lombok.*;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public class FieldDto {
     private FieldType fieldType;
     private List<String> options;
     private Map<String, Long> nextFieldsId;
+    private FormCompositeKey formId;
 }

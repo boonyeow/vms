@@ -37,24 +37,33 @@ public class Field{
     @JoinColumn(name = "next_field_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "next_field_id_fk"))
     private Map<String, Field> nextFields;
 
-    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType) {
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "form_id", referencedColumnName = "id"),
+            @JoinColumn(name = "form_revision_no", referencedColumnName = "revisionNo")
+    })
+    private Form form;
+
+    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, Form form) {
         this.name = name;
         this.label = label;
         this.isRequired = isRequired;
         this.helpText = helpText;
         this.fieldType = fieldType;
+        this.form = form;
     }
 
-    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, ArrayList<String> options) {
+    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, ArrayList<String> options, Form form) {
         this.name = name;
         this.label = label;
         this.isRequired = isRequired;
         this.helpText = helpText;
         this.fieldType = fieldType;
         this.options = options;
+        this.form = form;
     }
 
-    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, ArrayList<String> options, Map<String, Field> nextFields) {
+    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, ArrayList<String> options, Map<String, Field> nextFields, Form form) {
         this.name = name;
         this.label = label;
         this.isRequired = isRequired;
@@ -62,5 +71,6 @@ public class Field{
         this.fieldType = fieldType;
         this.options = options;
         this.nextFields = nextFields;
+        this.form = form;
     }
 }

@@ -1,7 +1,9 @@
 package com.vms.controller;
 
+import com.vms.dto.FieldDto;
 import com.vms.dto.FormResponseDto;
 import com.vms.dto.FormDto;
+import com.vms.model.Field;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.service.FormService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,5 +70,13 @@ public class FormController {
                                                         @RequestBody List<String> emails) {
         formService.updateFormAuthorizedAccounts(new FormCompositeKey(id, revisionNo), emails);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/{revisionNo}/fields")
+    public ResponseEntity<List<FieldDto>> getFormFields(@PathVariable Long id,
+                                                        @PathVariable int revisionNo){
+        FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
+        List<FieldDto> fields = formService.getFieldsByFck(fck);
+        return ResponseEntity.ok(fields);
     }
 }

@@ -27,5 +27,7 @@ public class FormResponseDto {
     @JsonProperty("authorizedAccounts")
     private List<AccountDto> authorizedAccounts;
 
+    @JsonProperty("fields")
+    private List<FieldDto> fields;
 
 }
