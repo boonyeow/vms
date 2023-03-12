@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -35,6 +36,13 @@ public class FormSubmission {
             @JoinColumn(name = "form_revision_no", referencedColumnName = "revisionNo", updatable = false, nullable = false)
     })
     private Form form;
+
+    @ElementCollection
+    @CollectionTable(name = "form_submission_field_response",
+            joinColumns = {@JoinColumn(name = "form_submission_id")})
+    @MapKeyColumn(name = "field_id")
+    @Column(name = "response")
+    private Map<Long, String> fieldResponses;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

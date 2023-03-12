@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,10 +22,10 @@ public class FormSubmissionResponseDto {
     @JsonProperty("id")
     private Long id;
 
-    @JsonProperty("workflow_id")
+    @JsonProperty("workflow")
     private FormSubmissionWorkflowDto workflow;
 
-    @JsonProperty("fck")
+    @JsonProperty("form")
     private FormSubmissionFormDto form;
 
     @JsonProperty("status")
@@ -31,4 +33,7 @@ public class FormSubmissionResponseDto {
 
     @JsonProperty("submittedBy")
     private AccountDto submittedBy;
+
+    @JsonProperty("fieldResponses")
+    private Map<Long, String> fieldResponses;
 }

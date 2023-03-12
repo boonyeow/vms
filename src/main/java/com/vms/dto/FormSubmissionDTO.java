@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -23,5 +24,7 @@ public class FormSubmissionDto {
     @JsonProperty("submittedBy")
     private Long accountId;
 
+    @JsonProperty("fieldResponses")
+    private Map<Long, String> fieldResponses;
 
 }

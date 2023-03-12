@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FormSubmissionService {
@@ -31,7 +33,10 @@ public class FormSubmissionService {
         Form form = formService.getFormByFck(request.getFck());
         Account account = accountService.getAccountById(request.getAccountId());
         AccountType accountType = account.getAccountType();
+        // Might want to check Field exists in Form before creating Form Submission - Extra check though if added
+        Map<Long, String> fieldResponses = request.getFieldResponses();
         StatusType status;
+
         if (accountType == AccountType.VENDOR) {
             status = StatusType.AWAITING_ADMIN;
         } else if (accountType == AccountType.ADMIN){
@@ -45,6 +50,7 @@ public class FormSubmissionService {
                 .form(form)
                 .status(status)
                 .submittedBy(account)
+                .fieldResponses(fieldResponses)
                 .build();
 
         formSubmissionRepository.save(formSubmission);
@@ -122,6 +128,7 @@ public class FormSubmissionService {
                     .form(formSubmissionFormDto)
                     .status(formSubmission.getStatus())
                     .submittedBy(accountDto)
+                    .fieldResponses(formSubmission.getFieldResponses())
                     .build();
             fsrDtoList.add(fsr);
         }
