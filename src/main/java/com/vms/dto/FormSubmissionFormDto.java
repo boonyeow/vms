@@ -23,4 +23,7 @@ public class FormSubmissionFormDto {
 
     @JsonProperty("isFinal")
     private boolean isFinal;
+
+    @JsonProperty("fields")
+    private List<FormSubmissionFieldDto> fields;
 }

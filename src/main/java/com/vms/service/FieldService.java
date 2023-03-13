@@ -130,7 +130,7 @@ public class FieldService {
                 .build();
     }
 
-    private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
+    public Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
         Map<String, Long> nextFieldsId = new HashMap<>();
         for(Map.Entry<String, Field> entry : nextFieldsMap.entrySet()){
             nextFieldsId.put(entry.getKey(), entry.getValue().getId());

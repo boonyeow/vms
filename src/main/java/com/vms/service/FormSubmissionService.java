@@ -1,10 +1,7 @@
 package com.vms.service;
 
 import com.vms.dto.*;
-import com.vms.model.Account;
-import com.vms.model.Form;
-import com.vms.model.FormSubmission;
-import com.vms.model.Workflow;
+import com.vms.model.*;
 import com.vms.model.enums.AccountType;
 import com.vms.model.enums.StatusType;
 import com.vms.model.keys.FormCompositeKey;
@@ -27,6 +24,8 @@ public class FormSubmissionService {
     private WorkflowService workflowService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private FieldService fieldService;
 
     public void createFormSubmission(FormSubmissionDto request) {
         Workflow workflow = workflowService.getWorkflowById(request.getWorkflowId());
@@ -63,33 +62,21 @@ public class FormSubmissionService {
     }
 
     public List<FormSubmissionResponseDto> getFormSubmissionsByWorkflowAndForm(Long workflowId, FormCompositeKey fck) {
-        return generateFsrDto(workflowId, fck);
+        Workflow workflow = workflowService.getWorkflowById(workflowId);
+        Form form = formService.getFormByFck(fck);
+        return generateFsrDto(formSubmissionRepository.findByWorkflowAndForm(workflow, form));
     }
 
     public List<FormSubmissionResponseDto> getFormSubmissionsByStatus(StatusType status) {
-        return generateFsrDto(status);
+        return generateFsrDto(formSubmissionRepository.findByStatus(status));
     }
 
     public List<FormSubmissionResponseDto> getFormSubmissionsBySubmitter(Long accountId) {
-        return generateFsrDto(accountId);
-    }
-
-    private List<FormSubmissionResponseDto> generateFsrDto(Long workflowId, FormCompositeKey fck) {
-        Workflow workflow = workflowService.getWorkflowById(workflowId);
-        Form form = formService.getFormByFck(fck);
-        return generate(formSubmissionRepository.findByWorkflowAndForm(workflow, form));
-    }
-
-    private List<FormSubmissionResponseDto> generateFsrDto(StatusType status) {
-        return generate(formSubmissionRepository.findByStatus(status));
-    }
-
-    private List<FormSubmissionResponseDto> generateFsrDto(Long accountId) {
         Account account = accountService.getAccountById(accountId);
-        return generate(formSubmissionRepository.findBySubmittedBy(account));
+        return generateFsrDto(formSubmissionRepository.findBySubmittedBy(account));
     }
 
-    private List<FormSubmissionResponseDto> generate(List<FormSubmission> formSubmissions){
+    private List<FormSubmissionResponseDto> generateFsrDto(List<FormSubmission> formSubmissions){
         List<FormSubmissionResponseDto> fsrDtoList = new ArrayList<>();
 
         for (FormSubmission formSubmission : formSubmissions) {
@@ -106,11 +93,28 @@ public class FormSubmissionService {
 
             // Form Response Dto
             Form form = formSubmission.getForm();
+
+            // Field Response Dto for Form Response Dto
+            List<Field> fields = form.getFields();
+            List<FormSubmissionFieldDto> formSubmissionFieldDtoList = new ArrayList<>();
+            for (Field field: fields) {
+                FormSubmissionFieldDto formSubmissionFieldDto = FormSubmissionFieldDto.builder()
+                        .id(field.getId())
+                        .name(field.getName())
+                        .label(field.getLabel())
+                        .helpText(field.getHelpText())
+                        .options(field.getOptions())
+                        .nextFieldsId(fieldService.getNextFieldsIdFromMap(field.getNextFields()))
+                        .build();
+                formSubmissionFieldDtoList.add(formSubmissionFieldDto);
+            }
+
             FormSubmissionFormDto formSubmissionFormDto = FormSubmissionFormDto.builder()
                     .id(form.getId())
                     .name(form.getName())
                     .description(form.getDescription())
                     .isFinal(form.isFinal())
+                    .fields(formSubmissionFieldDtoList)
                     .build();
 
             // Account Dto
