@@ -27,6 +27,35 @@ public class FieldService {
     private RegexService regexService;
 
     public void createField(FieldRequestDto request, Form form){
+        // save the created field id and pass it into FieldDto to create the current field
+        Map<String, Field> nextFields = null;
+        if(request.getNextFields() != null){
+            nextFields = new HashMap<>();
+            for(String option : request.getNextFields().keySet()){
+                FieldRequestDto nextField = request.getNextFields().get(option);
+                // save the created field id and pass it into FieldDto to create the current field
+                if (nextField.getFieldType() != FieldType.TEXTBOX && nextField.getOptions() != null && nextField.getNextFields() != null){
+                    throw new RuntimeException("Recursive structure found");
+                }
+                // create and save next field here
+                Field newField = Field.builder()
+                        .name(nextField.getName())
+                        .label(nextField.getLabel())
+                        .helpText(nextField.getHelpText())
+                        .isRequired(nextField.getIsRequired())
+                        .fieldType(nextField.getFieldType())
+                        .form(form)
+                        .build();
+
+                if(nextField.getFieldType().equals(FieldType.TEXTBOX)){
+                    Regex regex = regexService.getRegexById(nextField.getRegexId());
+                    newField.setRegex(regex);
+                }
+                fieldRepository.save(newField);
+                nextFields.put(option, newField);
+            }
+        }
+
         Field field = Field.builder()
                 .name(request.getName())
                 .label(request.getLabel())
@@ -34,7 +63,7 @@ public class FieldService {
                 .isRequired(request.getIsRequired())
                 .fieldType(request.getFieldType())
                 .options(request.getOptions())
-//                .nextFields(request.getNextFields())
+                .nextFields(nextFields)
                 .form(form)
                 .build();
 
@@ -67,16 +96,16 @@ public class FieldService {
         fieldRepository.delete(field);
     }
 
-    public List<FieldDto> getAllFieldsDto(){
+    public List<FieldRequestDto> getAllFieldsDto(){
         Iterable<Field> fields = fieldRepository.findAll();
-        List<FieldDto> fieldDtos = new ArrayList<>();
+        List<FieldRequestDto> fieldDtos = new ArrayList<>();
         for(Field field : fields){
             fieldDtos.add(convertToDto(field));
         }
         return fieldDtos;
     }
 
-    public FieldDto getFieldDtoById(Long id){
+    public FieldRequestDto getFieldDtoById(Long id){
         Field field = fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
         return convertToDto(field);
@@ -87,16 +116,17 @@ public class FieldService {
                 .orElseThrow(() -> new RuntimeException("Field not found"));
     }
 
-    private FieldDto convertToDto(Field field){
-        return FieldDto.builder()
+    private FieldRequestDto convertToDto(Field field){
+        return FieldRequestDto.builder()
                 .name(field.getName())
                 .label(field.getLabel())
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
                 .options(field.getOptions())
-//                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
-                .formId(field.getForm().getId())
+                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
+                .regexId(field.getRegex().getId())
+                .formCompositeKey(field.getForm().getId())
                 .build();
     }
 

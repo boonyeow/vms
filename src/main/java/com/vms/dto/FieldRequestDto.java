@@ -21,9 +21,14 @@ public class FieldRequestDto {
     private String helpText;
     private Boolean isRequired;
     private FieldType fieldType;
-
     @Nullable
     private Long regexId;
     @Nullable
+    private Map<String, FieldRequestDto> nextFields;
+    @Nullable
     private List<String> options;
+    @Nullable
+    private Map<String, Long> nextFieldsId;
+    @Nullable
+    private FormCompositeKey formCompositeKey;
 }

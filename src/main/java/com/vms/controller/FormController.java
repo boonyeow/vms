@@ -1,6 +1,7 @@
 package com.vms.controller;
 
 import com.vms.dto.FieldDto;
+import com.vms.dto.FieldRequestDto;
 import com.vms.dto.FormResponseDto;
 import com.vms.dto.FormDto;
 import com.vms.model.Field;
@@ -73,10 +74,10 @@ public class FormController {
     }
 
     @GetMapping("/{id}/{revisionNo}/fields")
-    public ResponseEntity<List<FieldDto>> getFormFields(@PathVariable Long id,
+    public ResponseEntity<List<FieldRequestDto>> getFormFields(@PathVariable Long id,
                                                         @PathVariable int revisionNo){
         FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
-        List<FieldDto> fields = formService.getFieldsByFck(fck);
+        List<FieldRequestDto> fields = formService.getFieldsByFck(fck);
         return ResponseEntity.ok(fields);
     }
 }

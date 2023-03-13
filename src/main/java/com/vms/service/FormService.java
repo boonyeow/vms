@@ -1,9 +1,6 @@
 package com.vms.service;
 
-import com.vms.dto.AccountDto;
-import com.vms.dto.FieldDto;
-import com.vms.dto.FormDto;
-import com.vms.dto.FormResponseDto;
+import com.vms.dto.*;
 import com.vms.model.Account;
 import com.vms.model.Field;
 import com.vms.model.Form;
@@ -142,26 +139,27 @@ public class FormService {
                 );
     }
 
-    public List<FieldDto> getFieldsByFck(FormCompositeKey fck){
+    public List<FieldRequestDto> getFieldsByFck(FormCompositeKey fck){
         Form form = getFormByFck(fck);
         List<Field> fields = form.getFields();
-        List<FieldDto> fieldDtos = new ArrayList<>();
+        List<FieldRequestDto> fieldDtos = new ArrayList<>();
         for (Field field: fields){
-            FieldDto fieldDto = convertToDto(field);
+            FieldRequestDto fieldDto = convertToDto(field);
             fieldDtos.add(fieldDto);
         }
         return fieldDtos;
     }
-    private FieldDto convertToDto(Field field){
-        return FieldDto.builder()
+    private FieldRequestDto convertToDto(Field field){
+        return FieldRequestDto.builder()
                 .name(field.getName())
                 .label(field.getLabel())
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
                 .options(field.getOptions())
-//                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
-                .formId(field.getForm().getId())
+                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
+                .regexId(field.getRegex().getId())
+                .formCompositeKey(field.getForm().getId())
                 .build();
     }
     private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
