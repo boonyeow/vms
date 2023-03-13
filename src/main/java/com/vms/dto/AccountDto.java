@@ -11,6 +11,7 @@ public class AccountDto {
     private Long id;
     private String name;
     private String email;
+    private String company;
     private AccountType accountType;
 //    private List<FormSubmissionDTO> formsubmissions;
 }

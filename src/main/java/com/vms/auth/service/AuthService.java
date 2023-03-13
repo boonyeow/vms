@@ -27,6 +27,7 @@ public class AuthService {
         Account account = Account.builder()
                 .name(request.getName())
                 .email(request.getEmail())
+                .company(request.getCompany())
                 .password(passwordEncoder.encode(request.getPassword())) // saves encrypted value of password
                 .accountType(request.getAccountType())
                 .build();
@@ -34,7 +35,7 @@ public class AuthService {
 
         String jwt = jwtService.generateToken(account);
         saveAccountToken(account, jwt);
-        return JwtDto.builder().token(jwt).build();
+        return JwtDto.builder().token(jwt).email(account.getEmail()).accountType(account.getAccountType()).build();
     }
 
     public JwtDto authenticate(AuthDto request){
@@ -51,7 +52,7 @@ public class AuthService {
         // Revoke all existing tokens before saving-- ensures only one valid jwt
         revokeAllAccountTokens(account);
         saveAccountToken(account, jwt);
-        return JwtDto.builder().token(jwt).build();
+        return JwtDto.builder().token(jwt).email(account.getEmail()).accountType(account.getAccountType()).build();
     }
 
     private void saveAccountToken(Account account, String jwt){

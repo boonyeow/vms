@@ -27,6 +27,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                     .name("admin")
                     .email("admin@kmail.com")
                     .password(passwordEncoder.encode("blopblopblop"))
+                    .company("HELLOOOOOOOOO")
                     .accountType(AccountType.ADMIN)
                     .build();
             accountRepository.save(account);

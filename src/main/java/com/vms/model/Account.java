@@ -32,6 +32,9 @@ public class Account implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String company;
+
     @Enumerated(EnumType.STRING)
     @Column(name="account_type", nullable = false)
     private AccountType accountType;

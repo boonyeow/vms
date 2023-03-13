@@ -30,6 +30,7 @@ public class AccountService {
                     .id(account.getId())
                     .name(account.getName())
                     .email(account.getEmail())
+                    .company(account.getCompany())
                     .accountType(account.getAccountType())
                     .build()
             );
@@ -37,4 +38,30 @@ public class AccountService {
         return accountDtoList;
     }
 
+    public List<AccountDto> getAccountDtoList(Iterable<Account> accounts) {
+        List<AccountDto> accountDtoList = new ArrayList<>();
+        accounts.forEach(account -> {
+            accountDtoList.add(AccountDto.builder()
+                    .id(account.getId())
+                    .name(account.getName())
+                    .email(account.getEmail())
+                    .company(account.getCompany())
+                    .accountType(account.getAccountType())
+                    .build()
+            );
+        });
+        return accountDtoList;
+    }
+
+    public List<AccountDto> getAllAccountDtoList(){
+        return getAccountDtoList(accountRepository.findAll());
+    }
+
+    public void updateAccount(AccountDto request){
+        Account account = getAccountById(request.getId());
+        account.setName(request.getName());
+        account.setEmail(request.getEmail());
+        account.setCompany(request.getCompany());
+        accountRepository.save(account);
+    }
 }

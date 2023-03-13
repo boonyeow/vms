@@ -27,12 +27,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
+                .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests(
                         (requests)  -> requests
                                 .requestMatchers( "/api/auth/authenticate").permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                                .requestMatchers( "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**", "/api/workflows", "/api/workflows/**", "/api/email", "/api/email/**", "/api/formsubmission", "/api/formsubmission/**", "/api/fields", "/api/fields/**").hasAuthority(AccountType.ADMIN.name())
+                                .requestMatchers( "/api/accounts", "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**", "/api/workflows", "/api/workflows/**", "/api/email", "/api/email/**", "/api/formsubmission", "/api/formsubmission/**", "/api/fields", "/api/fields/**").hasAuthority(AccountType.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET,"/api/patterns").hasAnyAuthority(AccountType.VENDOR.name(), AccountType.APPROVER.name())
                                 .anyRequest().authenticated()
                 )

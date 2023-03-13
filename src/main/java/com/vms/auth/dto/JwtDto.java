@@ -1,4 +1,5 @@
 package com.vms.auth.dto;
+import com.vms.model.enums.AccountType;
 import lombok.*;
 
 @Data
@@ -7,4 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 public class JwtDto {
     private String token;
+    private String email;
+    private AccountType accountType;
 }
