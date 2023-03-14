@@ -35,16 +35,16 @@ public class FormController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createForm(){
-        formService.createForm();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<FormCompositeKey> createForm(){
+        FormCompositeKey fck = formService.createAndGetFck();
+        return ResponseEntity.ok(fck);
     }
 
     @PostMapping("/{id}/{revisionNo}/duplicate")
-    public ResponseEntity<Void> duplicateForm(@PathVariable Long id,
+    public ResponseEntity<FormCompositeKey> duplicateForm(@PathVariable Long id,
                                               @PathVariable int revisionNo){
-        formService.duplicateForm(new FormCompositeKey(id, revisionNo));
-        return ResponseEntity.ok().build();
+        FormCompositeKey fck = formService.duplicateAndGetFck(new FormCompositeKey(id, revisionNo));
+        return ResponseEntity.ok(fck);
     }
 
     @PutMapping("/{id}/{revisionNo}")

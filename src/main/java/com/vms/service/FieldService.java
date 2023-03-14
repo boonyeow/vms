@@ -26,7 +26,7 @@ public class FieldService {
     @Autowired
     private RegexService regexService;
 
-    public void createField(FieldRequestDto request, Form form){
+    public Field createField(FieldRequestDto request, Form form){
         // save the created field id and pass it into FieldDto to create the current field
         Map<String, Field> nextFields = null;
         if(request.getNextFields() != null){
@@ -73,6 +73,7 @@ public class FieldService {
         }
 
         fieldRepository.save(field);
+        return field;
     }
 
     private Map<String, Field> getNextFieldsFromDto(Map<String, Long> nextFieldsId) {
