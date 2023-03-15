@@ -22,9 +22,7 @@ public class Field{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-    private String label;
     private Boolean isRequired;
     private String helpText;
 
@@ -41,7 +39,7 @@ public class Field{
     @OneToMany(cascade = CascadeType.ALL)
     @Nullable
     @MapKey(name = "name")
-    @JoinColumn(name = "next_field_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "next_field_id_fk"))
+    @JoinColumn(name = "parent_field_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "next_field_id_fk"))
     private Map<String, Field> nextFields;
 
     @ManyToOne
@@ -51,18 +49,8 @@ public class Field{
     })
     private Form form;
 
-//    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, Form form) {
-//        this.name = name;
-//        this.label = label;
-//        this.isRequired = isRequired;
-//        this.helpText = helpText;
-//        this.fieldType = fieldType;
-//        this.form = form;
-//    }
-
-    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, Form form, Regex regex) {
+    public Field(String name, Boolean isRequired, String helpText, FieldType fieldType, Form form, Regex regex) {
         this.name = name;
-        this.label = label;
         this.isRequired = isRequired;
         this.helpText = helpText;
         this.fieldType = fieldType;
@@ -70,9 +58,8 @@ public class Field{
         this.regex = regex;
     }
 
-    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, ArrayList<String> options, Form form) {
+    public Field(String name, Boolean isRequired, String helpText, FieldType fieldType, ArrayList<String> options, Form form) {
         this.name = name;
-        this.label = label;
         this.isRequired = isRequired;
         this.helpText = helpText;
         this.fieldType = fieldType;
@@ -80,9 +67,8 @@ public class Field{
         this.form = form;
     }
 
-    public Field(String name, String label, Boolean isRequired, String helpText, FieldType fieldType, ArrayList<String> options, Map<String, Field> nextFields, Form form, Regex regex) {
+    public Field(String name, Boolean isRequired, String helpText, FieldType fieldType, ArrayList<String> options, Map<String, Field> nextFields, Form form, Regex regex) {
         this.name = name;
-        this.label = label;
         this.isRequired = isRequired;
         this.helpText = helpText;
         this.fieldType = fieldType;

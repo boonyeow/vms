@@ -1,7 +1,7 @@
 package com.vms.service;
 
-import com.vms.dto.FieldDto;
 import com.vms.dto.FieldRequestDto;
+import com.vms.dto.FieldResponseDto;
 import com.vms.model.Field;
 import com.vms.model.Form;
 import com.vms.model.Regex;
@@ -40,7 +40,6 @@ public class FieldService {
                 // create and save next field here
                 Field newField = Field.builder()
                         .name(nextField.getName())
-                        .label(nextField.getLabel())
                         .helpText(nextField.getHelpText())
                         .isRequired(nextField.getIsRequired())
                         .fieldType(nextField.getFieldType())
@@ -58,7 +57,6 @@ public class FieldService {
 
         Field field = Field.builder()
                 .name(request.getName())
-                .label(request.getLabel())
                 .helpText(request.getHelpText())
                 .isRequired(request.getIsRequired())
                 .fieldType(request.getFieldType())
@@ -97,16 +95,16 @@ public class FieldService {
         fieldRepository.delete(field);
     }
 
-    public List<FieldRequestDto> getAllFieldsDto(){
+    public List<FieldResponseDto> getAllFieldsDto(){
         Iterable<Field> fields = fieldRepository.findAll();
-        List<FieldRequestDto> fieldDtos = new ArrayList<>();
+        List<FieldResponseDto> fieldRequestDtos = new ArrayList<>();
         for(Field field : fields){
-            fieldDtos.add(convertToDto(field));
+            fieldRequestDtos.add(convertToDto(field));
         }
-        return fieldDtos;
+        return fieldRequestDtos;
     }
 
-    public FieldRequestDto getFieldDtoById(Long id){
+    public FieldResponseDto getFieldDtoById(Long id){
         Field field = fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
         return convertToDto(field);
@@ -117,21 +115,19 @@ public class FieldService {
                 .orElseThrow(() -> new RuntimeException("Field not found"));
     }
 
-    private FieldRequestDto convertToDto(Field field){
-        return FieldRequestDto.builder()
+    private FieldResponseDto convertToDto(Field field){
+        return FieldResponseDto.builder()
                 .name(field.getName())
-                .label(field.getLabel())
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
                 .options(field.getOptions())
                 .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
-                .regexId(field.getRegex().getId())
+                .regexId(field.getRegex() == null ? null : field.getRegex().getId())
                 .formCompositeKey(field.getForm().getId())
                 .build();
     }
-
-    public Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
+    private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
         Map<String, Long> nextFieldsId = new HashMap<>();
         for(Map.Entry<String, Field> entry : nextFieldsMap.entrySet()){
             nextFieldsId.put(entry.getKey(), entry.getValue().getId());

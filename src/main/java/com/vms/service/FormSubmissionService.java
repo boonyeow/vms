@@ -101,10 +101,9 @@ public class FormSubmissionService {
                 FormSubmissionFieldDto formSubmissionFieldDto = FormSubmissionFieldDto.builder()
                         .id(field.getId())
                         .name(field.getName())
-                        .label(field.getLabel())
                         .helpText(field.getHelpText())
                         .options(field.getOptions())
-                        .nextFieldsId(fieldService.getNextFieldsIdFromMap(field.getNextFields()))
+                        .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
                         .build();
                 formSubmissionFieldDtoList.add(formSubmissionFieldDto);
             }
@@ -141,5 +140,13 @@ public class FormSubmissionService {
 
     public FormSubmission getFormSubmissionById(Long id){
         return formSubmissionRepository.findById(id).orElseThrow(() -> new RuntimeException("Form submission not found"));
+    }
+
+    private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
+        Map<String, Long> nextFieldsId = new HashMap<>();
+        for(Map.Entry<String, Field> entry : nextFieldsMap.entrySet()){
+            nextFieldsId.put(entry.getKey(), entry.getValue().getId());
+        }
+        return nextFieldsId;
     }
 }

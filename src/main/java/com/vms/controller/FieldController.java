@@ -1,7 +1,7 @@
 package com.vms.controller;
 
-import com.vms.dto.FieldDto;
 import com.vms.dto.FieldRequestDto;
+import com.vms.dto.FieldResponseDto;
 import com.vms.model.Field;
 import com.vms.model.Form;
 import com.vms.model.keys.FormCompositeKey;
@@ -45,15 +45,15 @@ public class FieldController {
     }
 
     @GetMapping("/dto")
-    public ResponseEntity<List<FieldRequestDto>> getAllFieldsDto() {
-        List<FieldRequestDto> fields = fieldService.getAllFieldsDto();
-        return ResponseEntity.ok(fields);
+    public ResponseEntity<List<FieldResponseDto>> getAllFieldsDto() {
+        List<FieldResponseDto> fieldResponseDtos = fieldService.getAllFieldsDto();
+        return ResponseEntity.ok(fieldResponseDtos);
     }
 
     @GetMapping("/dto/{id}")
-    public ResponseEntity<FieldRequestDto> getFieldDtoById(@PathVariable Long id) {
-        FieldRequestDto field = fieldService.getFieldDtoById(id);
-        return ResponseEntity.ok(field);
+    public ResponseEntity<FieldResponseDto> getFieldDtoById(@PathVariable Long id) {
+        FieldResponseDto fieldResponseDto = fieldService.getFieldDtoById(id);
+        return ResponseEntity.ok(fieldResponseDto);
     }
 
 }

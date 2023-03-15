@@ -28,6 +28,6 @@ public class FormResponseDto {
     private List<AccountDto> authorizedAccounts;
 
     @JsonProperty("fields")
-    private List<FieldDto> fields;
+    private List<FieldResponseDto> fields;
 
 }

@@ -1,10 +1,8 @@
 package com.vms.controller;
 
-import com.vms.dto.FieldDto;
-import com.vms.dto.FieldRequestDto;
+import com.vms.dto.FieldResponseDto;
 import com.vms.dto.FormResponseDto;
 import com.vms.dto.FormDto;
-import com.vms.model.Field;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.service.FormService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,10 +72,10 @@ public class FormController {
     }
 
     @GetMapping("/{id}/{revisionNo}/fields")
-    public ResponseEntity<List<FieldRequestDto>> getFormFields(@PathVariable Long id,
+    public ResponseEntity<List<FieldResponseDto>> getFormFields(@PathVariable Long id,
                                                         @PathVariable int revisionNo){
         FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
-        List<FieldRequestDto> fields = formService.getFieldsByFck(fck);
-        return ResponseEntity.ok(fields);
+        List<FieldResponseDto> fieldsResponseDtos = formService.getFieldsByFck(fck);
+        return ResponseEntity.ok(fieldsResponseDtos);
     }
 }

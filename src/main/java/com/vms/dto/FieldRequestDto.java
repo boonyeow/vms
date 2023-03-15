@@ -17,7 +17,6 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FieldRequestDto {
     private String name;
-    private String label;
     private String helpText;
     private Boolean isRequired;
     private FieldType fieldType;
@@ -32,3 +31,4 @@ public class FieldRequestDto {
     @Nullable
     private FormCompositeKey formCompositeKey;
 }
+

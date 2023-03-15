@@ -153,26 +153,25 @@ public class FormService {
                 );
     }
 
-    public List<FieldRequestDto> getFieldsByFck(FormCompositeKey fck){
+    public List<FieldResponseDto> getFieldsByFck(FormCompositeKey fck){
         Form form = getFormByFck(fck);
         List<Field> fields = form.getFields();
-        List<FieldRequestDto> fieldDtos = new ArrayList<>();
+        List<FieldResponseDto> fieldResponseDtos = new ArrayList<>();
         for (Field field: fields){
-            FieldRequestDto fieldDto = convertToDto(field);
-            fieldDtos.add(fieldDto);
+            FieldResponseDto fieldResponseDto = convertToDto(field);
+            fieldResponseDtos.add(fieldResponseDto);
         }
-        return fieldDtos;
+        return fieldResponseDtos;
     }
-    private FieldRequestDto convertToDto(Field field){
-        return FieldRequestDto.builder()
+    private FieldResponseDto convertToDto(Field field){
+        return FieldResponseDto.builder()
                 .name(field.getName())
-                .label(field.getLabel())
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
                 .options(field.getOptions())
                 .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
-                .regexId(field.getRegex().getId())
+                .regexId(field.getRegex() == null ? null : field.getRegex().getId())
                 .formCompositeKey(field.getForm().getId())
                 .build();
     }
