@@ -27,32 +27,45 @@ public class FieldService {
     private RegexService regexService;
 
     public Field createField(FieldRequestDto request, Form form){
-        // save the created field id and pass it into FieldDto to create the current field
-        Map<String, Field> nextFields = null;
-        if(request.getNextFields() != null){
-            nextFields = new HashMap<>();
-            for(String option : request.getNextFields().keySet()){
-                FieldRequestDto nextField = request.getNextFields().get(option);
-                // save the created field id and pass it into FieldDto to create the current field
-                if (nextField.getFieldType() != FieldType.TEXTBOX && nextField.getOptions() != null && nextField.getNextFields() != null){
-                    throw new RuntimeException("Recursive structure found");
-                }
-                // create and save next field here
-                Field newField = Field.builder()
-                        .name(nextField.getName())
-                        .helpText(nextField.getHelpText())
-                        .isRequired(nextField.getIsRequired())
-                        .fieldType(nextField.getFieldType())
-                        .form(form)
-                        .build();
+        if(request.getOptionsWithNextFields() != null){
+            Field field = Field.builder()
+                    .name(request.getName())
+                    .helpText(request.getHelpText())
+                    .isRequired(request.getIsRequired())
+                    .fieldType(request.getFieldType())
+                    .form(form)
+                    .build();
 
-                if(nextField.getFieldType().equals(FieldType.TEXTBOX)){
-                    Regex regex = regexService.getRegexById(nextField.getRegexId());
-                    newField.setRegex(regex);
+            Map<String, Field> nextFields = null;
+            // check if options are not null
+            if(request.getOptionsWithNextFields().get(request.getOptionsWithNextFields().keySet().iterator().next()).getFieldType() == FieldType.TEXTBOX){
+                nextFields = new HashMap<>();
+                for(String option : request.getOptionsWithNextFields().keySet()){
+                    FieldRequestDto nextField = request.getOptionsWithNextFields().get(option);
+                    Field newField = createField(nextField, form);
+                    nextFields.put(option, newField);
                 }
-                fieldRepository.save(newField);
-                nextFields.put(option, newField);
             }
+            else{
+                nextFields = new HashMap<>();
+                for(String option : request.getOptionsWithNextFields().keySet()) {
+                    FieldRequestDto nextField = request.getOptionsWithNextFields().get(option);
+                    Field innerField = Field.builder()
+                            .name(nextField.getName())
+                            .helpText(nextField.getHelpText())
+                            .isRequired(nextField.getIsRequired())
+                            .fieldType(nextField.getFieldType())
+                            .form(form)
+                            .build();
+                    innerField.setOptionsWithNextFields(FieldDtotoField(nextField.getOptionsWithNextFields()));
+                    fieldRepository.save(innerField);
+                    nextFields.put(option, innerField);
+                }
+            }
+
+            field.setOptionsWithNextFields(nextFields);
+            fieldRepository.save(field);
+            return field;
         }
 
         Field field = Field.builder()
@@ -60,8 +73,6 @@ public class FieldService {
                 .helpText(request.getHelpText())
                 .isRequired(request.getIsRequired())
                 .fieldType(request.getFieldType())
-                .options(request.getOptions())
-                .nextFields(nextFields)
                 .form(form)
                 .build();
 
@@ -72,6 +83,16 @@ public class FieldService {
 
         fieldRepository.save(field);
         return field;
+    }
+
+    private Map<String, Field> FieldDtotoField(Map<String, FieldRequestDto> optionsWithNextFields) {
+        Map<String, Field> nextFieldsMap = new HashMap<>();
+        if (optionsWithNextFields != null){
+            for(String option : optionsWithNextFields.keySet()){
+                nextFieldsMap.put(option, null);
+            }
+        }
+        return nextFieldsMap;
     }
 
     private Map<String, Field> getNextFieldsFromDto(Map<String, Long> nextFieldsId) {
@@ -121,16 +142,18 @@ public class FieldService {
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
-                .options(field.getOptions())
-                .nextFieldsId(getNextFieldsIdFromMap(field.getNextFields()))
+                .nextFieldsId(getNextFieldsIdFromMap(field.getOptionsWithNextFields()))
                 .regexId(field.getRegex() == null ? null : field.getRegex().getId())
                 .formCompositeKey(field.getForm().getId())
                 .build();
     }
     private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
         Map<String, Long> nextFieldsId = new HashMap<>();
-        for(Map.Entry<String, Field> entry : nextFieldsMap.entrySet()){
-            nextFieldsId.put(entry.getKey(), entry.getValue().getId());
+        for (String option : nextFieldsMap.keySet()){
+            Field nextField = nextFieldsMap.get(option);
+            if(nextField != null){
+                nextFieldsId.put(option, nextField.getId());
+            }
         }
         return nextFieldsId;
     }
