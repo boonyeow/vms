@@ -41,14 +41,28 @@ public class FieldService {
             if(request.getOptionsWithNextFields().get(request.getOptionsWithNextFields().keySet().iterator().next()).getFieldType() == FieldType.TEXTBOX){
                 nextFields = new HashMap<>();
                 for(String option : request.getOptionsWithNextFields().keySet()){
+                    System.out.println(option);
                     FieldRequestDto nextField = request.getOptionsWithNextFields().get(option);
-                    Field newField = createField(nextField, form);
-                    nextFields.put(option, newField);
+                    Field innerField = Field.builder()
+                            .name(nextField.getName())
+                            .helpText(nextField.getHelpText())
+                            .isRequired(nextField.getIsRequired())
+                            .fieldType(nextField.getFieldType())
+                            .form(form)
+                            .build();
+
+                    if(nextField.getFieldType().equals(FieldType.TEXTBOX)){
+                        Regex regex = regexService.getRegexById(nextField.getRegexId());
+                        innerField.setRegex(regex);
+                    }
+                    fieldRepository.save(innerField);
+                    nextFields.put(option, innerField);
                 }
             }
             else{
                 nextFields = new HashMap<>();
                 for(String option : request.getOptionsWithNextFields().keySet()) {
+                    System.out.println(option);
                     FieldRequestDto nextField = request.getOptionsWithNextFields().get(option);
                     Field innerField = Field.builder()
                             .name(nextField.getName())
@@ -87,10 +101,8 @@ public class FieldService {
 
     private Map<String, Field> FieldDtotoField(Map<String, FieldRequestDto> optionsWithNextFields) {
         Map<String, Field> nextFieldsMap = new HashMap<>();
-        if (optionsWithNextFields != null){
-            for(String option : optionsWithNextFields.keySet()){
-                nextFieldsMap.put(option, null);
-            }
+        for(String option : optionsWithNextFields.keySet()){
+            nextFieldsMap.put(option, null);
         }
         return nextFieldsMap;
     }
@@ -150,6 +162,7 @@ public class FieldService {
     private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
         Map<String, Long> nextFieldsId = new HashMap<>();
         for (String option : nextFieldsMap.keySet()){
+            System.out.println(option);
             Field nextField = nextFieldsMap.get(option);
             if(nextField != null){
                 nextFieldsId.put(option, nextField.getId());
