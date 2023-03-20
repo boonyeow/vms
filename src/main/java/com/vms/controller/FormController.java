@@ -25,6 +25,12 @@ public class FormController {
         return ResponseEntity.ok(forms);
     }
 
+    @GetMapping("/state")
+    public ResponseEntity<List<FormResponseDto>> getAllFormsByState(@RequestParam Boolean state){
+        List<FormResponseDto> forms = formService.getFormDtoByState(state);
+        return ResponseEntity.ok(forms);
+    }
+
     @GetMapping("/{id}/{revisionNo}")
     public ResponseEntity<FormResponseDto> getFormByID(@PathVariable Long id,
                                                        @PathVariable int revisionNo){
