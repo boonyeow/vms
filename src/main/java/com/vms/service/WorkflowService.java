@@ -100,6 +100,21 @@ public class WorkflowService {
                 .build();
     }
 
+public List<WorkflowResponseDto> getWorkflowDtoList(){
+    Iterable<Workflow> workflows = workflowRepository.findAll();
+    List<WorkflowResponseDto> temp = new ArrayList<>();
+    for(Workflow workflow : workflows){
+        temp.add(WorkflowResponseDto.builder()
+        .id(workflow.getId())
+        .name(workflow.getName())
+        .progress(workflow.getProgress())
+        .isFinal(workflow.isFinal())
+        .build());
+    }
+    return temp;
+}
+
+
     public Workflow getWorkflowById(Long id){
         return workflowRepository.findById(id).orElseThrow(() -> new RuntimeException("Workflow not found"));
     }
