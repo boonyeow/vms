@@ -8,12 +8,19 @@ import com.vms.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/workflows")
 public class WorkflowController {
     @Autowired
     private WorkflowService workflowService;
+
+    @GetMapping
+    public ResponseEntity<List<WorkflowResponseDto>> getAllWorkflows() {
+        return ResponseEntity.ok(workflowService.getWorkflowDtoList());
+    }
 
     @PostMapping
     public ResponseEntity<Void> createWorkflow() {

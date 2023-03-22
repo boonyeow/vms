@@ -136,6 +136,27 @@ public class FormService {
          return formResponses;
      }
 
+    public List<FormResponseDto> getFormDtoByState(Boolean state){
+        Iterable<Form> forms = formRepository.findFormByState(state);
+        List<FormResponseDto> formResponses = new ArrayList<>();
+        List<AccountDto> authorizedAccounts = new ArrayList<>();
+        for (Form form: forms){
+            List<AccountDto> accountDtoList = accountService.getAccountDtoList(form.getAuthorizedAccounts());
+            for (AccountDto accountDto: accountDtoList){
+                authorizedAccounts.add(accountDto);
+            }
+            FormResponseDto formResponseDto = FormResponseDto.builder()
+                    .id(form.getId())
+                    .name(form.getName())
+                    .description(form.getDescription())
+                    .isFinal(form.isFinal())
+                    .authorizedAccounts(authorizedAccounts)
+                    .build();
+            formResponses.add(formResponseDto);
+        }
+        return formResponses;
+    }
+
     public FormResponseDto getFormDtoByFck(FormCompositeKey fck){
         Form form = getFormByFck(fck);
         return FormResponseDto.builder()
