@@ -33,6 +33,10 @@ Authorization: Bearer {{auth_token}}
   "Option 3"]
 }
 
+### Get all forms dto
+GET http://localhost:8080/api/forms
+Authorization: Bearer {{auth_token}}
+
 ### Get all fields dto
 GET http://localhost:8080/api/fields/dto
 Authorization: Bearer {{auth_token}}

@@ -30,4 +30,6 @@ public class FormResponseDto {
     @JsonProperty("fields")
     private List<FieldResponseDto> fields;
 
+    @JsonProperty("workflows")
+    private List<Long> workflows;
 }
