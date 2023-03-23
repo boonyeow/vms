@@ -38,6 +38,14 @@ public class AccountService {
         return accountDtoList;
     }
 
+    public List<Long> getAccountIds(Iterable<Account> authorizedAccounts){
+        List<Long> accountIds = new ArrayList<>();
+        for(Account account: authorizedAccounts){
+            accountIds.add(account.getId());
+        }
+        return accountIds;
+    }
+
     public List<AccountDto> getAccountDtoList(Iterable<Account> accounts) {
         List<AccountDto> accountDtoList = new ArrayList<>();
         accounts.forEach(account -> {

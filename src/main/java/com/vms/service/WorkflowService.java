@@ -98,6 +98,7 @@ public class WorkflowService {
                 .isFinal(workflow.isFinal())
                 .forms(workflowForms)
                 .authorizedAccounts(accountService.getAccountDtoList(workflow.getAuthorizedAccounts()))
+                .authorizedAccountIds(accountService.getAccountIds(workflow.getAuthorizedAccounts()))
                 .approvalSequence(workflow.getApprovalSequence())
                 .build();
     }

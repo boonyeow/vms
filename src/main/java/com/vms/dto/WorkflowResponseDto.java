@@ -25,5 +25,7 @@ public class WorkflowResponseDto {
 
     private List<AccountDto> authorizedAccounts;
 
+    private List<Long> authorizedAccountIds;
+
     private List<Long> approvalSequence;
 }
