@@ -23,9 +23,9 @@ public class WorkflowController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createWorkflow() {
-        workflowService.createWorkflow();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Long> createWorkflow() {
+        Long workflowId= workflowService.createWorkflow();
+        return ResponseEntity.ok(workflowId);
     }
 
     @PostMapping("/{id}/authorizedAccount")
