@@ -36,7 +36,7 @@ public class WorkflowController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("{id}/authorizedAccount")
+    @DeleteMapping("/{id}/authorizedAccount")
     public ResponseEntity<Void> removeAuthorizedAccount(@PathVariable Long id,
                                                         @RequestParam Long accountId){
         workflowService.removeAuthorizedAccount(id, accountId);
