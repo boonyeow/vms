@@ -37,6 +37,26 @@ Authorization: Bearer {{auth_token}}
 GET http://localhost:8080/api/forms
 Authorization: Bearer {{auth_token}}
 
+
+### Get specific form dto
+GET http://localhost:8080/api/forms/0/1
+Authorization: Bearer {{auth_token}}
+
+### Update form
+PUT http://localhost:8080/api/forms/0/1?applyChanges=false
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name":"",
+  "description":"hello",
+  "isFinal":false,
+  "workflows":[],
+  "fields":[{"name":"","helpText":"","isRequired":true,"fieldType":"RADIOBUTTON","regexId":null}],
+  "authorizedAccountIds":[]
+}
+
+
 ### Get all fields dto
 GET http://localhost:8080/api/fields/dto
 Authorization: Bearer {{auth_token}}

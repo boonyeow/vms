@@ -1,6 +1,7 @@
 package com.vms.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.Nullable;
 import lombok.*;
 
 import java.util.List;
@@ -25,4 +26,8 @@ public class FormDto {
 
     @JsonProperty("fields")
     private List<FieldRequestDto> fields;
+
+    @JsonProperty("workflows")
+    @Nullable
+    private List<Long> workflows;
 }
