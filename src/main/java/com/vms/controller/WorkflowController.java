@@ -3,6 +3,7 @@ package com.vms.controller;
 import com.vms.dto.FormRequestDto;
 import com.vms.dto.WorkflowDto;
 import com.vms.dto.WorkflowResponseDto;
+import com.vms.model.Workflow;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class WorkflowController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("{id}/authorizedAccount")
+    @DeleteMapping("/{id}/authorizedAccount")
     public ResponseEntity<Void> removeAuthorizedAccount(@PathVariable Long id,
                                                         @RequestParam Long accountId){
         workflowService.removeAuthorizedAccount(id, accountId);
