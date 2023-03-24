@@ -23,7 +23,7 @@ public class FieldRequestDto {
     @Nullable
     private Long regexId;
     @Nullable
-    private Map<String, FieldRequestDto> optionsWithNextFields;
+    private Map<String, FieldRequestDto> options;
     @Nullable
     private Map<String, Long> nextFieldsId;
     @Nullable

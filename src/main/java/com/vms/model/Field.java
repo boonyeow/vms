@@ -48,7 +48,7 @@ public class Field{
     @Nullable
 //    @MapKey(name = "name")
     @JoinColumn(name = "parent_field_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "next_field_id_fk"))
-    private Map<String, Field> optionsWithNextFields;
+    private Map<String, Field> options;
 
     @ManyToOne
     @JoinColumns({
@@ -66,12 +66,12 @@ public class Field{
         this.regex = regex;
     }
 
-    public Field(String name, Boolean isRequired, String helpText, FieldType fieldType, Map<String, Field> optionsWithNextFields, Form form) {
+    public Field(String name, Boolean isRequired, String helpText, FieldType fieldType, Map<String, Field> options, Form form) {
         this.name = name;
         this.isRequired = isRequired;
         this.helpText = helpText;
         this.fieldType = fieldType;
-        this.optionsWithNextFields = optionsWithNextFields;
+        this.options = options;
         this.form = form;
     }
 }

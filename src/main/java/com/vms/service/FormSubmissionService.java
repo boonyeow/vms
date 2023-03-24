@@ -102,7 +102,7 @@ public class FormSubmissionService {
                         .id(field.getId())
                         .name(field.getName())
                         .helpText(field.getHelpText())
-                        .nextFieldsId(getNextFieldsIdFromMap(field.getOptionsWithNextFields()))
+                        .nextFieldsId(getNextFieldsIdFromMap(field.getOptions()))
                         .build();
                 formSubmissionFieldDtoList.add(formSubmissionFieldDto);
             }

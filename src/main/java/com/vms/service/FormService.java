@@ -206,7 +206,7 @@ public class FormService {
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
-                .nextFieldsId(getNextFieldsIdFromMap(field.getOptionsWithNextFields()))
+                .nextFieldsId(getNextFieldsIdFromMap(field.getOptions()))
                 .regexId(field.getRegex() == null ? null : field.getRegex().getId())
                 .formCompositeKey(field.getForm().getId())
                 .build();
