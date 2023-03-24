@@ -3,6 +3,7 @@ package com.vms.controller;
 import com.vms.dto.FormRequestDto;
 import com.vms.dto.WorkflowDto;
 import com.vms.dto.WorkflowResponseDto;
+import com.vms.model.Workflow;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,10 @@ public class WorkflowController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createWorkflow() {
-        workflowService.createWorkflow();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Long> createWorkflow() {
+        Long workflowId = workflowService.createWorkflow();
+
+        return ResponseEntity.ok(workflowId);
     }
 
     @PostMapping("/{id}/authorizedAccount")

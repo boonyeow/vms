@@ -26,7 +26,7 @@ public class WorkflowService {
     @Autowired
     private FormService formService;
 
-    public void createWorkflow(){
+    public Long createWorkflow(){
         Workflow workflow = Workflow.builder()
                 .name("Untitled Workflow")
                 .progress(0)
@@ -34,6 +34,7 @@ public class WorkflowService {
                 .approvalSequence(new ArrayList<>())
                 .build();
         workflowRepository.save(workflow);
+        return workflow.getId();
     }
 
 
