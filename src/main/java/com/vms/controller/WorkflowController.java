@@ -25,8 +25,7 @@ public class WorkflowController {
 
     @PostMapping
     public ResponseEntity<Long> createWorkflow() {
-        Long workflowId = workflowService.createWorkflow();
-
+        Long workflowId= workflowService.createWorkflow();
         return ResponseEntity.ok(workflowId);
     }
 

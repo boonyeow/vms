@@ -124,16 +124,27 @@ public class FormService {
              for (AccountDto accountDto: accountDtoList){
                 authorizedAccounts.add(accountDto);
              }
+             List<Long> workflowIds = getWorkflowIds(form.getWorkflows());
+
             FormResponseDto formResponseDto = FormResponseDto.builder()
                     .id(form.getId())
                     .name(form.getName())
                     .description(form.getDescription())
                     .isFinal(form.isFinal())
                     .authorizedAccounts(authorizedAccounts)
+                    .workflows(workflowIds)
                     .build();
              formResponses.add(formResponseDto);
          }
          return formResponses;
+     }
+
+     public List<Long> getWorkflowIds(Set<Workflow> workflows){
+         List<Long> workflowIds = new ArrayList<>();
+         for(Workflow workflow : workflows){
+             workflowIds.add(workflow.getId());
+         }
+         return workflowIds;
      }
 
     public List<FormResponseDto> getFormDtoByState(Boolean state){
@@ -145,12 +156,14 @@ public class FormService {
             for (AccountDto accountDto: accountDtoList){
                 authorizedAccounts.add(accountDto);
             }
+            List<Long> workflowIds = getWorkflowIds(form.getWorkflows());
             FormResponseDto formResponseDto = FormResponseDto.builder()
                     .id(form.getId())
                     .name(form.getName())
                     .description(form.getDescription())
                     .isFinal(form.isFinal())
                     .authorizedAccounts(authorizedAccounts)
+                    .workflows(workflowIds)
                     .build();
             formResponses.add(formResponseDto);
         }
@@ -159,12 +172,15 @@ public class FormService {
 
     public FormResponseDto getFormDtoByFck(FormCompositeKey fck){
         Form form = getFormByFck(fck);
+
+        List<Long> workflowIds = getWorkflowIds(form.getWorkflows());
         return FormResponseDto.builder()
                 .id(form.getId())
                 .name(form.getName())
                 .description(form.getDescription())
                 .isFinal(form.isFinal())
                 .authorizedAccounts(accountService.getAccountDtoList(form.getAuthorizedAccounts()))
+                .workflows(workflowIds)
                 .build();
     }
 
