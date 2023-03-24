@@ -228,4 +228,18 @@ public class FormService {
          Form form = duplicateForm(fck);
          return form.getId();
     }
+
+    public FormResponseDto getLatestForm(Long id){
+         Form form = formRepository.findLatestForm(id);
+         List<AccountDto> authorizedAccountDtoList = accountService.getAccountDtoList(form.getAuthorizedAccounts());
+         List<FieldResponseDto> fieldResponseDtoList = fieldService.getFieldResponseDtoList(form.getFields());
+         FormResponseDto frDto = FormResponseDto.builder()
+                 .name(form.getName())
+                 .description(form.getDescription())
+                 .isFinal(form.isFinal())
+                 .authorizedAccounts(authorizedAccountDtoList)
+                 .fields(fieldResponseDtoList)
+                 .build();
+         return frDto;
+    }
 }

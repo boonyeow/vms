@@ -18,6 +18,7 @@ import java.util.Map;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FieldResponseDto {
+    private Long id;
     private String name;
     private String helpText;
     private Boolean isRequired;

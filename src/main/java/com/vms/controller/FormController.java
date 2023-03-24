@@ -31,6 +31,12 @@ public class FormController {
         return ResponseEntity.ok(forms);
     }
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FormResponseDto> getLatestForm(@PathVariable Long id){
+        return ResponseEntity.ok(formService.getLatestForm(id));
+    }
+
     @GetMapping("/{id}/{revisionNo}")
     public ResponseEntity<FormResponseDto> getFormByID(@PathVariable Long id,
                                                        @PathVariable int revisionNo){

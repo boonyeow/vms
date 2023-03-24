@@ -1,7 +1,9 @@
 package com.vms.service;
 
+import com.vms.dto.AccountDto;
 import com.vms.dto.FieldRequestDto;
 import com.vms.dto.FieldResponseDto;
+import com.vms.model.Account;
 import com.vms.model.Field;
 import com.vms.model.Form;
 import com.vms.model.Regex;
@@ -162,6 +164,7 @@ public class FieldService {
 
     private FieldResponseDto convertToDto(Field field){
         return FieldResponseDto.builder()
+                .id(field.getId())
                 .name(field.getName())
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
@@ -171,6 +174,15 @@ public class FieldService {
                 .formCompositeKey(field.getForm().getId())
                 .build();
     }
+
+    public List<FieldResponseDto> getFieldResponseDtoList(List<Field> fields){
+        List<FieldResponseDto> fieldResponseDtoList = new ArrayList<>();
+        for(Field field: fields){
+            fieldResponseDtoList.add(convertToDto(field));
+        }
+        return fieldResponseDtoList;
+    }
+
     private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
         Map<String, Long> nextFieldsId = new HashMap<>();
         for (String option : nextFieldsMap.keySet()){

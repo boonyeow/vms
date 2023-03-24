@@ -13,6 +13,9 @@ public interface FormRepository extends CrudRepository<Form, FormCompositeKey> {
     @Query("SELECT f FROM Form f WHERE f.id.id = :id")
     List<Form> findByFormId_Id(Long id);
 
+    @Query("SELECT f FROM Form f WHERE f.id.id = :id ORDER BY f.id.revisionNo DESC LIMIT 1")
+    Form findLatestForm(Long id);
+
     @Query("SELECT MAX(f.id.id) FROM Form f")
     Long getMaxId();
 
