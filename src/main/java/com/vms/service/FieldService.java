@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -69,7 +70,15 @@ public class FieldService {
                             .fieldType(nextField.getFieldType())
                             .form(form)
                             .build();
-                    innerField.setOptions(FieldDtotoField(nextField.getOptions()));
+                    Map<String, Field> innerNextFields = FieldDtotoField(nextField.getOptions());
+                    System.out.println(innerNextFields);
+                    //convert innerNextFields to String String
+                    List<String> innerNextFieldsString = new ArrayList<>();
+                    for (String innerOption : innerNextFields.keySet()) {
+                        innerNextFieldsString.add(innerOption);
+                    }
+                    innerField.setOptionsAlternativeHolder(innerNextFieldsString);
+                    innerField.setOptions(innerNextFields);
                     fieldRepository.save(innerField);
                     nextFields.put(option, innerField);
                 }
@@ -77,6 +86,15 @@ public class FieldService {
                     nextFields.put(option, null);
                 }
 
+            }
+
+            // check if nextField first key value is null
+            if (nextFields.get(optionKeys.iterator().next()) == null){
+                List<String> innerNextFieldsString = new ArrayList<>();
+                for (String innerOption : nextFields.keySet()) {
+                    innerNextFieldsString.add(innerOption);
+                }
+                field.setOptionsAlternativeHolder(innerNextFieldsString);
             }
             field.setOptions(nextFields);
             fieldRepository.save(field);
@@ -136,6 +154,19 @@ public class FieldService {
         List<FieldResponseDto> fieldRequestDtos = new ArrayList<>();
         for(Field field : fields){
             Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+            if (nextFieldsId.isEmpty()){
+                // get optionsAlternativeHolder and convert it to map <String, Long>
+                List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
+                if (optionsAlternativeHolder != null){
+                    nextFieldsId = new HashMap<>();
+                    for (String option : optionsAlternativeHolder) {
+                        nextFieldsId.put(option, null);
+                    }
+                    System.out.println(nextFieldsId);
+                    System.out.println("FUCKUASUDKCNK");
+
+                }
+            }
             fieldRequestDtos.add(convertToDto(field, nextFieldsId));
         }
         return fieldRequestDtos;
@@ -148,7 +179,21 @@ public class FieldService {
         //extract out the value of the field option in one line
         Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
         System.out.println("FUCKUASUDKCNK");
-        System.out.println(nextFieldsId);
+        // if nextFieldId is empty
+        if (nextFieldsId.isEmpty()){
+            // get optionsAlternativeHolder and convert it to map <String, Long>
+            List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
+            if (optionsAlternativeHolder != null){
+                nextFieldsId = new HashMap<>();
+                for (String option : optionsAlternativeHolder) {
+                    nextFieldsId.put(option, null);
+                }
+                System.out.println(nextFieldsId);
+                System.out.println("FUCKUASUDKCNK");
+
+            }
+        }
+
         return convertToDto(field, nextFieldsId);
     }
 
@@ -158,7 +203,17 @@ public class FieldService {
     }
 
     private FieldResponseDto convertToDto(Field field, Map<String, Long> nextFieldsId){
-
+        if (nextFieldsId.isEmpty()){
+            return FieldResponseDto.builder()
+                    .id(field.getId())
+                    .name(field.getName())
+                    .helpText(field.getHelpText())
+                    .isRequired(field.getIsRequired())
+                    .fieldType(field.getFieldType())
+                    .regexId(field.getRegex() == null ? null : field.getRegex().getId())
+                    .formCompositeKey(field.getForm().getId())
+                    .build();
+        }
         return FieldResponseDto.builder()
                 .id(field.getId())
                 .name(field.getName())
@@ -171,23 +226,23 @@ public class FieldService {
                 .build();
     }
 
-    private FieldResponseDto convertToDto(Field field){
-        return FieldResponseDto.builder()
-                .id(field.getId())
-                .name(field.getName())
-                .helpText(field.getHelpText())
-                .isRequired(field.getIsRequired())
-                .fieldType(field.getFieldType())
-                .nextFieldsId(getNextFieldsIdFromMap(field.getOptions()))
-                .regexId(field.getRegex() == null ? null : field.getRegex().getId())
-                .formCompositeKey(field.getForm().getId())
-                .build();
-    }
-
     public List<FieldResponseDto> getFieldResponseDtoList(List<Field> fields){
         List<FieldResponseDto> fieldResponseDtoList = new ArrayList<>();
         for(Field field: fields){
             Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+            if (nextFieldsId.isEmpty()){
+                // get optionsAlternativeHolder and convert it to map <String, Long>
+                List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
+                if (optionsAlternativeHolder != null){
+                    nextFieldsId = new HashMap<>();
+                    for (String option : optionsAlternativeHolder) {
+                        nextFieldsId.put(option, null);
+                    }
+                    System.out.println(nextFieldsId);
+                    System.out.println("FUCKUASUDKCNK");
+
+                }
+            }
             fieldResponseDtoList.add(convertToDto(field, nextFieldsId));
         }
         return fieldResponseDtoList;

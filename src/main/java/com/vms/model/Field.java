@@ -34,8 +34,8 @@ public class Field{
     @JoinColumn(name = "regex_id")
     private Regex regex;
 
-//    @Column(nullable = true)
-//    private List<String> options;
+    @Column(nullable = true)
+    private List<String> optionsAlternativeHolder;
 //
 //    @OneToMany(cascade = CascadeType.ALL)
 //    @Nullable
@@ -56,6 +56,7 @@ public class Field{
     })
     private Form form;
 
+
     public Field(String name, Boolean isRequired, String helpText, FieldType fieldType, Form form, Regex regex) {
         this.name = name;
         this.isRequired = isRequired;
@@ -65,12 +66,13 @@ public class Field{
         this.regex = regex;
     }
 
-    public Field(String name, Boolean isRequired, String helpText, FieldType fieldType, Map<String, Field> options, Form form) {
+    public Field(String name, Boolean isRequired, String helpText, FieldType fieldType, Map<String, Field> options, Form form,  List<String> optionsAlternativeHolder) {
         this.name = name;
         this.isRequired = isRequired;
         this.helpText = helpText;
         this.fieldType = fieldType;
         this.options = options;
         this.form = form;
+        this.optionsAlternativeHolder = optionsAlternativeHolder;
     }
 }

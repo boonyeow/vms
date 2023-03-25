@@ -212,12 +212,36 @@ public class FormService {
         List<FieldResponseDto> fieldResponseDtos = new ArrayList<>();
         for (Field field: fields){
             Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+            if (nextFieldsId.isEmpty()){
+                // get optionsAlternativeHolder and convert it to map <String, Long>
+                List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
+                if (optionsAlternativeHolder != null){
+                    nextFieldsId = new HashMap<>();
+                    for (String option : optionsAlternativeHolder) {
+                        nextFieldsId.put(option, null);
+                    }
+                    System.out.println(nextFieldsId);
+                    System.out.println("FUCKUASUDKCNK");
+
+                }
+            }
             fieldResponseDtos.add(convertToDto(field, nextFieldsId));
         }
         return fieldResponseDtos;
     }
-    private FieldResponseDto convertToDto(Field field, Map<String, Long> nextFieldsId){
 
+    private FieldResponseDto convertToDto(Field field, Map<String, Long> nextFieldsId){
+        if (nextFieldsId.isEmpty()){
+            return FieldResponseDto.builder()
+                    .id(field.getId())
+                    .name(field.getName())
+                    .helpText(field.getHelpText())
+                    .isRequired(field.getIsRequired())
+                    .fieldType(field.getFieldType())
+                    .regexId(field.getRegex() == null ? null : field.getRegex().getId())
+                    .formCompositeKey(field.getForm().getId())
+                    .build();
+        }
         return FieldResponseDto.builder()
                 .id(field.getId())
                 .name(field.getName())
