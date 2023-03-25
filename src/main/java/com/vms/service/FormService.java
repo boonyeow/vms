@@ -7,9 +7,11 @@ import com.vms.model.Form;
 import com.vms.model.Workflow;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.repository.FormRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,6 +22,9 @@ public class FormService {
     private FormRepository formRepository;
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private FieldService fieldService;
@@ -59,8 +64,13 @@ public class FormService {
          return duplicatedForm;
     }
 
+    @Transactional
     public void updateForm(FormCompositeKey fck, FormDto request, boolean applyChanges){
-         Form form = getFormByFck(fck);
+        Form form = getFormByFck(fck);
+         List<Field> currentFields = form.getFields();
+         for (Field field : currentFields) {
+             deleteFieldWithEntityManager(field);
+         }
          form.setName(request.getName());
          form.setDescription(request.getDescription());
          form.setFinal(request.isFinal());
@@ -79,6 +89,9 @@ public class FormService {
          }
 
          formRepository.save(form);
+    }
+    public void deleteFieldWithEntityManager(Field field) {
+        entityManager.remove(field);
     }
 
     private void applyChangesToAllWorkflows(FormCompositeKey fck, Form form){
@@ -190,6 +203,8 @@ public class FormService {
                 .orElseThrow(() -> new RuntimeException("Form not found")
                 );
     }
+
+
 
     public List<FieldResponseDto> getFieldsByFck(FormCompositeKey fck){
         Form form = getFormByFck(fck);

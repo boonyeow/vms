@@ -12,8 +12,10 @@ import com.vms.model.enums.FieldType;
 import com.vms.repository.FieldRepository;
 import com.vms.repository.FormRepository;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,6 +28,7 @@ public class FieldService {
 
     @Autowired
     private RegexService regexService;
+
 
     public Field createField(FieldRequestDto request, Form form){
         request.setFormCompositeKey(form.getId());
@@ -122,7 +125,6 @@ public class FieldService {
         }
         return nextFieldsMap;
     }
-
     public void deleteField(Long id){
         Field field = fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
