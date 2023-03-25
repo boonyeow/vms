@@ -145,7 +145,7 @@ public class FormService {
                     .name(form.getName())
                     .description(form.getDescription())
                     .isFinal(form.isFinal())
-                    .authorizedAccounts(authorizedAccounts)
+                    .authorizedAccounts(accountService.getAccountDtoList(form.getAuthorizedAccounts()))
                     .workflows(workflowIds)
                     .build();
              formResponses.add(formResponseDto);
@@ -176,7 +176,7 @@ public class FormService {
                     .name(form.getName())
                     .description(form.getDescription())
                     .isFinal(form.isFinal())
-                    .authorizedAccounts(authorizedAccounts)
+                    .authorizedAccounts(accountService.getAccountDtoList(form.getAuthorizedAccounts()))
                     .workflows(workflowIds)
                     .build();
             formResponses.add(formResponseDto);
@@ -279,7 +279,7 @@ public class FormService {
                  .name(form.getName())
                  .description(form.getDescription())
                  .isFinal(form.isFinal())
-                 .authorizedAccounts(authorizedAccountDtoList)
+                 .authorizedAccounts(accountService.getAccountDtoList(form.getAuthorizedAccounts()))
                  .fields(fieldResponseDtoList)
                  .build();
          return frDto;
