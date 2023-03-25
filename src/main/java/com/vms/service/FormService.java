@@ -12,6 +12,7 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FormService {
@@ -195,18 +196,20 @@ public class FormService {
         List<Field> fields = form.getFields();
         List<FieldResponseDto> fieldResponseDtos = new ArrayList<>();
         for (Field field: fields){
-            FieldResponseDto fieldResponseDto = convertToDto(field);
-            fieldResponseDtos.add(fieldResponseDto);
+            Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+            fieldResponseDtos.add(convertToDto(field, nextFieldsId));
         }
         return fieldResponseDtos;
     }
-    private FieldResponseDto convertToDto(Field field){
+    private FieldResponseDto convertToDto(Field field, Map<String, Long> nextFieldsId){
+
         return FieldResponseDto.builder()
+                .id(field.getId())
                 .name(field.getName())
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
-                .nextFieldsId(getNextFieldsIdFromMap(field.getOptions()))
+                .nextFieldsId(nextFieldsId)
                 .regexId(field.getRegex() == null ? null : field.getRegex().getId())
                 .formCompositeKey(field.getForm().getId())
                 .build();

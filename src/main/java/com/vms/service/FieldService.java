@@ -11,10 +11,12 @@ import com.vms.model.keys.FormCompositeKey;
 import com.vms.model.enums.FieldType;
 import com.vms.repository.FieldRepository;
 import com.vms.repository.FormRepository;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,7 +30,6 @@ public class FieldService {
     public Field createField(FieldRequestDto request, Form form){
         request.setFormCompositeKey(form.getId());
         if(request.getOptions() != null){
-            System.out.println("hellooooooooooooooooooooooooooooooooooooooooooooooooo");
             Field field = Field.builder()
                     .name(request.getName())
                     .helpText(request.getHelpText())
@@ -36,18 +37,13 @@ public class FieldService {
                     .fieldType(request.getFieldType())
                     .form(form)
                     .build();
-            System.out.println("hellooooooooooooooooooooooooooooooooooooooooooooooooo");
             Map<String, Field> nextFields = null;
             // check if options are not null
             Map<String, FieldRequestDto> optionsDto = request.getOptions();
             Set<String> optionKeys = optionsDto.keySet();
-            if(optionsDto.get(optionKeys.iterator().next()) != null &&
-                    optionsDto.get(optionKeys.iterator().next()).getFieldType() == FieldType.TEXTBOX){
-
-                System.out.println("babibuasbdkjaskjnakdjnkadsjkadssdsdsssss");
-                nextFields = new HashMap<>();
-                for(String option : optionKeys){
-                    System.out.println(option);
+            nextFields = new HashMap<>();
+            for(String option : optionKeys) {
+                if (optionsDto.get(option) != null && optionsDto.get(option).getFieldType() == FieldType.TEXTBOX){
                     FieldRequestDto nextField = request.getOptions().get(option);
                     Field innerField = Field.builder()
                             .name(nextField.getName())
@@ -56,28 +52,13 @@ public class FieldService {
                             .fieldType(nextField.getFieldType())
                             .form(form)
                             .build();
-
-                    if(nextField.getFieldType().equals(FieldType.TEXTBOX)){
-                        Regex regex = regexService.getRegexById(nextField.getRegexId());
-                        innerField.setRegex(regex);
-                    }
+                    Regex regex = regexService.getRegexById(nextField.getRegexId());
+                    innerField.setRegex(regex);
                     fieldRepository.save(innerField);
                     nextFields.put(option, innerField);
                 }
-            }
-            else{
-
-                System.out.println("hellooooooooooooooooooooooooooooooooooooooooooooooooaaaaaaaaao");
-                nextFields = new HashMap<>();
-                for(String option : optionKeys) {
-                    FieldRequestDto nextField = request.getOptions().getOrDefault(option, null);
-
-                    if(nextField == null){
-                        System.out.println("heihe");
-                        nextFields.put(option, null);
-                        continue;
-                    }
-
+                else if(optionsDto.get(option) != null && optionsDto.get(option).getFieldType() != FieldType.TEXTBOX){
+                    FieldRequestDto nextField = request.getOptions().get(option);
                     Field innerField = Field.builder()
                             .name(nextField.getName())
                             .helpText(nextField.getHelpText())
@@ -89,8 +70,11 @@ public class FieldService {
                     fieldRepository.save(innerField);
                     nextFields.put(option, innerField);
                 }
-            }
+                else{
+                    nextFields.put(option, null);
+                }
 
+            }
             field.setOptions(nextFields);
             fieldRepository.save(field);
             return field;
@@ -114,8 +98,11 @@ public class FieldService {
     }
 
     private Map<String, Field> FieldDtotoField(Map<String, FieldRequestDto> options) {
+        if (options == null || options.isEmpty()) {
+            return Collections.emptyMap();
+        }
         Map<String, Field> nextFieldsMap = new HashMap<>();
-        for(String option : options.keySet()){
+        for (String option : options.keySet()) {
             nextFieldsMap.put(option, null);
         }
         return nextFieldsMap;
@@ -146,7 +133,8 @@ public class FieldService {
         Iterable<Field> fields = fieldRepository.findAll();
         List<FieldResponseDto> fieldRequestDtos = new ArrayList<>();
         for(Field field : fields){
-            fieldRequestDtos.add(convertToDto(field));
+            Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+            fieldRequestDtos.add(convertToDto(field, nextFieldsId));
         }
         return fieldRequestDtos;
     }
@@ -154,12 +142,31 @@ public class FieldService {
     public FieldResponseDto getFieldDtoById(Long id){
         Field field = fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
-        return convertToDto(field);
+
+        //extract out the value of the field option in one line
+        Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+        System.out.println("FUCKUASUDKCNK");
+        System.out.println(nextFieldsId);
+        return convertToDto(field, nextFieldsId);
     }
 
     public Field getFieldById(Long id){
         return fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
+    }
+
+    private FieldResponseDto convertToDto(Field field, Map<String, Long> nextFieldsId){
+
+        return FieldResponseDto.builder()
+                .id(field.getId())
+                .name(field.getName())
+                .helpText(field.getHelpText())
+                .isRequired(field.getIsRequired())
+                .fieldType(field.getFieldType())
+                .nextFieldsId(nextFieldsId)
+                .regexId(field.getRegex() == null ? null : field.getRegex().getId())
+                .formCompositeKey(field.getForm().getId())
+                .build();
     }
 
     private FieldResponseDto convertToDto(Field field){
@@ -178,18 +185,28 @@ public class FieldService {
     public List<FieldResponseDto> getFieldResponseDtoList(List<Field> fields){
         List<FieldResponseDto> fieldResponseDtoList = new ArrayList<>();
         for(Field field: fields){
-            fieldResponseDtoList.add(convertToDto(field));
+            Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+            fieldResponseDtoList.add(convertToDto(field, nextFieldsId));
         }
         return fieldResponseDtoList;
     }
 
     private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
+
+        System.out.println("ENTRANCEEEEEE");
+
+        System.out.println(nextFieldsMap);
+
         Map<String, Long> nextFieldsId = new HashMap<>();
         for (String option : nextFieldsMap.keySet()){
+            System.out.println("HELLELEOINDZKLDNCKLASNLSNLKNKALNDKLANDLKNDKLNSLNASKLDNALKDNLASNDLSANLSDNLASNDLKSDN");
             System.out.println(option);
             Field nextField = nextFieldsMap.get(option);
             if(nextField != null){
                 nextFieldsId.put(option, nextField.getId());
+            }
+            else {
+                nextFieldsId.put(option, null);
             }
         }
         return nextFieldsId;
