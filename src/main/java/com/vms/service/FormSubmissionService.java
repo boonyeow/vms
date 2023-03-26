@@ -138,6 +138,7 @@ public class FormSubmissionService {
                     .id(account.getId())
                     .name(account.getName())
                     .email(account.getEmail())
+                    .company(account.getCompany())
                     .accountType(account.getAccountType())
                     .build();
 
