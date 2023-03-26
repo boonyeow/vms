@@ -21,6 +21,18 @@ public class FormSubmissionController {
     @Autowired
     private FormSubmissionService formSubmissionService;
 
+    @GetMapping()
+    public ResponseEntity<List<FormSubmissionResponseDto>> getAllFormSubmission(){
+        List<FormSubmissionResponseDto> fsrDtoList = formSubmissionService.getAllFormSubmissions();
+        return ResponseEntity.ok(fsrDtoList);
+    }
+
+    @GetMapping("/getById")
+    public ResponseEntity<List<FormSubmissionResponseDto>> getFormSubmissionById(@RequestParam String formSubmissionId){
+        List<FormSubmissionResponseDto> fsrDtoList = formSubmissionService.getFormSubmissionsById(Long.parseLong(formSubmissionId));
+        return ResponseEntity.ok(fsrDtoList);
+    }
+
     @GetMapping("/getByAccountId")
     public ResponseEntity<List<FormSubmissionResponseDto>> getAllFormSubmissionBySubmitter(@RequestParam String accountId){
         List<FormSubmissionResponseDto> fsrDtoList = formSubmissionService.getFormSubmissionsBySubmitter(Long.parseLong(accountId));

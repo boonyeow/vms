@@ -9,10 +9,9 @@ import com.vms.repository.FormSubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class FormSubmissionService {
@@ -59,6 +58,24 @@ public class FormSubmissionService {
         FormSubmission formSubmission = getFormSubmissionById(formSubmissionId);
         formSubmission.setStatus(statusType);
         formSubmissionRepository.save(formSubmission);
+    }
+
+    public List<FormSubmissionResponseDto> getAllFormSubmissions() {
+        Iterable<FormSubmission> formSubmissionIterables = formSubmissionRepository.findAll();
+        List<FormSubmission> formSubmissions = StreamSupport.stream(formSubmissionIterables.spliterator(), false)
+                .collect(Collectors.toList());
+        return generateFsrDto(formSubmissions);
+    }
+
+    public List<FormSubmissionResponseDto> getFormSubmissionsById(Long formSubmissionId) {
+        Optional<FormSubmission> optionalFormSubmission = formSubmissionRepository.findById(formSubmissionId);
+        List<FormSubmission> formSubmissions = new ArrayList<>();
+
+        if (optionalFormSubmission.isPresent()) {
+            FormSubmission formSubmission = optionalFormSubmission.get();
+            formSubmissions.add(formSubmission);
+        }
+        return generateFsrDto(formSubmissions);
     }
 
     public List<FormSubmissionResponseDto> getFormSubmissionsByWorkflowAndForm(Long workflowId, FormCompositeKey fck) {
