@@ -62,7 +62,7 @@ public class Field{
         this.isRequired = isRequired;
         this.helpText = helpText;
         this.fieldType = fieldType;
-        this.form = form;
+//        this.form = form;
         this.regex = regex;
     }
 
@@ -72,7 +72,7 @@ public class Field{
         this.helpText = helpText;
         this.fieldType = fieldType;
         this.options = options;
-        this.form = form;
+//        this.form = form;
         this.optionsAlternativeHolder = optionsAlternativeHolder;
     }
 }

@@ -128,6 +128,9 @@ public List<WorkflowResponseDto> getWorkflowDtoList(){
             throw new RuntimeException("Workflow is final and cannot be edited");
         }
         Form form = formService.getFormByFck(fck);
+        if(!form.isFinal()){
+            throw new RuntimeException("Non-final form cannot be added into workflow");
+        }
 
         List<Long> newApprovalSequence = workflow.getApprovalSequence();
         newApprovalSequence.add(fck.getId());

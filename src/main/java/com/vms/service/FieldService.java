@@ -39,7 +39,7 @@ public class FieldService {
                     .helpText(request.getHelpText())
                     .isRequired(request.getIsRequired())
                     .fieldType(request.getFieldType())
-                    .form(form)
+//                    .form(form)
                     .build();
             Map<String, Field> nextFields = null;
             // check if options are not null
@@ -54,7 +54,7 @@ public class FieldService {
                             .helpText(nextField.getHelpText())
                             .isRequired(nextField.getIsRequired())
                             .fieldType(nextField.getFieldType())
-                            .form(form)
+//                            .form(form)
                             .build();
                     Regex regex = regexService.getRegexById(nextField.getRegexId());
                     innerField.setRegex(regex);
@@ -68,7 +68,7 @@ public class FieldService {
                             .helpText(nextField.getHelpText())
                             .isRequired(nextField.getIsRequired())
                             .fieldType(nextField.getFieldType())
-                            .form(form)
+//                            .form(form)
                             .build();
                     Map<String, Field> innerNextFields = FieldDtotoField(nextField.getOptions());
                     System.out.println(innerNextFields);
@@ -85,7 +85,6 @@ public class FieldService {
                 else{
                     nextFields.put(option, null);
                 }
-
             }
 
             // check if nextField first key value is null
@@ -106,7 +105,7 @@ public class FieldService {
                 .helpText(request.getHelpText())
                 .isRequired(request.getIsRequired())
                 .fieldType(request.getFieldType())
-                .form(form)
+//                .form(form)
                 .build();
 
         if(request.getFieldType().equals(FieldType.TEXTBOX)){
@@ -211,7 +210,7 @@ public class FieldService {
                     .isRequired(field.getIsRequired())
                     .fieldType(field.getFieldType())
                     .regexId(field.getRegex() == null ? null : field.getRegex().getId())
-                    .formCompositeKey(field.getForm().getId())
+//                    .formCompositeKey(field.getForm().getId())
                     .build();
         }
         return FieldResponseDto.builder()
@@ -222,7 +221,7 @@ public class FieldService {
                 .fieldType(field.getFieldType())
                 .nextFieldsId(nextFieldsId)
                 .regexId(field.getRegex() == null ? null : field.getRegex().getId())
-                .formCompositeKey(field.getForm().getId())
+//                .formCompositeKey(field.getForm().getId())
                 .build();
     }
 
@@ -267,6 +266,24 @@ public class FieldService {
             }
         }
         return nextFieldsId;
+    }
+
+    public List<Field> duplicateFields(List<Field> fields, Form duplicatedForm){
+        List<Field> duplicatedFields = new ArrayList<>();
+        for(Field field : fields){
+            Field duplicatedField = Field.builder()
+                    .name(field.getName())
+                    .isRequired(field.getIsRequired())
+                    .helpText(field.getHelpText())
+                    .regex(field.getRegex())
+                    .optionsAlternativeHolder(field.getOptionsAlternativeHolder())
+                    .options(field.getOptions())
+                    .form(duplicatedForm)
+                    .build();
+            fieldRepository.save(duplicatedField);
+            duplicatedFields.add(duplicatedField);
+        }
+        return duplicatedFields;
     }
 }
 

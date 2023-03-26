@@ -61,10 +61,9 @@ public class FormController {
     @PutMapping("/{id}/{revisionNo}")
     public ResponseEntity<Void> updateForm(@PathVariable Long id,
                                            @PathVariable int revisionNo,
-                                           @RequestBody FormDto request,
-                                           @RequestParam boolean applyChanges){
+                                           @RequestBody FormDto request){
         FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
-        formService.updateForm(fck, request, applyChanges);
+        formService.updateForm(fck, request);
         return ResponseEntity.ok().build();
     }
 

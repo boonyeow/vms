@@ -47,13 +47,50 @@ PUT http://localhost:8080/api/forms/0/1?applyChanges=false
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
+//{
+//  "name":"",
+//  "isFinal":false,
+//  "workflows":[],
+//  "fields":[{"name":"","helpText":"","isRequired":true,"fieldType":"RADIOBUTTON","regexId":null}],
+//  "authorizedAccountIds":[]
+//}
+
 {
-  "name":"",
-  "description":"hello",
-  "isFinal":false,
-  "workflows":[],
-  "fields":[{"name":"","helpText":"","isRequired":true,"fieldType":"RADIOBUTTON","regexId":null}],
-  "authorizedAccountIds":[]
+  "name": "test",
+  "description": "cry ",
+  "isFinal": false,
+  "workflows": [],
+  "fields": [
+    {
+      "name": "prp",
+      "helpText": "",
+      "isRequired": true,
+      "fieldType": "TEXTBOX",
+      "regexId": null,
+      "optionsWithNextFields": {
+        "prp": {
+          "name": "BOOOO",
+          "helpText": "",
+          "isRequired": true,
+          "fieldType": "CHECKBOX",
+          "regexId": null,
+          "optionsWithNextFields": {
+            "oest": null,
+            "oyyy": null
+          }
+        }
+      }
+    },
+    {
+      "name": "",
+      "helpText": "",
+      "isRequired": true,
+      "fieldType": "TEXTBOX"
+    }
+  ],
+  "authorizedAccountIds": [
+    1
+  ]
 }
 
 
@@ -67,4 +104,94 @@ Authorization: Bearer {{auth_token}}
 
 ### Delete fields by id
 DELETE http://localhost:8080/api/fields/12
+Authorization: Bearer {{auth_token}}
+
+
+################TEST
+### Create a form template (1)
+POST http://localhost:8080/api/forms
+Authorization: Bearer {{auth_token}}
+
+### Get All Forms (2, 4, 6)
+GET http://localhost:8080/api/forms
+Authorization: Bearer {{auth_token}}
+
+
+### Get specific form
+GET http://localhost:8080/api/forms/0/1
+Authorization: Bearer {{auth_token}}
+
+### Get specific form fields
+GET http://localhost:8080/api/forms/0/1/fields
+Authorization: Bearer {{auth_token}}
+
+### Get latest form
+GET http://localhost:8080/api/forms/0
+Authorization: Bearer {{auth_token}}
+
+### Update Form (3)
+PUT http://localhost:8080/api/forms/0/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Untitled Form",
+  "description": "Tea222",
+  "isFinal": true,
+  "workflows": [],
+  "fields": [
+    {
+      "name": "How are you doing",
+      "helpText": "",
+      "isRequired": true,
+      "fieldType": "TEXTBOX",
+      "options": {
+        "How are you doing": {
+          "name": "Question",
+          "helpText": "",
+          "isRequired": false,
+          "fieldType": "RADIOBUTTON",
+          "regexId": null,
+          "options": {
+            "nane": null,
+            "anme1": null
+          }
+        }
+      }
+    }
+  ],
+  "authorizedAccountIds": []
+}
+
+### Update Form isFinal  (7)
+PUT http://localhost:8080/api/forms/0/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Form Test Changed Name",
+  "description": "Changed Description",
+  "isFinal": false
+}
+
+### Create Workflow
+POST http://localhost:8080/api/workflows
+Authorization: Bearer {{auth_token}}
+
+### Add form to workflow
+POST http://localhost:8080/api/workflows/1/addForm
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "id": 0,
+  "revisionNo": 1
+}
+
+### Get Workflow by Id
+GET http://localhost:8080/api/workflows/1
+Authorization: Bearer {{auth_token}}
+
+### Duplicate form
+POST http://localhost:8080/api/forms/0/1/duplicate
 Authorization: Bearer {{auth_token}}
