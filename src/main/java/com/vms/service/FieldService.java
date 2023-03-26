@@ -39,7 +39,7 @@ public class FieldService {
                     .helpText(request.getHelpText())
                     .isRequired(request.getIsRequired())
                     .fieldType(request.getFieldType())
-//                    .form(form)
+                    .form(form)
                     .build();
             Map<String, Field> nextFields = null;
             // check if options are not null
@@ -54,7 +54,7 @@ public class FieldService {
                             .helpText(nextField.getHelpText())
                             .isRequired(nextField.getIsRequired())
                             .fieldType(nextField.getFieldType())
-//                            .form(form)
+                            .form(form)
                             .build();
                     Regex regex = regexService.getRegexById(nextField.getRegexId());
                     innerField.setRegex(regex);
@@ -68,7 +68,7 @@ public class FieldService {
                             .helpText(nextField.getHelpText())
                             .isRequired(nextField.getIsRequired())
                             .fieldType(nextField.getFieldType())
-//                            .form(form)
+                            .form(form)
                             .build();
                     Map<String, Field> innerNextFields = FieldDtotoField(nextField.getOptions());
                     System.out.println(innerNextFields);
@@ -105,7 +105,7 @@ public class FieldService {
                 .helpText(request.getHelpText())
                 .isRequired(request.getIsRequired())
                 .fieldType(request.getFieldType())
-//                .form(form)
+                .form(form)
                 .build();
 
         if(request.getFieldType().equals(FieldType.TEXTBOX)){

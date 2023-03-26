@@ -51,12 +51,14 @@ public class FormService {
                  .max()
                  .orElseThrow(() -> new RuntimeException("surprise"));
          fck.setRevisionNo(currentRevisionNo + 1);
+         List<Account> authorizedAccounts = new ArrayList<>();
+
          Form duplicatedForm = Form.builder()
                  .id(fck)
                  .name(form.getName())
                  .description(form.getDescription())
                  .isFinal(false)
-                 .authorizedAccounts(new ArrayList<>())
+                 .authorizedAccounts(authorizedAccounts)
                  .build();
 
          List<Field> duplicatedFields = fieldService.duplicateFields(form.getFields(), form);
