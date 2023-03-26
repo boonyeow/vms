@@ -21,7 +21,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-
 @Service
 public class FieldService {
     @Autowired
@@ -30,10 +29,9 @@ public class FieldService {
     @Autowired
     private RegexService regexService;
 
-
-    public Field createField(FieldRequestDto request, Form form){
+    public Field createField(FieldRequestDto request, Form form) {
         request.setFormCompositeKey(form.getId());
-        if(request.getOptions() != null){
+        if (request.getOptions() != null) {
             Field field = Field.builder()
                     .name(request.getName())
                     .helpText(request.getHelpText())
@@ -46,8 +44,8 @@ public class FieldService {
             Map<String, FieldRequestDto> optionsDto = request.getOptions();
             Set<String> optionKeys = optionsDto.keySet();
             nextFields = new HashMap<>();
-            for(String option : optionKeys) {
-                if (optionsDto.get(option) != null && optionsDto.get(option).getFieldType() == FieldType.TEXTBOX){
+            for (String option : optionKeys) {
+                if (optionsDto.get(option) != null && optionsDto.get(option).getFieldType() == FieldType.TEXTBOX) {
                     FieldRequestDto nextField = request.getOptions().get(option);
                     Field innerField = Field.builder()
                             .name(nextField.getName())
@@ -60,8 +58,8 @@ public class FieldService {
                     innerField.setRegex(regex);
                     fieldRepository.save(innerField);
                     nextFields.put(option, innerField);
-                }
-                else if(optionsDto.get(option) != null && optionsDto.get(option).getFieldType() != FieldType.TEXTBOX){
+                } else if (optionsDto.get(option) != null
+                        && optionsDto.get(option).getFieldType() != FieldType.TEXTBOX) {
                     FieldRequestDto nextField = request.getOptions().get(option);
                     Field innerField = Field.builder()
                             .name(nextField.getName())
@@ -72,7 +70,7 @@ public class FieldService {
                             .build();
                     Map<String, Field> innerNextFields = FieldDtotoField(nextField.getOptions());
                     System.out.println(innerNextFields);
-                    //convert innerNextFields to String String
+                    // convert innerNextFields to String String
                     List<String> innerNextFieldsString = new ArrayList<>();
                     for (String innerOption : innerNextFields.keySet()) {
                         innerNextFieldsString.add(innerOption);
@@ -81,15 +79,14 @@ public class FieldService {
                     innerField.setOptions(innerNextFields);
                     fieldRepository.save(innerField);
                     nextFields.put(option, innerField);
-                }
-                else{
+                } else {
                     nextFields.put(option, null);
                 }
 
             }
 
             // check if nextField first key value is null
-            if (nextFields.get(optionKeys.iterator().next()) == null){
+            if (nextFields.get(optionKeys.iterator().next()) == null) {
                 List<String> innerNextFieldsString = new ArrayList<>();
                 for (String innerOption : nextFields.keySet()) {
                     innerNextFieldsString.add(innerOption);
@@ -109,7 +106,7 @@ public class FieldService {
                 .form(form)
                 .build();
 
-        if(request.getFieldType().equals(FieldType.TEXTBOX)){
+        if (request.getFieldType().equals(FieldType.TEXTBOX)) {
             Regex regex = regexService.getRegexById(request.getRegexId());
             field.setRegex(regex);
         }
@@ -131,11 +128,12 @@ public class FieldService {
 
     private Map<String, Field> getNextFieldsFromDto(Map<String, Long> nextFieldsId) {
         Map<String, Field> nextFieldsMap = new HashMap<>();
-        if (nextFieldsId != null){
-            for(String option : nextFieldsId.keySet()){
+        if (nextFieldsId != null) {
+            for (String option : nextFieldsId.keySet()) {
                 Long linkedFieldId = nextFieldsId.get(option);
-                Field linkedField = fieldRepository.findById(linkedFieldId).orElseThrow(() -> new RuntimeException("Field not found"));
-                if(linkedField.getFieldType() != FieldType.TEXTBOX){
+                Field linkedField = fieldRepository.findById(linkedFieldId)
+                        .orElseThrow(() -> new RuntimeException("Field not found"));
+                if (linkedField.getFieldType() != FieldType.TEXTBOX) {
                     throw new RuntimeException("Recursive structure found");
                 }
                 nextFieldsMap.put(option, linkedField);
@@ -143,21 +141,23 @@ public class FieldService {
         }
         return nextFieldsMap;
     }
-    public void deleteField(Long id){
+
+    public void deleteField(Long id) {
         Field field = fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
         fieldRepository.delete(field);
     }
 
-    public List<FieldResponseDto> getAllFieldsDto(){
+    public List<FieldResponseDto> getAllFieldsDto() {
         Iterable<Field> fields = fieldRepository.findAll();
         List<FieldResponseDto> fieldRequestDtos = new ArrayList<>();
-        for(Field field : fields){
-            Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
-            if (nextFieldsId.isEmpty()){
+        for (Field field : fields) {
+            Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+            if (nextFieldsId.isEmpty()) {
                 // get optionsAlternativeHolder and convert it to map <String, Long>
                 List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
-                if (optionsAlternativeHolder != null){
+                if (optionsAlternativeHolder != null) {
                     nextFieldsId = new HashMap<>();
                     for (String option : optionsAlternativeHolder) {
                         nextFieldsId.put(option, null);
@@ -172,18 +172,19 @@ public class FieldService {
         return fieldRequestDtos;
     }
 
-    public FieldResponseDto getFieldDtoById(Long id){
+    public FieldResponseDto getFieldDtoById(Long id) {
         Field field = fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
 
-        //extract out the value of the field option in one line
-        Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+        // extract out the value of the field option in one line
+        Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
         System.out.println("FUCKUASUDKCNK");
         // if nextFieldId is empty
-        if (nextFieldsId.isEmpty()){
+        if (nextFieldsId.isEmpty()) {
             // get optionsAlternativeHolder and convert it to map <String, Long>
             List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
-            if (optionsAlternativeHolder != null){
+            if (optionsAlternativeHolder != null) {
                 nextFieldsId = new HashMap<>();
                 for (String option : optionsAlternativeHolder) {
                     nextFieldsId.put(option, null);
@@ -197,13 +198,13 @@ public class FieldService {
         return convertToDto(field, nextFieldsId);
     }
 
-    public Field getFieldById(Long id){
+    public Field getFieldById(Long id) {
         return fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
     }
 
-    private FieldResponseDto convertToDto(Field field, Map<String, Long> nextFieldsId){
-        if (nextFieldsId.isEmpty()){
+    private FieldResponseDto convertToDto(Field field, Map<String, Long> nextFieldsId) {
+        if (nextFieldsId.isEmpty()) {
             return FieldResponseDto.builder()
                     .id(field.getId())
                     .name(field.getName())
@@ -226,14 +227,15 @@ public class FieldService {
                 .build();
     }
 
-    public List<FieldResponseDto> getFieldResponseDtoList(List<Field> fields){
+    public List<FieldResponseDto> getFieldResponseDtoList(List<Field> fields) {
         List<FieldResponseDto> fieldResponseDtoList = new ArrayList<>();
-        for(Field field: fields){
-            Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
-            if (nextFieldsId.isEmpty()){
+        for (Field field : fields) {
+            Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
+            if (nextFieldsId.isEmpty()) {
                 // get optionsAlternativeHolder and convert it to map <String, Long>
                 List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
-                if (optionsAlternativeHolder != null){
+                if (optionsAlternativeHolder != null) {
                     nextFieldsId = new HashMap<>();
                     for (String option : optionsAlternativeHolder) {
                         nextFieldsId.put(option, null);
@@ -248,25 +250,137 @@ public class FieldService {
         return fieldResponseDtoList;
     }
 
-    private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){
+    private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap) {
 
         System.out.println("ENTRANCEEEEEE");
 
         System.out.println(nextFieldsMap);
 
         Map<String, Long> nextFieldsId = new HashMap<>();
-        for (String option : nextFieldsMap.keySet()){
+        for (String option : nextFieldsMap.keySet()) {
             System.out.println("HELLELEOINDZKLDNCKLASNLSNLKNKALNDKLANDLKNDKLNSLNASKLDNALKDNLASNDLSANLSDNLASNDLKSDN");
             System.out.println(option);
             Field nextField = nextFieldsMap.get(option);
-            if(nextField != null){
+            if (nextField != null) {
                 nextFieldsId.put(option, nextField.getId());
-            }
-            else {
+            } else {
                 nextFieldsId.put(option, null);
             }
         }
         return nextFieldsId;
     }
-}
 
+    public List<Field> duplicateFields(List<Field> fields, Form duplicatedForm) {
+        List<Field> duplicatedFields = new ArrayList<>();
+
+        Map<Long, Field> fieldMap = new HashMap<>(); // Id mapped to Field
+        Map<Long, Map<String, Long>> parentToChildMap = new HashMap<>(); // Id of parent mapped to Child based on
+                                                                         // options
+        Set<Long> childSet = new HashSet<>();
+
+        for (Field field : fields) {
+            Long fieldId = field.getId();
+            fieldMap.put(fieldId, field);
+
+            if (!childSet.contains(fieldId)) {
+                Map<String, Field> fieldOptions = field.getOptions();
+                if (field.getFieldType() == FieldType.TEXTBOX || fieldOptions == null || fieldOptions.values().isEmpty()
+                        || fieldOptions.values().iterator().next() == null) {
+                    parentToChildMap.put(fieldId, new HashMap<>());
+                } else {
+                    Map<String, Long> optionToChildMap = new HashMap<>();
+                    for (String option : fieldOptions.keySet()) {
+                        Long childId = fieldOptions.get(option).getId();
+                        optionToChildMap.put(option, childId);
+                        childSet.add(childId);
+                    }
+                    parentToChildMap.put(fieldId, optionToChildMap);
+                }
+            }
+        }
+
+        for (Field field : fields) {
+            Long fieldId = field.getId();
+            if (childSet.contains(fieldId)) {
+                // Skip all child
+                continue;
+            }
+
+            if (parentToChildMap.containsKey(fieldId)) {
+                Map<String, Long> optionToChildMap = parentToChildMap.get(fieldId);
+                if (optionToChildMap.isEmpty()) {
+                    // This is a parent without child
+                    // If textbox just build it
+                    if (field.getFieldType() == FieldType.TEXTBOX) {
+                        Field duplicatedField = Field.builder()
+                                .name(field.getName())
+                                .helpText(field.getHelpText())
+                                .isRequired(field.getIsRequired())
+                                .fieldType(field.getFieldType())
+                                .regex(field.getRegex())
+                                .form(duplicatedForm)
+                                .build();
+                        fieldRepository.save(duplicatedField);
+                        duplicatedFields.add(duplicatedField);
+                    } else {
+                        Map<String, Field> duplicatedOptions = new HashMap<>();
+                        List<String> optionList = field.getOptionsAlternativeHolder();
+                        for (String option : optionList) {
+                            duplicatedOptions.put(option, null);
+                        }
+                        Field duplicatedField = Field.builder()
+                                .name(field.getName())
+                                .helpText(field.getHelpText())
+                                .isRequired(field.getIsRequired())
+                                .fieldType(field.getFieldType())
+                                .options(duplicatedOptions)
+                                .optionsAlternativeHolder(optionList)
+                                .form(duplicatedForm)
+                                .build();
+                        fieldRepository.save(duplicatedField);
+                        duplicatedFields.add(duplicatedField);
+                    }
+                } else {
+                    // This is a parent with child(ren)
+                    Map<String, Field> duplicatedOptions = new HashMap<>();
+                    for (String option : optionToChildMap.keySet()) {
+                        Long nextFieldId = optionToChildMap.get(option);
+                        Field nextField = fieldMap.get(nextFieldId);
+
+                        Map<String, Field> innerDuplicatedOptions = new HashMap<>();
+                        for (String innerOption : nextField.getOptions().keySet()) {
+                            innerDuplicatedOptions.put(innerOption, null);
+                        }
+
+                        Field duplicatedOption = Field.builder()
+                                .name(nextField.getName())
+                                .isRequired(nextField.getIsRequired())
+                                .helpText(nextField.getHelpText())
+                                .fieldType(nextField.getFieldType())
+                                .options(innerDuplicatedOptions)
+                                .optionsAlternativeHolder(nextField.getOptionsAlternativeHolder())
+                                .form(duplicatedForm)
+                                .build();
+                        fieldRepository.save(duplicatedOption);
+                        duplicatedFields.add(duplicatedOption);
+                        duplicatedOptions.put(option, duplicatedOption);
+                    }
+
+                    Field duplicatedField = Field.builder()
+                            .name(field.getName())
+                            .isRequired(field.getIsRequired())
+                            .helpText(field.getHelpText())
+                            .fieldType(field.getFieldType())
+                            .regex(field.getRegex())
+                            .options(duplicatedOptions)
+                            .optionsAlternativeHolder(field.getOptionsAlternativeHolder())
+                            .form(duplicatedForm)
+                            .build();
+                    fieldRepository.save(duplicatedField);
+                    duplicatedFields.add(duplicatedField);
+                }
+            }
+        }
+        return duplicatedFields;
+    }
+}

@@ -36,12 +36,6 @@ public class Field{
 
     @Column(nullable = true)
     private List<String> optionsAlternativeHolder;
-//
-//    @OneToMany(cascade = CascadeType.ALL)
-//    @Nullable
-//    @MapKey(name = "name")
-//    @JoinColumn(name = "parent_field_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "next_field_id_fk"))
-//    private Map<String, Field> nextFields;
 
     @OneToMany(cascade = CascadeType.ALL)
     @Column(nullable = true)

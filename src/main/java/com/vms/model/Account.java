@@ -45,14 +45,6 @@ public class Account implements UserDetails {
     @ManyToMany(mappedBy = "authorizedAccounts")
     private List<Form> authorizedForms;
 
-    // TO REMOVE
-//    @ManyToMany(mappedBy = "authorizedAccounts")
-//    private List<FormSection> authorizedFormSections;
-
-    // TO REMOVE
-//    @OneToMany(mappedBy = "submitter")
-//    private List<FormSubmission> submittedFormSubmissions;
-
     @ManyToMany(mappedBy = "authorizedAccounts")
     private List<Workflow> authorizedWorkflows;
 
