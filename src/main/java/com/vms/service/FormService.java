@@ -130,6 +130,9 @@ public class FormService {
         if (!form.getWorkflows().isEmpty()) {
             throw new RuntimeException("Unable to delete form due to referential violation");
         }
+        if (form.isFinal()) {
+            throw new RuntimeException("Unable to delete form that is final");
+        }
         formRepository.delete(form);
     };
 
