@@ -54,8 +54,10 @@ public class FieldService {
                             .fieldType(nextField.getFieldType())
                             .form(form)
                             .build();
-                    Regex regex = regexService.getRegexById(nextField.getRegexId());
-                    innerField.setRegex(regex);
+                    if (nextField.getRegexId() != null) {
+                        Regex regex = regexService.getRegexById(nextField.getRegexId());
+                        innerField.setRegex(regex);
+                    }
                     fieldRepository.save(innerField);
                     nextFields.put(option, innerField);
                 } else if (optionsDto.get(option) != null
@@ -106,7 +108,7 @@ public class FieldService {
                 .form(form)
                 .build();
 
-        if (request.getFieldType().equals(FieldType.TEXTBOX)) {
+        if (request.getRegexId() != null && request.getFieldType().equals(FieldType.TEXTBOX)) {
             Regex regex = regexService.getRegexById(request.getRegexId());
             field.setRegex(regex);
         }
@@ -275,7 +277,7 @@ public class FieldService {
 
         Map<Long, Field> fieldMap = new HashMap<>(); // Id mapped to Field
         Map<Long, Map<String, Long>> parentToChildMap = new HashMap<>(); // Id of parent mapped to Child based on
-                                                                         // options
+        // options
         Set<Long> childSet = new HashSet<>();
 
         for (Field field : fields) {
