@@ -33,10 +33,9 @@ public class SecurityConfig {
                         (requests)  -> requests
                                 .requestMatchers( "/api/auth/authenticate").permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                                .requestMatchers( "/api/accounts", "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**", "/api/workflows", "/api/workflows/**", "/api/email", "/api/email/**", "/api/formsubmission", "/api/formsubmission/**", "/api/fields", "/api/fields/**").permitAll()
-//                                .requestMatchers( "/api/accounts", "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**", "/api/workflows", "/api/workflows/**", "/api/email", "/api/email/**", "/api/formsubmission", "/api/formsubmission/**", "/api/fields", "/api/fields/**").hasAuthority(AccountType.ADMIN.name())
-//                                .requestMatchers( "/api/workflows", "/api/workflows/**", "/api/forms", "/api/forms/**", "/api/formsubmission", "/api/formsubmission/**", "/api/fields", "/api/fields/**").hasAuthority(AccountType.VENDOR.name())
-                                .anyRequest().authenticated()
+                                .requestMatchers( "/api/workflows", "/api/workflows/**", "/api/forms", "/api/forms/**", "/api/formsubmission", "/api/formsubmission/**", "/api/fields", "/api/fields/**").hasAuthority(AccountType.VENDOR.name())
+                                .requestMatchers( "/api/accounts", "/api/auth/register","/api/patterns", "/api/form", "/api/forms/**", "/api/workflows", "/api/workflows/**", "/api/email", "/api/email/**", "/api/formsubmission", "/api/formsubmission/**", "/api/fields", "/api/fields/**").hasAuthority(AccountType.ADMIN.name())
+                               .anyRequest().authenticated()
                 )
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
