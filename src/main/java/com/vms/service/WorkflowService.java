@@ -76,6 +76,39 @@ public class WorkflowService {
         workflowRepository.save(workflow);
     }
 
+    public List<WorkflowResponseDto> getWorkflowDtoByAccountId(Long accountId) {
+        List<Workflow> workflows = workflowRepository.getWorkflowByAuthorizedUser(accountId);
+        List<WorkflowResponseDto> workflowResponseDtos = new ArrayList<>();
+
+        for (Workflow workflow : workflows){
+            List<WorkflowFormDto> workflowFormDtos = new ArrayList<>();
+            Set<Form> forms = workflow.getForms();
+            for (Form form: forms) {
+                FormCompositeKey fck = form.getId();
+                WorkflowFormDto workflowFormDto = WorkflowFormDto.builder()
+                        .formId(fck.getId())
+                        .revisionNo(fck.getRevisionNo())
+                        .name(form.getName())
+                        .description(form.getDescription())
+                        .build();
+                workflowFormDtos.add(workflowFormDto);
+            }
+            WorkflowResponseDto workflowResponseDto = WorkflowResponseDto.builder()
+                    .id(workflow.getId())
+                    .name(workflow.getName())
+                    .progress(workflow.getProgress())
+                    .isFinal(workflow.isFinal())
+                    .forms(workflowFormDtos)
+                    .authorizedAccounts(null)
+                    .authorizedAccountIds(accountService.getAccountIds(workflow.getAuthorizedAccounts()))
+                    .approvalSequence(workflow.getApprovalSequence())
+                    .build();
+
+            workflowResponseDtos.add(workflowResponseDto);
+        }
+        return workflowResponseDtos;
+    }
+
     public WorkflowResponseDto getWorkflowDtoById(Long id){
         Workflow workflow = getWorkflowById(id);
         Set<Form> forms = workflow.getForms();
@@ -103,19 +136,19 @@ public class WorkflowService {
                 .build();
     }
 
-public List<WorkflowResponseDto> getWorkflowDtoList(){
-    Iterable<Workflow> workflows = workflowRepository.findAll();
-    List<WorkflowResponseDto> temp = new ArrayList<>();
-    for(Workflow workflow : workflows){
-        temp.add(WorkflowResponseDto.builder()
-        .id(workflow.getId())
-        .name(workflow.getName())
-        .progress(workflow.getProgress())
-        .isFinal(workflow.isFinal())
-        .build());
+    public List<WorkflowResponseDto> getWorkflowDtoList(){
+        Iterable<Workflow> workflows = workflowRepository.findAll();
+        List<WorkflowResponseDto> temp = new ArrayList<>();
+        for(Workflow workflow : workflows){
+            temp.add(WorkflowResponseDto.builder()
+            .id(workflow.getId())
+            .name(workflow.getName())
+            .progress(workflow.getProgress())
+            .isFinal(workflow.isFinal())
+            .build());
+        }
+        return temp;
     }
-    return temp;
-}
 
 
     public Workflow getWorkflowById(Long id){

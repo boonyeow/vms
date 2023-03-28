@@ -54,6 +54,11 @@ public class WorkflowController {
         return ResponseEntity.ok(workflowService.getWorkflowDtoById(id));
     }
 
+    @GetMapping("/getWorkflowsByAccountId/{id}")
+    public ResponseEntity<List<WorkflowResponseDto>> getWorkflowsByAccountId(@PathVariable Long id) {
+        return ResponseEntity.ok(workflowService.getWorkflowDtoByAccountId(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateWorkflow(@PathVariable Long id,
                                                @RequestBody WorkflowDto request){
