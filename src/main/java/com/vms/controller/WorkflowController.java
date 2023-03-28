@@ -66,6 +66,16 @@ public class WorkflowController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{id}/addMultipleForms")
+    public ResponseEntity<Void> addFormsToWorkflow(@PathVariable Long id,
+                                                  @RequestBody List<FormRequestDto> requests){
+        for (FormRequestDto request : requests) {
+            FormCompositeKey fck = FormCompositeKey.builder().id(request.getId()).revisionNo(request.getRevisionNo()).build();
+            workflowService.addFormToWorkflow(fck, id);
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/{id}/addForm")
     public ResponseEntity<Void> addFormToWorkflow(@PathVariable Long id,
                                                   @RequestBody FormRequestDto request){
