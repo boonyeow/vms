@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class SecurityConfig {
                         (requests)  -> requests
                                 .requestMatchers( "/api/auth/authenticate").permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/auth/logout").hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name(), AccountType.APPROVER.name())
                                 .requestMatchers(
                                         "/api/workflows",
                                         "/api/workflows/**",
