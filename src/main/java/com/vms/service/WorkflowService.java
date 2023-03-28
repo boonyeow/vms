@@ -162,6 +162,10 @@ public class WorkflowService {
         }
         Form form = formService.getFormByFck(fck);
 
+        if (!form.isFinal()){
+            throw new RuntimeException("Form must be final before it can be added");
+        }
+
         List<Long> newApprovalSequence = workflow.getApprovalSequence();
         newApprovalSequence.add(fck.getId());
         workflow.setApprovalSequence(newApprovalSequence);
