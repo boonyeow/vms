@@ -4,15 +4,13 @@ import com.vms.dto.*;
 import com.vms.model.Account;
 import com.vms.model.Form;
 import com.vms.model.Workflow;
+import com.vms.model.enums.AccountType;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.repository.WorkflowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class WorkflowService {
@@ -114,6 +112,67 @@ public class WorkflowService {
 
         workflow.setAuthorizedAccounts(authorizedAccounts);
         workflowRepository.save(workflow);
+    }
+
+    public List<WorkflowAccountTypeDto> getWorkflowDtoByAccountType(AccountType accountType) {
+        List<Workflow> workflows = workflowRepository.getByFinalAndAuthorizedAccounts(accountType);
+        List<WorkflowAccountTypeDto> filteredWorkflows = new ArrayList<>();
+
+        for (Workflow workflow : workflows) {
+            // Inside each workflow, check each form for its Assigned account and check if its Vendor
+            Map<Long, List<FormCompositeKey>> formsAssignedToAccountType = new HashMap<>();
+            List<WorkflowFormDto> workflowFormDtos = new ArrayList<>();
+
+            for (Form form : workflow.getForms()){
+                workflowFormDtos.add( WorkflowFormDto.builder()
+                        .formId(form.getId().getId())
+                        .revisionNo(form.getId().getRevisionNo())
+                        .name(form.getName())
+                        .description(form.getDescription())
+                        .build());
+
+                for (Account account : form.getAuthorizedAccounts()) {
+                    // if it is Vendor, assign to List
+                    if (account.getAccountType().equals(accountType)) {
+                        if (formsAssignedToAccountType.containsKey(account.getId())) {
+                            List<FormCompositeKey> currentList = formsAssignedToAccountType.get(account.getId());
+                            currentList.add(form.getId());
+                            formsAssignedToAccountType.put(account.getId(), currentList);
+                        } else {
+                            List<FormCompositeKey> fckList = new ArrayList<>();
+                            fckList.add(form.getId());
+                            formsAssignedToAccountType.put(account.getId(), fckList);
+                        }
+
+                    }
+                }
+            }
+
+            List<AccountDto> accountDtos = new ArrayList<>();
+
+            for (Account account : workflow.getAuthorizedAccounts()) {
+                accountDtos.add(AccountDto.builder()
+                        .id(account.getId())
+                        .name(account.getName())
+                        .email(account.getEmail())
+                        .company(account.getCompany())
+                        .accountType(account.getAccountType())
+                        .build());
+            }
+
+            WorkflowAccountTypeDto filteredWorkflow = WorkflowAccountTypeDto.builder()
+                    .id(workflow.getId())
+                    .name(workflow.getName())
+                    .progress(workflow.getProgress())
+                    .isFinal(workflow.isFinal())
+                    .forms(workflowFormDtos)
+                    .authorizedAccounts(accountDtos)
+                    .formsAssignedToRequestedAccountType(formsAssignedToAccountType)
+                    .build();
+
+            filteredWorkflows.add(filteredWorkflow);
+        }
+        return filteredWorkflows;
     }
 
     public List<WorkflowResponseDto> getWorkflowDtoByAccountId(Long accountId) {

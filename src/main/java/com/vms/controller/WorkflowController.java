@@ -1,10 +1,8 @@
 package com.vms.controller;
 
-import com.vms.dto.FormRequestDto;
-import com.vms.dto.WorkflowDto;
-import com.vms.dto.WorkflowResponseDto;
-import com.vms.dto.WorkflowUpdateDto;
+import com.vms.dto.*;
 import com.vms.model.Workflow;
+import com.vms.model.enums.AccountType;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.service.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +56,11 @@ public class WorkflowController {
     @GetMapping("/getWorkflowsByAccountId/{id}")
     public ResponseEntity<List<WorkflowResponseDto>> getWorkflowsByAccountId(@PathVariable Long id) {
         return ResponseEntity.ok(workflowService.getWorkflowDtoByAccountId(id));
+    }
+
+    @GetMapping("/getWorkflowsByAccountType/{accountType}")
+    public ResponseEntity<List<WorkflowAccountTypeDto>> getWorkflowsByAccountId(@PathVariable AccountType accountType) {
+        return ResponseEntity.ok(workflowService.getWorkflowDtoByAccountType(accountType));
     }
 
     @PutMapping("/{id}")
