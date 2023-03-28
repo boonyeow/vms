@@ -45,7 +45,7 @@ public class SecurityConfig {
                                         "/api/formsubmission/**",
                                         "/api/fields",
                                         "/api/fields/**"
-                                ).hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name())
+                                ).hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name(), AccountType.APPROVER.name())
                                 .requestMatchers(
                                         "/api/accounts",
                                         "/api/auth/register",
