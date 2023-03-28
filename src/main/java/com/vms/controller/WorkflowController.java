@@ -3,6 +3,7 @@ package com.vms.controller;
 import com.vms.dto.FormRequestDto;
 import com.vms.dto.WorkflowDto;
 import com.vms.dto.WorkflowResponseDto;
+import com.vms.dto.WorkflowUpdateDto;
 import com.vms.model.Workflow;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.service.WorkflowService;
@@ -66,6 +67,13 @@ public class WorkflowController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/updateWorkflow/{id}")
+    public ResponseEntity<Void> updateWorkflowEntirely(@PathVariable Long id,
+                                               @RequestBody WorkflowUpdateDto request){
+        workflowService.updateWorkflowEntirely(id, request);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/{id}/addMultipleForms")
     public ResponseEntity<Void> addFormsToWorkflow(@PathVariable Long id,
                                                   @RequestBody List<FormRequestDto> requests){
@@ -75,6 +83,8 @@ public class WorkflowController {
         }
         return ResponseEntity.ok().build();
     }
+
+
 
     @PostMapping("/{id}/addForm")
     public ResponseEntity<Void> addFormToWorkflow(@PathVariable Long id,

@@ -1,8 +1,6 @@
 package com.vms.service;
 
-import com.vms.dto.WorkflowDto;
-import com.vms.dto.WorkflowFormDto;
-import com.vms.dto.WorkflowResponseDto;
+import com.vms.dto.*;
 import com.vms.model.Account;
 import com.vms.model.Form;
 import com.vms.model.Workflow;
@@ -12,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -73,6 +72,47 @@ public class WorkflowService {
         Workflow workflow = getWorkflowById(id);
         workflow.setName(request.getName());
         workflow.setFinal(request.isFinal());
+        workflowRepository.save(workflow);
+    }
+
+    public void updateWorkflowEntirely(Long id, WorkflowUpdateDto request){
+        Workflow workflow = getWorkflowById(id);
+
+        if (workflow.isFinal()) {
+            throw new RuntimeException("Workflow is final and cannot be updated");
+        }
+
+        workflow.setName(request.getName());
+        workflow.setFinal(request.isFinal());
+
+        List<Long> newApprovalSequence = new ArrayList<>();
+        Set<Form> newForms = new HashSet<>();
+
+        for (FormRequestDto frd : request.getFormIds()) {
+            FormCompositeKey fck = new FormCompositeKey(frd.getId(), frd.getRevisionNo());
+            Form form = formService.getFormByFck(fck);
+
+            if (!form.isFinal()){
+                throw new RuntimeException("Form must be final before it can be added");
+            }
+
+            newApprovalSequence.add(fck.getId());
+            newForms.add(form);
+        }
+        workflow.setApprovalSequence(newApprovalSequence);
+        workflow.setForms(newForms);
+
+        Set<Account> authorizedAccounts = new HashSet<>();
+
+        for (Long accountId : request.getAuthorizedAccountIds()) {
+            Account account = accountService.getAccountById(accountId);
+            if(authorizedAccounts.contains(account)){
+                throw new RuntimeException("Cannot assign an account more than once to the same workflow");
+            }
+            authorizedAccounts.add(account);
+        }
+
+        workflow.setAuthorizedAccounts(authorizedAccounts);
         workflowRepository.save(workflow);
     }
 
