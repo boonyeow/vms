@@ -120,7 +120,7 @@ public class WorkflowService {
 
         for (Workflow workflow : workflows) {
             // Inside each workflow, check each form for its Assigned account and check if its Vendor
-            Map<Long, List<FormCompositeKey>> formsAssignedToAccountType = new HashMap<>();
+            Map<Long, List<FormDetailsDto>> formsAssignedToAccountType = new HashMap<>();
             List<WorkflowFormDto> workflowFormDtos = new ArrayList<>();
 
             for (Form form : workflow.getForms()){
@@ -135,12 +135,22 @@ public class WorkflowService {
                     // if it is Vendor, assign to List
                     if (account.getAccountType().equals(accountType)) {
                         if (formsAssignedToAccountType.containsKey(account.getId())) {
-                            List<FormCompositeKey> currentList = formsAssignedToAccountType.get(account.getId());
-                            currentList.add(form.getId());
+                            List<FormDetailsDto> currentList = formsAssignedToAccountType.get(account.getId());
+                            currentList.add(FormDetailsDto.builder()
+                                            .form_id(form.getId())
+                                            .email(account.getEmail())
+                                            .name(form.getName())
+                                            .company(account.getCompany())
+                                            .build());
                             formsAssignedToAccountType.put(account.getId(), currentList);
                         } else {
-                            List<FormCompositeKey> fckList = new ArrayList<>();
-                            fckList.add(form.getId());
+                            List<FormDetailsDto> fckList = new ArrayList<>();
+                            fckList.add(FormDetailsDto.builder()
+                                    .form_id(form.getId())
+                                    .email(account.getEmail())
+                                    .name(form.getName())
+                                    .company(account.getCompany())
+                                    .build());
                             formsAssignedToAccountType.put(account.getId(), fckList);
                         }
 

@@ -26,5 +26,5 @@ public class WorkflowAccountTypeDto {
 
     private List<AccountDto> authorizedAccounts;
 
-    private Map<Long, List<FormCompositeKey>> formsAssignedToRequestedAccountType;
+    private Map<Long, List<FormDetailsDto>> formsAssignedToRequestedAccountType;
 }
