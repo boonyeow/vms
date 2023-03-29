@@ -84,7 +84,7 @@ public class WorkflowService {
         workflow.setFinal(request.isFinal());
 
         List<Long> newApprovalSequence = new ArrayList<>();
-        Set<Form> newForms = new HashSet<>();
+        List<Form> newForms = new ArrayList<>();
 
         for (FormRequestDto frd : request.getFormIds()) {
             FormCompositeKey fck = new FormCompositeKey(frd.getId(), frd.getRevisionNo());
@@ -191,7 +191,7 @@ public class WorkflowService {
 
         for (Workflow workflow : workflows){
             List<WorkflowFormDto> workflowFormDtos = new ArrayList<>();
-            Set<Form> forms = workflow.getForms();
+            List<Form> forms = workflow.getForms();
             for (Form form: forms) {
                 FormCompositeKey fck = form.getId();
                 WorkflowFormDto workflowFormDto = WorkflowFormDto.builder()
@@ -220,7 +220,7 @@ public class WorkflowService {
 
     public WorkflowResponseDto getWorkflowDtoById(Long id){
         Workflow workflow = getWorkflowById(id);
-        Set<Form> forms = workflow.getForms();
+        List<Form> forms = workflow.getForms();
         List<WorkflowFormDto> workflowForms = new ArrayList<>();
         for (Form form: forms) {
             FormCompositeKey fck = form.getId();
@@ -279,7 +279,7 @@ public class WorkflowService {
         newApprovalSequence.add(fck.getId());
         workflow.setApprovalSequence(newApprovalSequence);
 
-        Set<Form> newForms = workflow.getForms();
+        List<Form> newForms = workflow.getForms();
         newForms.add(form);
         workflow.setForms(newForms);
 
@@ -302,7 +302,7 @@ public class WorkflowService {
         }
         workflow.setApprovalSequence(newApprovalSequence);
 
-        Set<Form> newForms = workflow.getForms();
+        List<Form> newForms = workflow.getForms();
         newForms.remove(form);
         workflow.setForms(newForms);
 

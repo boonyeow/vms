@@ -46,5 +46,5 @@ public class Workflow {
                     @JoinColumn(name = "form_id", referencedColumnName = "id"),
                     @JoinColumn(name = "form_revisionNo", referencedColumnName = "revisionNo") }
     )
-    private Set<Form> forms;
+    private List<Form> forms;
 }
