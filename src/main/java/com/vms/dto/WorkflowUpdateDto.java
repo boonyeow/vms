@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -21,10 +22,6 @@ public class WorkflowUpdateDto {
     @JsonProperty("isFinal")
     private boolean isFinal;
 
-    @JsonProperty("form_ids")
-    private List<FormRequestDto> formIds;
-
-    @JsonProperty("authorized_accounts_ids")
-    private List<Long> authorizedAccountIds;
-
+    @JsonProperty("workflow_form_assignments")
+    private List<WorkflowFormAssignmentDto> workflowFormAssignments;
 }

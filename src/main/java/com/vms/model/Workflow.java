@@ -47,4 +47,7 @@ public class Workflow {
                     @JoinColumn(name = "form_revisionNo", referencedColumnName = "revisionNo") }
     )
     private Set<Form> forms;
+
+    @OneToMany(mappedBy = "workflow")
+    private List<WorkflowFormAssignment> workflowFormAssignments;
 }
