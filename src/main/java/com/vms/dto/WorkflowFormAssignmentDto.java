@@ -15,4 +15,5 @@ public class WorkflowFormAssignmentDto {
     private Long accountId;
     @JsonProperty("formId")
     private FormRequestDto formId;
+
 }

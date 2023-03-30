@@ -27,7 +27,7 @@ public class WorkflowService {
     @Autowired
     private WorkflowFormAssignmentService workflowFormAssignmentService;
 
-    public Long createWorkflow(){
+    public Long createWorkflow() {
         Workflow workflow = Workflow.builder()
                 .name("Untitled Workflow")
                 .progress(0)
@@ -39,12 +39,12 @@ public class WorkflowService {
     }
 
 
-    public void addAuthorizedAccount(Long workflowId, Long accountId){
+    public void addAuthorizedAccount(Long workflowId, Long accountId) {
         Workflow workflow = getWorkflowById(workflowId);
         Account account = accountService.getAccountById(accountId);
 
         Set<Account> authorizedAccounts = workflow.getAuthorizedAccounts();
-        if(authorizedAccounts.contains(account)){
+        if (authorizedAccounts.contains(account)) {
             throw new RuntimeException("Account has already been assigned workflow id " + workflowId);
         }
         authorizedAccounts.add(account);
@@ -52,12 +52,12 @@ public class WorkflowService {
         workflowRepository.save(workflow);
     }
 
-    public void removeAuthorizedAccount(Long workflowId, Long accountId){
+    public void removeAuthorizedAccount(Long workflowId, Long accountId) {
         Workflow workflow = getWorkflowById(workflowId);
         Account account = accountService.getAccountById(accountId);
 
         Set<Account> authorizedAccounts = workflow.getAuthorizedAccounts();
-        if(!authorizedAccounts.contains(account)){
+        if (!authorizedAccounts.contains(account)) {
             throw new RuntimeException("Account cannot be found in workflow");
         }
         authorizedAccounts.remove(account);
@@ -65,19 +65,20 @@ public class WorkflowService {
         workflowRepository.save(workflow);
     }
 
-    public void publishWorkflow(Long workflowId){
+    public void publishWorkflow(Long workflowId) {
         Workflow workflow = getWorkflowById(workflowId);
         workflow.setFinal(true);
         workflowRepository.save(workflow);
     }
-    public void updateWorkflow(Long id, WorkflowDto request){
+
+    public void updateWorkflow(Long id, WorkflowDto request) {
         Workflow workflow = getWorkflowById(id);
         workflow.setName(request.getName());
         workflow.setFinal(request.isFinal());
         workflowRepository.save(workflow);
     }
 
-    public void updateWorkflowEntirely(Long id, WorkflowUpdateDto request){
+    public void updateWorkflowEntirely(Long id, WorkflowUpdateDto request) {
         Workflow workflow = getWorkflowById(id);
 
         if (workflow.isFinal()) {
@@ -96,20 +97,20 @@ public class WorkflowService {
             FormCompositeKey fck = new FormCompositeKey(wfaDto.getFormId().getId(), wfaDto.getFormId().getRevisionNo());
             Form form = formService.getFormByFck(fck);
 
-            if (!form.isFinal()){
+            if (!form.isFinal()) {
                 throw new RuntimeException("Form must be final before it can be added");
             }
 
             workflowFormAssignments.add(WorkflowFormAssignment.builder()
-                            .workflow(workflow)
-                            .form(form)
-                            .account(accountService.getAccountById(wfaDto.getAccountId()))
-                            .build());
+                    .workflow(workflow)
+                    .form(form)
+                    .account(accountService.getAccountById(wfaDto.getAccountId()))
+                    .build());
 
             newApprovalSequence.add(fck.getId());
             newForms.add(form);
         }
-        System.out.println("HELLO");
+
         workflow.setApprovalSequence(newApprovalSequence);
         workflow.setForms(newForms);
         workflow.setWorkflowFormAssignments(workflowFormAssignments);
@@ -126,8 +127,8 @@ public class WorkflowService {
             Map<Long, List<FormDetailsDto>> formsAssignedToAccountType = new HashMap<>();
             List<WorkflowFormDto> workflowFormDtos = new ArrayList<>();
 
-            for (Form form : workflow.getForms()){
-                workflowFormDtos.add( WorkflowFormDto.builder()
+            for (Form form : workflow.getForms()) {
+                workflowFormDtos.add(WorkflowFormDto.builder()
                         .formId(form.getId().getId())
                         .revisionNo(form.getId().getRevisionNo())
                         .name(form.getName())
@@ -140,11 +141,11 @@ public class WorkflowService {
                         if (formsAssignedToAccountType.containsKey(account.getId())) {
                             List<FormDetailsDto> currentList = formsAssignedToAccountType.get(account.getId());
                             currentList.add(FormDetailsDto.builder()
-                                            .form_id(form.getId())
-                                            .email(account.getEmail())
-                                            .name(form.getName())
-                                            .company(account.getCompany())
-                                            .build());
+                                    .form_id(form.getId())
+                                    .email(account.getEmail())
+                                    .name(form.getName())
+                                    .company(account.getCompany())
+                                    .build());
                             formsAssignedToAccountType.put(account.getId(), currentList);
                         } else {
                             List<FormDetailsDto> fckList = new ArrayList<>();
@@ -192,10 +193,10 @@ public class WorkflowService {
         List<Workflow> workflows = workflowRepository.getWorkflowByAuthorizedUser(accountId);
         List<WorkflowResponseDto> workflowResponseDtos = new ArrayList<>();
 
-        for (Workflow workflow : workflows){
+        for (Workflow workflow : workflows) {
             List<WorkflowFormDto> workflowFormDtos = new ArrayList<>();
             Set<Form> forms = workflow.getForms();
-            for (Form form: forms) {
+            for (Form form : forms) {
                 FormCompositeKey fck = form.getId();
                 WorkflowFormDto workflowFormDto = WorkflowFormDto.builder()
                         .formId(fck.getId())
@@ -221,11 +222,11 @@ public class WorkflowService {
         return workflowResponseDtos;
     }
 
-    public WorkflowResponseDto getWorkflowDtoById(Long id){
+    public WorkflowResponseDto getWorkflowDtoById(Long id) {
         Workflow workflow = getWorkflowById(id);
         Set<Form> forms = workflow.getForms();
         List<WorkflowFormDto> workflowForms = new ArrayList<>();
-        for (Form form: forms) {
+        for (Form form : forms) {
             FormCompositeKey fck = form.getId();
             WorkflowFormDto workflowForm = WorkflowFormDto.builder()
                     .formId(fck.getId())
@@ -246,6 +247,13 @@ public class WorkflowService {
                 .authorizedAccountIds(accountService.getAccountIds(workflow.getAuthorizedAccounts()))
                 .approvalSequence(workflow.getApprovalSequence())
                 .build();
+    }
+    public TempDto getWorkflowDtoV2ById(Long id){
+        Workflow workflow = getWorkflowById(id);
+//        for()
+//        return TempDto.builder()
+//                .id()
+//                .build();
     }
 
     public List<WorkflowResponseDto> getWorkflowDtoList(){
