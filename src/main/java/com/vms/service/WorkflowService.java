@@ -4,6 +4,7 @@ import com.vms.dto.*;
 import com.vms.model.Account;
 import com.vms.model.Form;
 import com.vms.model.Workflow;
+import com.vms.model.WorkflowFormAssignment;
 import com.vms.model.enums.AccountType;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.repository.WorkflowRepository;
@@ -22,6 +23,9 @@ public class WorkflowService {
 
     @Autowired
     private FormService formService;
+
+    @Autowired
+    private WorkflowFormAssignmentService workflowFormAssignmentService;
 
     public Long createWorkflow(){
         Workflow workflow = Workflow.builder()
@@ -86,31 +90,30 @@ public class WorkflowService {
         List<Long> newApprovalSequence = new ArrayList<>();
         List<Form> newForms = new ArrayList<>();
 
-        for (FormRequestDto frd : request.getFormIds()) {
-            FormCompositeKey fck = new FormCompositeKey(frd.getId(), frd.getRevisionNo());
+        System.out.println("HELLO");
+        List<WorkflowFormAssignment> workflowFormAssignments = new ArrayList<>();
+        for (WorkflowFormAssignmentDto wfaDto : request.getWorkflowFormAssignments()) {
+            FormCompositeKey fck = new FormCompositeKey(wfaDto.getFormId().getId(), wfaDto.getFormId().getRevisionNo());
             Form form = formService.getFormByFck(fck);
 
             if (!form.isFinal()){
                 throw new RuntimeException("Form must be final before it can be added");
             }
 
+            workflowFormAssignments.add(WorkflowFormAssignment.builder()
+                            .workflow(workflow)
+                            .form(form)
+                            .account(accountService.getAccountById(wfaDto.getAccountId()))
+                            .build());
+
             newApprovalSequence.add(fck.getId());
             newForms.add(form);
         }
+        System.out.println("HELLO");
         workflow.setApprovalSequence(newApprovalSequence);
         workflow.setForms(newForms);
-
-        Set<Account> authorizedAccounts = new HashSet<>();
-
-        for (Long accountId : request.getAuthorizedAccountIds()) {
-            Account account = accountService.getAccountById(accountId);
-            if(authorizedAccounts.contains(account)){
-                throw new RuntimeException("Cannot assign an account more than once to the same workflow");
-            }
-            authorizedAccounts.add(account);
-        }
-
-        workflow.setAuthorizedAccounts(authorizedAccounts);
+        workflow.setWorkflowFormAssignments(workflowFormAssignments);
+        workflowFormAssignmentService.updateWorkflowFormAssignment(workflow, workflowFormAssignments);
         workflowRepository.save(workflow);
     }
 

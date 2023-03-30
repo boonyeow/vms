@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -47,6 +48,9 @@ public class Account implements UserDetails {
 
     @ManyToMany(mappedBy = "authorizedAccounts")
     private List<Workflow> authorizedWorkflows;
+
+    @OneToMany(mappedBy = "account")
+    private Set<WorkflowFormAssignment> workflowFormAssignments;
 
     @Override
     public String getUsername() {

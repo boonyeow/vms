@@ -43,6 +43,9 @@ public class Form {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "form")
     private List<Field> fields;
 
+    @OneToMany(mappedBy = "form")
+    private Set<WorkflowFormAssignment> workflowFormAssignments;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
