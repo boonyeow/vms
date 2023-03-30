@@ -2,6 +2,7 @@ package com.vms.service;
 
 import com.vms.dto.AccountDto;
 import com.vms.model.Account;
+import com.vms.model.enums.AccountType;
 import com.vms.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,11 @@ public class AccountService {
 
     public Optional<Account> getAccountByEmail(String email){
         return accountRepository.findByEmail(email);
+    }
+
+    public List<AccountDto> getAccountsByType(AccountType type){
+        Iterable<Account> accounts = accountRepository.findByAccountType(type);
+        return getAccountDtoList(accounts);
     }
 
     public List<AccountDto> getAccountDtoList(List<Account> authorizedAccounts){

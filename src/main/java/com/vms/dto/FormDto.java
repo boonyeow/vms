@@ -18,11 +18,8 @@ public class FormDto {
     @JsonProperty("description")
     private String description;
 
-    @JsonProperty("isFinal")
+    @JsonProperty("is_final")
     private boolean isFinal;
-
-    @JsonProperty("authorizedAccountIds")
-    private List<Long> authorizedAccountIds;
 
     @JsonProperty("fields")
     private List<FieldRequestDto> fields;

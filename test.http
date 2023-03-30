@@ -1,5 +1,3 @@
-### Login
-
 ### Login As Admin
 POST http://localhost:8080/api/auth/authenticate
 Content-Type: application/json
@@ -13,234 +11,43 @@ Content-Type: application/json
     client.global.set("auth_token", response.body.token);
 %}
 
-###
-GET http://localhost:8080/api/forms/isFinal?state=true
+### Get Account by type
+# VENDOR -> must be caps
+GET http://localhost:8080/api/accounts/VENDOR
 Authorization: Bearer {{auth_token}}
-
-
-### Login As Vendor
-POST http://localhost:8080/api/auth/authenticate
-Content-Type: application/json
-
-{
-  "email":"vendor@kmail.com",
-  "password": "blopblopblop"
-}
-
-> {%
-    client.global.set("auth_token", response.body.token);
-%}
-
-### Logout
-POST http://localhost:8080/api/auth/logout
-Authorization: Bearer {{auth_token}}
-
-###
-POST http://localhost:8080/api/formsubmission
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
-
-{
-  "workflow_id": 1,
-  "fck": {
-    "id": 1,
-    "revisionNo": 1
-  },
-  "submittedBy": 2,
-  "fieldResponses": {
-    "3": "{\"type\":\"radio\",\"name\":\"red\",\"ans\":\"true\"}",
-    "4": "Testing"
-  }
-}
-
-
-### Get All Forms (2, 4, 6)
-GET http://localhost:8080/api/forms
-Authorization: Bearer {{auth_token}}
-
-
-### Login as Admin
-POST http://localhost:8080/api/auth/authenticate
-Content-Type: application/json
-
-{
-  "email":"admin@kmail.com",
-  "password": "blopblopblop"
-}
-
-> {%
-    client.global.set("auth_token", response.body.token);
-%}
 
 ### Create a form template
 POST http://localhost:8080/api/forms
 Authorization: Bearer {{auth_token}}
 
-### Create a Field into form template created above
-POST http://localhost:8080/api/fields/create?formId=2&revisionNo=1
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
-
-{
-  "name" : "field1",
-  "label" : "field1",
-  "helpText": "helpText",
-  "isRequired": true,
-  "fieldType": "DROPDOWN",
-  "options": [
-  "Option 1",
-  "Option 2",
-  "Option 3"]
-}
-
-### Get all forms dto
+### Get all form templates
 GET http://localhost:8080/api/forms
 Authorization: Bearer {{auth_token}}
 
-
-### Get specific form dto
+### Get form template by id
 GET http://localhost:8080/api/forms/0/1
 Authorization: Bearer {{auth_token}}
 
-### Update form
-PUT http://localhost:8080/api/forms/0/1?applyChanges=false
+### Delete a form template
+DELETE http://localhost:8080/api/forms/3/1
+Authorization: Bearer {{auth_token}}
+
+### Update form template with fields
+PUT http://localhost:8080/api/forms/0/1
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
-
-{
-  "name":"",
-  "description":"hello",
-  "isFinal":false,
-  "workflows":[],
-  "fields":[{"name":"","helpText":"","isRequired":true,"fieldType":"RADIOBUTTON","regexId":null}],
-  "authorizedAccountIds":[]
-}
-
-
-### Get all fields dto
-GET http://localhost:8080/api/fields/dto
-Authorization: Bearer {{auth_token}}
-
-### Get all fields dto by id
-GET http://localhost:8080/api/fields/dto/12
-Authorization: Bearer {{auth_token}}
-
-### Delete fields by id
-DELETE http://localhost:8080/api/fields/12
-<<<<<<< Updated upstream
-=======
-Authorization: Bearer {{auth_token}}
-
-
-################TEST
-### Create a form template (1)
-POST http://localhost:8080/api/forms
-Authorization: Bearer {{auth_token}}
-
-### Get All Forms (2, 4, 6)
-GET http://localhost:8080/api/forms
-Authorization: Bearer {{auth_token}}
-
-
-### Get specific form
-GET http://localhost:8080/api/forms/0/1
-Authorization: Bearer {{auth_token}}
-
-### Get specific form fields
-GET http://localhost:8080/api/forms/0/1/fields
-Authorization: Bearer {{auth_token}}
-
-### Get latest form
-GET http://localhost:8080/api/forms/0
-Authorization: Bearer {{auth_token}}
-
-### Update Form (3)
-PUT http://localhost:8080/api/forms/0/1?applyChanges=false
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
 
 {
   "name": "Untitled Form",
-  "description": "Tea222",
-  "isFinal": true,
+  "description": "het",
+  "is_final": false,
   "workflows": [],
-  "fields": [
-    {
-      "name": "How are you doing",
-      "helpText": "",
-      "isRequired": true,
-      "fieldType": "RADIOBUTTON",
-      "options": {
-        "How are you doing": {
-          "name": "Question",
-          "helpText": "",
-          "isRequired": false,
-          "fieldType": "RADIOBUTTON",
-          "regexId": null,
-          "options": {
-            "nane": null,
-            "anme1": null
-          }
-        }
-      }
-    }
-  ],
-  "authorizedAccountIds": []
+  "fields": []
 }
 
-### Update Form isFinal  (7)
-PUT http://localhost:8080/api/forms/0/1
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
 
-{
-  "name": "Form Test Changed Name",
-  "description": "Changed Description",
-  "isFinal": true
-}
-
-### Create Workflow
-POST http://localhost:8080/api/workflows
-Authorization: Bearer {{auth_token}}
-
-### Add form to workflow
-POST http://localhost:8080/api/workflows/1/addForm
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
-
-{
-  "id": 0,
-  "revisionNo": 1
-}
-
-### Get Workflow by Id
-GET http://localhost:8080/api/workflows/1
-Authorization: Bearer {{auth_token}}
-
-### Get Workflows
+### Get all workflows
 GET http://localhost:8080/api/workflows
 Authorization: Bearer {{auth_token}}
 
-### Duplicate form
-POST http://localhost:8080/api/forms/0/1/duplicate
-Authorization: Bearer {{auth_token}}
-
-
-### Update Workflow
-PUT http://localhost:8080/api/workflows/updateWorkflow/1
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
-
-{
-  "name": "HELlo world",
-  "isFinal": false,
-  "workflow_form_assignments": [
-    {
-      "accountId": 2,
-      "formId": {
-        "id": 0,
-        "revisionNo": 1
-      }
-    }
-  ]
-}
+###

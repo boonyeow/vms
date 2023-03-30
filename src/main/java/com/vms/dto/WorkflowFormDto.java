@@ -1,5 +1,6 @@
 package com.vms.dto;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,9 @@ public class WorkflowFormDto {
 
     @JsonProperty("revisionNo")
     private Integer revisionNo;
+
+    @JsonProperty("accountId")
+    private Long accountId;
 
     @JsonProperty("name")
     private String name;

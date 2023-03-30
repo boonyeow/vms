@@ -25,16 +25,10 @@ public class FormController {
         return ResponseEntity.ok(forms);
     }
 
-    @GetMapping("/state")
+    @GetMapping("/isFinal")
     public ResponseEntity<List<FormResponseDto>> getAllFormsByState(@RequestParam Boolean state){
         List<FormResponseDto> forms = formService.getFormDtoByState(state);
         return ResponseEntity.ok(forms);
-    }
-
-
-    @GetMapping("/{id}")
-    public ResponseEntity<FormResponseDto> getLatestForm(@PathVariable Long id){
-        return ResponseEntity.ok(formService.getLatestForm(id));
     }
 
     @GetMapping("/{id}/{revisionNo}")
@@ -44,6 +38,7 @@ public class FormController {
         FormResponseDto form = formService.getFormDtoByFck(fck);
         return ResponseEntity.ok(form);
     }
+
 
     @PostMapping
     public ResponseEntity<FormCompositeKey> createForm(){
@@ -61,10 +56,9 @@ public class FormController {
     @PutMapping("/{id}/{revisionNo}")
     public ResponseEntity<Void> updateForm(@PathVariable Long id,
                                            @PathVariable int revisionNo,
-                                           @RequestBody FormDto request,
-                                           @RequestParam boolean applyChanges){
+                                           @RequestBody FormDto request){
         FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
-        formService.updateForm(fck, request, applyChanges);
+        formService.updateForm(fck, request);
         return ResponseEntity.ok().build();
     }
 
@@ -73,14 +67,6 @@ public class FormController {
                                            @PathVariable int revisionNo){
         FormCompositeKey fck = new FormCompositeKey(id, revisionNo);
         formService.deleteForm(fck);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{id}/{revisionNo}/authorizedAccount")
-    public ResponseEntity<Void> updateAuthorizedAccount(@PathVariable Long id,
-                                                        @PathVariable int revisionNo,
-                                                        @RequestBody List<String> emails) {
-        formService.updateFormAuthorizedAccounts(new FormCompositeKey(id, revisionNo), emails);
         return ResponseEntity.ok().build();
     }
 

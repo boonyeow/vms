@@ -2,6 +2,7 @@ package com.vms.controller;
 
 
 import com.vms.dto.AccountDto;
+import com.vms.model.enums.AccountType;
 import com.vms.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,11 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<List<AccountDto>> getAllAccounts(){
         return ResponseEntity.ok(accountService.getAllAccountDtoList());
+    }
+
+    @GetMapping("/{accountType}")
+    public ResponseEntity<List<AccountDto>> getAccountsByType(@PathVariable AccountType accountType){
+        return ResponseEntity.ok(accountService.getAccountsByType(accountType));
     }
 
     @PutMapping

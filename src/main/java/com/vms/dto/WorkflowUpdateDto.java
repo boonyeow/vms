@@ -19,7 +19,7 @@ public class WorkflowUpdateDto {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("isFinal")
+    @JsonProperty("is_final")
     private boolean isFinal;
 
     @JsonProperty("workflow_form_assignments")

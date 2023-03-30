@@ -29,14 +29,6 @@ public class Form {
     @Column(name = "is_final", nullable = false)
     private boolean isFinal;
 
-    @ManyToMany
-    @JoinTable(name = "form_account",
-            joinColumns = {
-                    @JoinColumn(name = "form_id", referencedColumnName = "id"),
-                    @JoinColumn(name = "form_revisionNo", referencedColumnName = "revisionNo") },
-            inverseJoinColumns = @JoinColumn(name = "account_id"))
-    private List<Account> authorizedAccounts;
-
     @ManyToMany(mappedBy = "forms")
     private Set<Workflow> workflows;
     

@@ -21,11 +21,8 @@ public class FormResponseDto {
     @JsonProperty("description")
     private String description;
 
-    @JsonProperty("isFinal")
+    @JsonProperty("is_final")
     private boolean isFinal;
-
-    @JsonProperty("authorizedAccounts")
-    private List<AccountDto> authorizedAccounts;
 
     @JsonProperty("fields")
     private List<FieldResponseDto> fields;
