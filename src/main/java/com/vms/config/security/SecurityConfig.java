@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 .requestMatchers( "/api/auth/authenticate").permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/auth/logout").hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name(), AccountType.APPROVER.name())
+                                .requestMatchers(HttpMethod.GET, "/api/regex").hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name(), AccountType.APPROVER.name())
                                 .requestMatchers(
                                         "/api/workflows",
                                         "/api/workflows/**",

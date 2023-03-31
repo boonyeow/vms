@@ -6,6 +6,7 @@ import com.vms.repository.RegexRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -56,6 +57,18 @@ public class RegexService {
         return regexRepository.findAll();
     }
 
+    public List<RegexDto> getAllRegexDto() {
+        Iterable<Regex> regexes = getAllRegex();
+        List<RegexDto> regexDtoList = new ArrayList<>();
+        for(Regex regex : regexes){
+            regexDtoList.add(RegexDto.builder()
+                    .id(regex.getId())
+                    .name(regex.getName())
+                    .pattern(regex.getPattern())
+                    .build());
+        }
+        return regexDtoList;
+    }
     public Regex getRegexById(Long id){
         return regexRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Regex not found"));

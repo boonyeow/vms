@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/api/regex")
@@ -22,7 +24,7 @@ public class RegexController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Regex>> getAllRegex(){
-        return ResponseEntity.ok(regexService.getAllRegex());
+    public ResponseEntity<List<RegexDto>> getAllRegex(){
+        return ResponseEntity.ok(regexService.getAllRegexDto());
     }
 }

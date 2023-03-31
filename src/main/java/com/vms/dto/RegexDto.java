@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegexDto {
+    private Long id;
     private String name;
     private String pattern;
 }
