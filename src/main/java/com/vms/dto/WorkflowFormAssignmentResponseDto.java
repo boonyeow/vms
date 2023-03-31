@@ -23,4 +23,6 @@ public class WorkflowFormAssignmentResponseDto {
     @JsonProperty("formName")
     private String formName;
 
+    @JsonProperty("formIsFinal")
+    private boolean formIsFinal;
 }

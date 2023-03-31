@@ -50,11 +50,13 @@ public class WorkflowFormAssignmentService {
                             .id(workflowFormAssignment.getForm().getId().getId())
                                     .revisionNo(workflowFormAssignment.getForm().getId().getRevisionNo())
                                             .build();
+            Form form = formService.getFormByFck(fck);
             response.add(WorkflowFormAssignmentResponseDto.builder()
                     .account(accountService.getAccountDto(workflowFormAssignment.getAccount()))
                     .workflowId(workflowFormAssignment.getWorkflow().getId())
                     .formId(formId)
-                    .formName(formService.getFormByFck(fck).getName())
+                    .formName(form.getName())
+                    .formIsFinal(form.isFinal())
                     .build());
         }
         return response;
