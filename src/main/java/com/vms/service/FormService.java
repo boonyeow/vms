@@ -160,19 +160,16 @@ public class FormService {
         for (Field field : fields) {
             Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getId()));
-            if (nextFieldsId.isEmpty()) {
-                // get optionsAlternativeHolder and convert it to map <String, Long>
-                List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
-                if (optionsAlternativeHolder != null) {
-                    nextFieldsId = new HashMap<>();
-                    for (String option : optionsAlternativeHolder) {
-                        nextFieldsId.put(option, null);
-                    }
-                    System.out.println(nextFieldsId);
-                    System.out.println("FUCKUASUDKCNK");
-
+            // get optionsAlternativeHolder and convert it to map <String, Long>
+            List<String> optionsAlternativeHolder = field.getOptionsAlternativeHolder();
+            if (optionsAlternativeHolder != null) {
+                for (String option : optionsAlternativeHolder) {
+                    nextFieldsId.put(option, null);
                 }
+                System.out.println(nextFieldsId);
+
             }
+            System.out.println(nextFieldsId);
             fieldResponseDtos.add(convertToDto(field, nextFieldsId));
         }
         return fieldResponseDtos;
