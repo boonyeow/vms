@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkflowFormAssignmentDto {
+public class WorkflowFormAssignmentResponseDto {
     @JsonProperty("account")
     private AccountDto account;
 
+    @JsonProperty("workflowId")
+    private Long workflowId;
+
     @JsonProperty("formId")
     private FormRequestDto formId;
-
-
 }

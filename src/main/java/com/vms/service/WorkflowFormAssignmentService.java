@@ -1,5 +1,8 @@
 package com.vms.service;
 
+import com.vms.dto.AccountDto;
+import com.vms.dto.FormRequestDto;
+import com.vms.dto.WorkflowFormAssignmentResponseDto;
 import com.vms.model.Account;
 import com.vms.model.Form;
 import com.vms.model.Workflow;
@@ -10,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,5 +38,20 @@ public class WorkflowFormAssignmentService {
         return wfa.get().getAccount();
     }
 
-
+    public List<WorkflowFormAssignmentResponseDto> findWorkflowFormAssignmentsNotInFormSubmissionByAccountId(Long accountId)  {
+        List<WorkflowFormAssignment> workflowFormAssignments = workflowFormAssignmentRepository.findUnsubmittedWorkflowFormAssignmentsByAccountId(accountId);
+        List<WorkflowFormAssignmentResponseDto> response = new ArrayList<>();
+        for (WorkflowFormAssignment workflowFormAssignment : workflowFormAssignments) {
+            FormRequestDto formId = FormRequestDto.builder()
+                            .id(workflowFormAssignment.getForm().getId().getId())
+                                    .revisionNo(workflowFormAssignment.getForm().getId().getRevisionNo())
+                                            .build();
+            response.add(WorkflowFormAssignmentResponseDto.builder()
+                    .account(accountService.getAccountDto(workflowFormAssignment.getAccount()))
+                    .workflowId(workflowFormAssignment.getWorkflow().getId())
+                    .formId(formId)
+                    .build());
+        }
+        return response;
+    }
 }
