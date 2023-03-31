@@ -11,9 +11,4 @@ import java.util.List;
 
 @Repository
 public interface WorkflowRepository extends CrudRepository<Workflow, Long> {
-    @Query("SELECT DISTINCT w FROM Workflow w JOIN w.authorizedAccounts aa WHERE aa.id = :accountId")
-    List<Workflow> getWorkflowByAuthorizedUser(@Param("accountId") Long accountId);
-
-    @Query("SELECT w FROM Workflow w JOIN w.authorizedAccounts aa WHERE w.isFinal = true AND aa.accountType = :accountType")
-    List<Workflow> getByFinalAndAuthorizedAccounts(@Param("accountType") AccountType accountType);
 }

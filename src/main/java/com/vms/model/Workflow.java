@@ -34,10 +34,6 @@ public class Workflow {
     private List<Long> approvalSequence;
 
     @ManyToMany
-    @JoinTable(name = "workflow_account", joinColumns = @JoinColumn(name = "workflow_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
-    private Set<Account> authorizedAccounts;
-
-    @ManyToMany
     @JoinTable(name = "workflow_form", joinColumns = @JoinColumn(name = "workflow_id"), inverseJoinColumns = {
             @JoinColumn(name = "form_id", referencedColumnName = "id"),
             @JoinColumn(name = "form_revisionNo", referencedColumnName = "revisionNo") })

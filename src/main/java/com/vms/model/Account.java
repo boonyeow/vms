@@ -43,9 +43,6 @@ public class Account implements UserDetails {
     @OneToMany(mappedBy = "account")
     private List<Token> tokens;
 
-    @ManyToMany(mappedBy = "authorizedAccounts")
-    private List<Workflow> authorizedWorkflows;
-
     @OneToMany(mappedBy = "account")
     private Set<WorkflowFormAssignment> workflowFormAssignments;
 

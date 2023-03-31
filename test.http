@@ -50,4 +50,10 @@ Content-Type: application/json
 GET http://localhost:8080/api/workflows
 Authorization: Bearer {{auth_token}}
 
-###
+### Create a new workflow
+POST http://localhost:8080/api/workflows
+Authorization: Bearer {{auth_token}}
+
+### Delete a workflow
+DELETE http://localhost:8080/api/workflows/4
+Authorization: Bearer {{auth_token}}

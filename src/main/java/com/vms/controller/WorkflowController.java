@@ -22,21 +22,13 @@ public class WorkflowController {
 
     @PostMapping
     public ResponseEntity<Long> createWorkflow() {
-        Long workflowId= workflowService.createWorkflow();
+        Long workflowId = workflowService.createWorkflow();
         return ResponseEntity.ok(workflowId);
     }
 
-    @PostMapping("/{id}/authorizedAccount")
-    public ResponseEntity<Void> addAuthorizedAccount(@PathVariable Long id,
-                                                     @RequestParam Long accountId){
-        workflowService.addAuthorizedAccount(id, accountId);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}/authorizedAccount")
-    public ResponseEntity<Void> removeAuthorizedAccount(@PathVariable Long id,
-                                                        @RequestParam Long accountId){
-        workflowService.removeAuthorizedAccount(id, accountId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWorkflow(@PathVariable Long id){
+        workflowService.removeWorkflow(id);
         return ResponseEntity.ok().build();
     }
 

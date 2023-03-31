@@ -37,31 +37,13 @@ public class WorkflowService {
         return workflow.getId();
     }
 
-
-    public void addAuthorizedAccount(Long workflowId, Long accountId){
+    public void removeWorkflow(Long workflowId){
         Workflow workflow = getWorkflowById(workflowId);
-        Account account = accountService.getAccountById(accountId);
-
-        Set<Account> authorizedAccounts = workflow.getAuthorizedAccounts();
-        if(authorizedAccounts.contains(account)){
-            throw new RuntimeException("Account has already been assigned workflow id " + workflowId);
+        if(workflow.isFinal()){
+            throw new RuntimeException("Final workflow cannot be deleted.");
         }
-        authorizedAccounts.add(account);
-        workflow.setAuthorizedAccounts(authorizedAccounts);
-        workflowRepository.save(workflow);
-    }
-
-    public void removeAuthorizedAccount(Long workflowId, Long accountId){
-        Workflow workflow = getWorkflowById(workflowId);
-        Account account = accountService.getAccountById(accountId);
-
-        Set<Account> authorizedAccounts = workflow.getAuthorizedAccounts();
-        if(!authorizedAccounts.contains(account)){
-            throw new RuntimeException("Account cannot be found in workflow");
-        }
-        authorizedAccounts.remove(account);
-        workflow.setAuthorizedAccounts(authorizedAccounts);
-        workflowRepository.save(workflow);
+        System.out.println("hehehe");
+        workflowRepository.delete(workflow);
     }
 
     public void publishWorkflow(Long workflowId){
