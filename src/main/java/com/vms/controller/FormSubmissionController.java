@@ -60,6 +60,12 @@ public class FormSubmissionController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{id}/UpdateFormSubmission")
+    public ResponseEntity<Void> updateFormSubmission(@PathVariable Long id, @RequestBody FormSubmissionDto request){
+        formSubmissionService.updateFormSubmission(id, request);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateFormSubmissionStatus(@PathVariable Long id, @RequestBody FormSubmissionUpdateDto status){
         formSubmissionService.updateFormSubmissionStatus(id, status.getStatus());

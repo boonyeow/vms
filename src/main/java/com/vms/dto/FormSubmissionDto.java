@@ -1,6 +1,7 @@
 package com.vms.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vms.model.enums.StatusType;
 import com.vms.model.keys.FormCompositeKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class FormSubmissionDto {
     private FormCompositeKey fck;
 
     @JsonProperty("status")
-    private String status;
+    private StatusType status;
 
     @JsonProperty("submittedBy")
     private Long accountId;

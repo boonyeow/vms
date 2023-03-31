@@ -31,10 +31,10 @@ public class FormSubmissionService {
         Form form = formService.getFormByFck(request.getFck());
         Account account = accountService.getAccountById(request.getAccountId());
         AccountType accountType = account.getAccountType();
-        // Might want to check Field exists in Form before creating Form Submission - Extra check though if added
+
         Map<Long, String> fieldResponses = request.getFieldResponses();
         StatusType status;
-        if (request.getStatus() != "DRAFT") {
+        if (request.getStatus() != StatusType.DRAFT) {
             if (accountType == AccountType.VENDOR) {
                 status = StatusType.AWAITING_ADMIN;
             } else if (accountType == AccountType.ADMIN) {
@@ -52,6 +52,28 @@ public class FormSubmissionService {
                 .submittedBy(account)
                 .fieldResponses(fieldResponses)
                 .build();
+
+        formSubmissionRepository.save(formSubmission);
+    }
+
+    public void updateFormSubmission(Long formSubmissionId, FormSubmissionDto request) {
+        FormSubmission formSubmission = getFormSubmissionById(formSubmissionId);
+
+        Workflow workflow = workflowService.getWorkflowById(request.getWorkflowId());
+        Form form = formService.getFormByFck(request.getFck());
+        Account account = accountService.getAccountById(request.getAccountId());
+
+        formSubmission.setForm(form);
+        formSubmission.setWorkflow(workflow);
+        formSubmission.setSubmittedBy(account);
+
+        if (formSubmission.getStatus() == StatusType.DRAFT) {
+            formSubmission.setFieldResponses(request.getFieldResponses());
+        } else {
+            throw new RuntimeException("Form Submission has been submitted and cannot be changed");
+        }
+
+        formSubmission.setStatus(request.getStatus());
 
         formSubmissionRepository.save(formSubmission);
     }
