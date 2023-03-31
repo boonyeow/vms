@@ -21,10 +21,14 @@ public class FormSubmissionDto {
     @JsonProperty("fck")
     private FormCompositeKey fck;
 
+    @JsonProperty("status")
+    private String status;
+
     @JsonProperty("submittedBy")
     private Long accountId;
 
     @JsonProperty("fieldResponses")
     private Map<Long, String> fieldResponses;
+
 
 }

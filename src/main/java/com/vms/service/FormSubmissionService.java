@@ -34,15 +34,17 @@ public class FormSubmissionService {
         // Might want to check Field exists in Form before creating Form Submission - Extra check though if added
         Map<Long, String> fieldResponses = request.getFieldResponses();
         StatusType status;
-
-        if (accountType == AccountType.VENDOR) {
-            status = StatusType.AWAITING_ADMIN;
-        } else if (accountType == AccountType.ADMIN){
-            status = StatusType.AWAITING_APPROVER;
+        if (request.getStatus() != "DRAFT") {
+            if (accountType == AccountType.VENDOR) {
+                status = StatusType.AWAITING_ADMIN;
+            } else if (accountType == AccountType.ADMIN) {
+                status = StatusType.AWAITING_APPROVER;
+            } else {
+                throw new IllegalArgumentException("Forms cannot be submitted by Approver");
+            }
         } else {
-            throw new IllegalArgumentException("Forms cannot be submitted by Approver");
+            status = StatusType.DRAFT;
         }
-
         FormSubmission formSubmission = FormSubmission.builder()
                 .workflow(workflow)
                 .form(form)

@@ -4,5 +4,6 @@ public enum StatusType {
     AWAITING_ADMIN,
     AWAITING_APPROVER,
     APPROVED,
-    REJECTED
+    REJECTED,
+    DRAFT
 }
