@@ -20,6 +20,17 @@ public class AccountService {
         return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
     }
 
+    public AccountDto getAccountDto(Account account){
+        return AccountDto.builder()
+                .id(account.getId())
+                .name(account.getName())
+                .email(account.getEmail())
+                .company(account.getCompany())
+                .accountType(account.getAccountType())
+                .build();
+    }
+
+
     public Optional<Account> getAccountByEmail(String email){
         return accountRepository.findByEmail(email);
     }
@@ -32,14 +43,7 @@ public class AccountService {
     public List<AccountDto> getAccountDtoList(List<Account> authorizedAccounts){
         List<AccountDto> accountDtoList = new ArrayList<>();
         for(Account account: authorizedAccounts){
-            accountDtoList.add(AccountDto.builder()
-                    .id(account.getId())
-                    .name(account.getName())
-                    .email(account.getEmail())
-                    .company(account.getCompany())
-                    .accountType(account.getAccountType())
-                    .build()
-            );
+            accountDtoList.add(getAccountDto(account));
         }
         return accountDtoList;
     }
@@ -55,14 +59,7 @@ public class AccountService {
     public List<AccountDto> getAccountDtoList(Iterable<Account> accounts) {
         List<AccountDto> accountDtoList = new ArrayList<>();
         accounts.forEach(account -> {
-            accountDtoList.add(AccountDto.builder()
-                    .id(account.getId())
-                    .name(account.getName())
-                    .email(account.getEmail())
-                    .company(account.getCompany())
-                    .accountType(account.getAccountType())
-                    .build()
-            );
+            accountDtoList.add(getAccountDto(account));
         });
         return accountDtoList;
     }
@@ -77,5 +74,9 @@ public class AccountService {
         account.setEmail(request.getEmail());
         account.setCompany(request.getCompany());
         accountRepository.save(account);
+    }
+
+    public Account getAccountFromDto(AccountDto accountDto){
+        return getAccountById(accountDto.getId());
     }
 }

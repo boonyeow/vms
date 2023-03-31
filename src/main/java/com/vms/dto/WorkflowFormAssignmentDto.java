@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkflowFormAssignmentDto {
-    @JsonProperty("accountId")
-    private Long accountId;
+    @JsonProperty("account")
+    private AccountDto account;
     @JsonProperty("formId")
     private FormRequestDto formId;
 }

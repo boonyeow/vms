@@ -39,6 +39,20 @@ public class DatabaseInitializer implements ApplicationRunner {
                     .company("HELLOOOOOOOOO")
                     .accountType(AccountType.VENDOR)
                     .build();
+            Account vendor1 = Account.builder()
+                    .name("vendor1")
+                    .email("vendor1@kmail.com")
+                    .password(passwordEncoder.encode("blopblopblop"))
+                    .company("HELLOOOOOOOOO")
+                    .accountType(AccountType.VENDOR)
+                    .build();
+            Account vendor2 = Account.builder()
+                    .name("vendor2")
+                    .email("vendor2@kmail.com")
+                    .password(passwordEncoder.encode("blopblopblop"))
+                    .company("HELLOOOOOOOOO")
+                    .accountType(AccountType.VENDOR)
+                    .build();
             Account approver = Account.builder()
                     .name("approver")
                     .email("approver@kmail.com")
@@ -47,7 +61,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                     .accountType(AccountType.APPROVER)
                     .build();
 
-            accountRepository.saveAll(List.of(admin , vendor, approver));
+            accountRepository.saveAll(List.of(admin , vendor, vendor1, vendor2, approver));
         }
     }
 

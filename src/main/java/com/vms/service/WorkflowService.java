@@ -102,7 +102,7 @@ public class WorkflowService {
             workflowFormAssignments.add(WorkflowFormAssignment.builder()
                             .workflow(workflow)
                             .form(form)
-                            .account(accountService.getAccountById(wfaDto.getAccountId()))
+                            .account(accountService.getAccountFromDto(wfaDto.getAccount()))
                             .build());
 
             newApprovalSequence.add(fck.getId());
@@ -127,12 +127,11 @@ public class WorkflowService {
 
         for(Form form : forms){
             Account assignedUser = workflowFormAssignmentService.findAssignedUser(form, workflow);
-            Long accountId = (assignedUser == null) ? null : assignedUser.getId();
+            AccountDto accountDto = (assignedUser == null) ? null : accountService.getAccountDto(assignedUser);
             workflowForms.add(
             WorkflowFormDto.builder()
-                    .formId(form.getId().getId())
-                    .revisionNo(form.getId().getRevisionNo())
-                    .accountId(accountId)
+                    .formId(form.getId())
+                    .account(accountDto)
                     .name(form.getName())
                     .description(form.getDescription())
                     .build());
