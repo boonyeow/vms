@@ -19,4 +19,7 @@ public class WorkflowFormAssignmentResponseDto {
 
     @JsonProperty("formId")
     private FormRequestDto formId;
+
+    @JsonProperty("formName")
+    private String formName;
 }
