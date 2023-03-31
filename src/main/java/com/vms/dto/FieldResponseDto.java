@@ -26,7 +26,7 @@ public class FieldResponseDto {
     @Nullable
     private Long regexId;
     @Nullable
-    private Map<String, Long> nextFieldsId;
+    private Map<String, Long> options;
     @Nullable
     private FormCompositeKey formCompositeKey;
 }

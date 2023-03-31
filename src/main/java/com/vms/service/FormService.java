@@ -193,7 +193,7 @@ public class FormService {
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
-                .nextFieldsId(nextFieldsId)
+                .options(nextFieldsId)
                 .regexId(field.getRegex() == null ? null : field.getRegex().getId())
                 .formCompositeKey(field.getForm().getId())
                 .build();

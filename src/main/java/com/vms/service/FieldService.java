@@ -215,7 +215,7 @@ public class FieldService {
                 .helpText(field.getHelpText())
                 .isRequired(field.getIsRequired())
                 .fieldType(field.getFieldType())
-                .nextFieldsId(nextFieldsId)
+                .options(nextFieldsId)
                 .regexId(field.getRegex() == null ? null : field.getRegex().getId())
                 .formCompositeKey(field.getForm().getId())
                 .build();
@@ -242,14 +242,10 @@ public class FieldService {
     }
 
     private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap) {
-
-        System.out.println("ENTRANCEEEEEE");
-
         System.out.println(nextFieldsMap);
 
         Map<String, Long> nextFieldsId = new HashMap<>();
         for (String option : nextFieldsMap.keySet()) {
-            System.out.println("HELLELEOINDZKLDNCKLASNLSNLKNKALNDKLANDLKNDKLNSLNASKLDNALKDNLASNDLSANLSDNLASNDLKSDN");
             System.out.println(option);
             Field nextField = nextFieldsMap.get(option);
             if (nextField != null) {
