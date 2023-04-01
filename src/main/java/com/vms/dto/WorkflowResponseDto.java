@@ -1,6 +1,7 @@
 package com.vms.dto;
 
 
+import com.vms.model.keys.FormCompositeKey;
 import lombok.*;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public class WorkflowResponseDto {
     private boolean isFinal;
     private List<WorkflowFormDto> forms;
 
-    private List<Long> approvalSequence;
+    private List<FormCompositeKey> approvalSequence;
 }

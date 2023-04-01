@@ -67,7 +67,7 @@ public class WorkflowService {
         workflow.setName(request.getName());
         workflow.setFinal(request.isFinal());
 
-        List<Long> newApprovalSequence = new ArrayList<>();
+        List<FormCompositeKey> newApprovalSequence = new ArrayList<>();
         List<Form> newForms = new ArrayList<>();
 
         List<WorkflowFormAssignment> workflowFormAssignments = new ArrayList<>();
@@ -85,7 +85,7 @@ public class WorkflowService {
                             .account(accountService.getAccountFromDto(wfaDto.getAccount()))
                             .build());
 
-            newApprovalSequence.add(fck.getId());
+            newApprovalSequence.add(fck);
             newForms.add(form);
         }
         workflow.setApprovalSequence(newApprovalSequence);
@@ -142,48 +142,4 @@ public class WorkflowService {
         return workflowRepository.findById(id).orElseThrow(() -> new RuntimeException("Workflow not found"));
     }
 
-    public void addFormToWorkflow(FormCompositeKey fck, Long id){
-        Workflow workflow = getWorkflowById(id);
-        if(workflow.isFinal()){
-            throw new RuntimeException("Workflow is final and cannot be edited");
-        }
-        Form form = formService.getFormByFck(fck);
-
-        if (!form.isFinal()){
-            throw new RuntimeException("Form must be final before it can be added");
-        }
-
-        List<Long> newApprovalSequence = workflow.getApprovalSequence();
-        newApprovalSequence.add(fck.getId());
-        workflow.setApprovalSequence(newApprovalSequence);
-
-        List<Form> newForms = workflow.getForms();
-        newForms.add(form);
-        workflow.setForms(newForms);
-
-        workflowRepository.save(workflow);
-    }
-
-    public void removeFormFromWorkflow(FormCompositeKey fck, Long id){
-        Workflow workflow = getWorkflowById(id);
-        if(workflow.isFinal()){
-            throw new RuntimeException("Workflow is final and cannot be edited");
-        }
-        Form form = formService.getFormByFck(fck);
-
-        List<Long> currentApprovalSequence = workflow.getApprovalSequence();
-        List<Long> newApprovalSequence = new ArrayList<>();
-        for(Long sequence: currentApprovalSequence){
-            if(!fck.getId().equals(sequence)){
-                newApprovalSequence.add(sequence);
-            }
-        }
-        workflow.setApprovalSequence(newApprovalSequence);
-
-        List<Form> newForms = workflow.getForms();
-        newForms.remove(form);
-        workflow.setForms(newForms);
-
-        workflowRepository.save(workflow);
-    }
 }

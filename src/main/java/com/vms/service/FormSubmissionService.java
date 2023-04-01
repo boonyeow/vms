@@ -9,6 +9,7 @@ import com.vms.model.enums.AccountType;
 import com.vms.model.enums.StatusType;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.repository.FormSubmissionRepository;
+import jdk.jshell.Snippet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +91,19 @@ public class FormSubmissionService {
 
     public void updateFormSubmissionStatus(Long formSubmissionId, StatusType statusType) {
         FormSubmission formSubmission = getFormSubmissionById(formSubmissionId);
+        List<FormCompositeKey> approvalSequence = formSubmission.getWorkflow().getApprovalSequence();
+        for (FormCompositeKey fck : approvalSequence) {
+            // if loop reaches fck without throwing error, it means the review is done in order
+            if ((fck.getId() == formSubmission.getForm().getId().getId()) && (fck.getRevisionNo() == formSubmission.getForm().getId().getRevisionNo())) {
+                break;
+            } else {
+                Form form = formService.getFormByFck(fck);
+                List<FormSubmission> fsr = formSubmissionRepository.findByWorkflowAndForm(formSubmission.getWorkflow(), form);
+                if ((fsr.get(0).getStatus() != StatusType.APPROVED)) {
+                    throw new RuntimeException("Forms must be reviewed and approved in the sequence specified");
+                }
+            }
+        }
         formSubmission.setStatus(statusType);
         formSubmissionRepository.save(formSubmission);
     }

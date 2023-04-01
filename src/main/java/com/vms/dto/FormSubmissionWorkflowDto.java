@@ -1,5 +1,6 @@
 package com.vms.dto;
 
+import com.vms.model.keys.FormCompositeKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,5 @@ public class FormSubmissionWorkflowDto {
 
     private boolean isFinal;
 
-    private List<Long> approvalSequence;
+    private List<FormCompositeKey> approvalSequence;
 }

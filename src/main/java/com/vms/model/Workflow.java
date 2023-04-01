@@ -1,5 +1,6 @@
 package com.vms.model;
 
+import com.vms.model.keys.FormCompositeKey;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public class Workflow {
     private boolean isFinal;
 
     @ElementCollection
-    private List<Long> approvalSequence;
+    private List<FormCompositeKey> approvalSequence;
 
     @ManyToMany
     @JoinTable(name = "workflow_form", joinColumns = @JoinColumn(name = "workflow_id"), inverseJoinColumns = {
