@@ -42,7 +42,6 @@ public class WorkflowService {
         if(workflow.isFinal()){
             throw new RuntimeException("Final workflow cannot be deleted.");
         }
-        System.out.println("hehehe");
         workflowRepository.delete(workflow);
     }
 
@@ -71,7 +70,6 @@ public class WorkflowService {
         List<Long> newApprovalSequence = new ArrayList<>();
         List<Form> newForms = new ArrayList<>();
 
-        System.out.println("HELLO");
         List<WorkflowFormAssignment> workflowFormAssignments = new ArrayList<>();
         for (WorkflowFormAssignmentDto wfaDto : request.getWorkflowFormAssignments()) {
             FormCompositeKey fck = new FormCompositeKey(wfaDto.getFormId().getId(), wfaDto.getFormId().getRevisionNo());
@@ -90,7 +88,6 @@ public class WorkflowService {
             newApprovalSequence.add(fck.getId());
             newForms.add(form);
         }
-        System.out.println("HELLO");
         workflow.setApprovalSequence(newApprovalSequence);
         workflow.setForms(newForms);
         workflow.setWorkflowFormAssignments(workflowFormAssignments);
