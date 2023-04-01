@@ -51,4 +51,7 @@ public class FormSubmission {
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     private Account submittedBy;
 
+    @Column(nullable = false)
+    private String dateOfSubmission;
+
 }

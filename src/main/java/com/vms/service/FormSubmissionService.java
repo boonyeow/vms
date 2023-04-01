@@ -1,5 +1,8 @@
 package com.vms.service;
 
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+
 import com.vms.dto.*;
 import com.vms.model.*;
 import com.vms.model.enums.AccountType;
@@ -8,6 +11,7 @@ import com.vms.model.keys.FormCompositeKey;
 import com.vms.repository.FormSubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,6 +35,8 @@ public class FormSubmissionService {
         Form form = formService.getFormByFck(request.getFck());
         Account account = accountService.getAccountById(request.getAccountId());
         AccountType accountType = account.getAccountType();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime now = LocalDateTime.now();
 
         Map<Long, String> fieldResponses = request.getFieldResponses();
         StatusType status;
@@ -51,6 +57,7 @@ public class FormSubmissionService {
                 .status(status)
                 .submittedBy(account)
                 .fieldResponses(fieldResponses)
+                .dateOfSubmission(dtf.format(now))
                 .build();
 
         formSubmissionRepository.save(formSubmission);
@@ -62,10 +69,13 @@ public class FormSubmissionService {
         Workflow workflow = workflowService.getWorkflowById(request.getWorkflowId());
         Form form = formService.getFormByFck(request.getFck());
         Account account = accountService.getAccountById(request.getAccountId());
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime now = LocalDateTime.now();
 
         formSubmission.setForm(form);
         formSubmission.setWorkflow(workflow);
         formSubmission.setSubmittedBy(account);
+        formSubmission.setDateOfSubmission(dtf.format(now));
 
         if (formSubmission.getStatus() == StatusType.DRAFT) {
             formSubmission.setFieldResponses(request.getFieldResponses());
@@ -173,6 +183,7 @@ public class FormSubmissionService {
                     .status(formSubmission.getStatus())
                     .submittedBy(accountDto)
                     .fieldResponses(formSubmission.getFieldResponses())
+                    .dateOfSubmission(formSubmission.getDateOfSubmission())
                     .build();
             fsrDtoList.add(fsr);
         }

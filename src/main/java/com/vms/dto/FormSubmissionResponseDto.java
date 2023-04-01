@@ -36,4 +36,7 @@ public class FormSubmissionResponseDto {
 
     @JsonProperty("fieldResponses")
     private Map<Long, String> fieldResponses;
+
+    @JsonProperty("dateOfSubmission")
+    private String dateOfSubmission;
 }
