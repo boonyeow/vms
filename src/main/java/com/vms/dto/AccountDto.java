@@ -13,4 +13,13 @@ public class AccountDto {
     private String email;
     private String company;
     private AccountType accountType;
+
+    private String contactNumber;
+
+    private String natureOfBusiness;
+
+    private String registrationNumber;
+
+    private String gstRegistrationNumber;
+    private Boolean isArchived;
 }

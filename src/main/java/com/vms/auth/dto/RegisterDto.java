@@ -12,4 +12,13 @@ public class RegisterDto {
     private String password;
     private String company;
     private AccountType accountType;
+
+    private String contactNumber;
+
+    private String natureOfBusiness;
+
+    private String registrationNumber;
+
+    private String gstRegistrationNumber;
+    private Boolean isArchived;
 }

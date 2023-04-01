@@ -36,6 +36,18 @@ public class Account implements UserDetails {
     @Column(nullable = false)
     private String company;
 
+    @Column(nullable = true)
+    private String contactNumber;
+    @Column(nullable = true)
+    private String natureOfBusiness;
+    @Column(nullable = true)
+    private String registrationNumber;
+    @Column(nullable = true)
+    private String gstRegistrationNumber;
+
+    @Column
+    private Boolean isArchived;
+
     @Enumerated(EnumType.STRING)
     @Column(name="account_type", nullable = false)
     private AccountType accountType;

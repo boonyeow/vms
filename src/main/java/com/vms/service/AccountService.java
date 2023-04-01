@@ -27,6 +27,11 @@ public class AccountService {
                 .name(account.getName())
                 .email(account.getEmail())
                 .company(account.getCompany())
+                .contactNumber(account.getContactNumber())
+                .natureOfBusiness(account.getNatureOfBusiness())
+                .registrationNumber(account.getRegistrationNumber())
+                .gstRegistrationNumber(account.getGstRegistrationNumber())
+                .isArchived(account.getIsArchived())
                 .accountType(account.getAccountType())
                 .build();
     }
@@ -74,6 +79,16 @@ public class AccountService {
         account.setName(request.getName());
         account.setEmail(request.getEmail());
         account.setCompany(request.getCompany());
+        account.setContactNumber(request.getContactNumber());
+        account.setNatureOfBusiness(request.getNatureOfBusiness());
+        account.setRegistrationNumber(request.getRegistrationNumber());
+        account.setGstRegistrationNumber(request.getRegistrationNumber());
+        accountRepository.save(account);
+    }
+
+    public void deleteAccount(Long accountId){
+        Account account = getAccountById(accountId);
+        account.setIsArchived(true);
         accountRepository.save(account);
     }
 
