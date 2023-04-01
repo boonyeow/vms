@@ -7,6 +7,9 @@ import com.vms.model.Form;
 import com.vms.model.Workflow;
 import com.vms.model.enums.StatusType;
 import com.vms.model.keys.FormCompositeKey;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,4 +42,11 @@ public class FormSubmissionResponseDto {
 
     @JsonProperty("dateOfSubmission")
     private String dateOfSubmission;
+
+    @JsonProperty("reviewedByAdmin")
+    private AccountDto reviewedByAdmin;
+
+    @JsonProperty("reviewedByApprover")
+    private AccountDto reviewedByApprover;
+
 }

@@ -38,16 +38,6 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST,"/api/auth/logout").hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name(), AccountType.APPROVER.name())
                                 .requestMatchers(HttpMethod.GET, "/api/regex").hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name(), AccountType.APPROVER.name())
                                 .requestMatchers(
-                                        "/api/workflows",
-                                        "/api/workflows/**",
-                                        "/api/forms",
-                                        "/api/forms/**",
-                                        "/api/formsubmission",
-                                        "/api/formsubmission/**",
-                                        "/api/fields",
-                                        "/api/fields/**"
-                                ).hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name(), AccountType.APPROVER.name())
-                                .requestMatchers(
                                         "/api/accounts",
                                         "/api/auth/register",
                                         "/api/patterns",
@@ -57,11 +47,19 @@ public class SecurityConfig {
                                         "/api/workflows/**",
                                         "/api/email",
                                         "/api/email/**",
+                                        "/api/fields",
+                                        "/api/fields/**"
+                                ).hasAuthority(AccountType.ADMIN.name())
+                                .requestMatchers(
+                                        "/api/workflows",
+                                        "/api/workflows/**",
+                                        "/api/forms",
+                                        "/api/forms/**",
                                         "/api/formsubmission",
                                         "/api/formsubmission/**",
                                         "/api/fields",
                                         "/api/fields/**"
-                                ).hasAuthority(AccountType.ADMIN.name())
+                                ).hasAnyAuthority(AccountType.VENDOR.name(), AccountType.ADMIN.name(), AccountType.APPROVER.name())
                                .anyRequest().authenticated()
                 )
                 .sessionManagement()

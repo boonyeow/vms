@@ -54,4 +54,10 @@ public class FormSubmission {
     @Column(nullable = false)
     private String dateOfSubmission;
 
+    @ManyToOne(optional = true, cascade = CascadeType.ALL)
+    private Account reviewedByAdmin;
+
+    @ManyToOne(optional = true, cascade = CascadeType.ALL)
+    private Account reviewedByApprover;
+
 }

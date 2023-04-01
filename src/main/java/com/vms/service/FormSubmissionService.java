@@ -4,9 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
 import com.vms.dto.*;
-import com.vms.exception.FormSubmissionImmutableException;
-import com.vms.exception.FormSubmissionNotFoundException;
-import com.vms.exception.InvalidSequenceException;
+import com.vms.exception.*;
 import com.vms.model.*;
 import com.vms.model.enums.AccountType;
 import com.vms.model.enums.StatusType;
@@ -37,9 +35,27 @@ public class FormSubmissionService {
         Workflow workflow = workflowService.getWorkflowById(request.getWorkflowId());
         Form form = formService.getFormByFck(request.getFck());
         Account account = accountService.getAccountById(request.getAccountId());
+
+        List<FormCompositeKey> workflowApprovalSequence = workflow.getApprovalSequence();
+        List<WorkflowFormAssignment> workflowFormAssignments = workflow.getWorkflowFormAssignments();
+        if (!workflowApprovalSequence.contains(request.getFck())) {
+            throw new FormNotFoundException("Form cannot be found in the Workflow specified");
+        }
+        boolean exist = false;
+        for (WorkflowFormAssignment wfa : workflowFormAssignments) {
+            if ((wfa.getForm().getId() == request.getFck()) && (wfa.getAccount().getId() == request.getAccountId())) {
+                exist = true;
+                break;
+            }
+        }
+        if (!exist) {
+            throw new UnauthorizedAccessException("Not allowed to submit responses for forms that you not permitted to");
+        }
+
         AccountType accountType = account.getAccountType();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDateTime now = LocalDateTime.now();
+        Account reviewedBy = null;
 
         Map<Long, String> fieldResponses = request.getFieldResponses();
         StatusType status;
@@ -47,6 +63,7 @@ public class FormSubmissionService {
             if (accountType == AccountType.VENDOR) {
                 status = StatusType.AWAITING_ADMIN;
             } else if (accountType == AccountType.ADMIN) {
+                reviewedBy = account;
                 status = StatusType.AWAITING_APPROVER;
             } else {
                 throw new IllegalArgumentException("Forms cannot be submitted by Approver");
@@ -54,6 +71,7 @@ public class FormSubmissionService {
         } else {
             status = StatusType.DRAFT;
         }
+
         FormSubmission formSubmission = FormSubmission.builder()
                 .workflow(workflow)
                 .form(form)
@@ -61,6 +79,8 @@ public class FormSubmissionService {
                 .submittedBy(account)
                 .fieldResponses(fieldResponses)
                 .dateOfSubmission(dtf.format(now))
+                .reviewedByAdmin(reviewedBy)
+                .reviewedByApprover(null)
                 .build();
 
         formSubmissionRepository.save(formSubmission);
@@ -86,12 +106,22 @@ public class FormSubmissionService {
             throw new FormSubmissionImmutableException("Form Submission has been submitted and cannot be changed");
         }
 
+        Account reviewer = accountService.getAccountById(request.getReviewerId());
+
+        if (request.getStatus() != StatusType.DRAFT) {
+            if (reviewer.getAccountType() == AccountType.ADMIN) {
+                formSubmission.setReviewedByAdmin(reviewer);
+            } else if (reviewer.getAccountType() == AccountType.APPROVER) {
+                formSubmission.setReviewedByApprover(reviewer);
+            }
+        }
+
         formSubmission.setStatus(request.getStatus());
 
         formSubmissionRepository.save(formSubmission);
     }
 
-    public void updateFormSubmissionStatus(Long formSubmissionId, StatusType statusType) {
+    public void updateFormSubmissionStatus(Long formSubmissionId, StatusType statusType, Long accountId) {
         FormSubmission formSubmission = getFormSubmissionById(formSubmissionId);
         List<FormCompositeKey> approvalSequence = formSubmission.getWorkflow().getApprovalSequence();
         for (FormCompositeKey fck : approvalSequence) {
@@ -106,6 +136,13 @@ public class FormSubmissionService {
                 }
             }
         }
+        Account reviewer = accountService.getAccountById(accountId);
+        if (reviewer.getAccountType() == AccountType.ADMIN) {
+            formSubmission.setReviewedByAdmin(reviewer);
+        } else if (reviewer.getAccountType() == AccountType.APPROVER) {
+            formSubmission.setReviewedByApprover(reviewer);
+        }
+
         formSubmission.setStatus(statusType);
         formSubmissionRepository.save(formSubmission);
     }
@@ -141,6 +178,10 @@ public class FormSubmissionService {
     public List<FormSubmissionResponseDto> getFormSubmissionsBySubmitter(Long accountId) {
         Account account = accountService.getAccountById(accountId);
         return generateFsrDto(formSubmissionRepository.findBySubmittedBy(account));
+    }
+
+    public List<FormSubmissionResponseDto> getFormSubmissionsByReviewer(Long accountId) {
+        return generateFsrDto(formSubmissionRepository.findAllByReviewerId(accountId));
     }
 
     private List<FormSubmissionResponseDto> generateFsrDto(List<FormSubmission> formSubmissions){
@@ -191,6 +232,15 @@ public class FormSubmissionService {
                     .company(account.getCompany())
                     .accountType(account.getAccountType())
                     .build();
+            AccountDto reviewedByAdmin = null;
+            if (formSubmission.getReviewedByAdmin() != null) {
+                reviewedByAdmin = accountService.getAccountDto(formSubmission.getReviewedByAdmin());
+            }
+
+            AccountDto reviewedByApprover = null;
+            if (formSubmission.getReviewedByApprover() != null) {
+                reviewedByApprover = accountService.getAccountDto(formSubmission.getReviewedByApprover());
+            }
 
             FormSubmissionResponseDto fsr = FormSubmissionResponseDto.builder()
                     .id(formSubmission.getId())
@@ -200,6 +250,8 @@ public class FormSubmissionService {
                     .submittedBy(accountDto)
                     .fieldResponses(formSubmission.getFieldResponses())
                     .dateOfSubmission(formSubmission.getDateOfSubmission())
+                    .reviewedByAdmin(reviewedByAdmin)
+                    .reviewedByApprover(reviewedByApprover)
                     .build();
             fsrDtoList.add(fsr);
         }

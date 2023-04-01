@@ -31,5 +31,6 @@ public class FormSubmissionDto {
     @JsonProperty("fieldResponses")
     private Map<Long, String> fieldResponses;
 
-
+    @JsonProperty("reviewer")
+    private Long reviewerId;
 }

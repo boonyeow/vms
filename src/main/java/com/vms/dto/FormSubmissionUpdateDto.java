@@ -15,4 +15,7 @@ public class FormSubmissionUpdateDto {
     @JsonProperty("status")
     private StatusType status;
 
+    @JsonProperty("reviewer")
+    private Long accountId;
+
 }

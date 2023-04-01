@@ -54,6 +54,12 @@ public class FormSubmissionController {
         return ResponseEntity.ok(fsrDtoList);
     }
 
+    @GetMapping("/getByReviewerId")
+    public ResponseEntity<List<FormSubmissionResponseDto>> getFormSubmissionsByReviewer(@RequestParam String accountId){
+        List<FormSubmissionResponseDto> fsrDtoList = formSubmissionService.getFormSubmissionsByReviewer(Long.parseLong(accountId));
+        return ResponseEntity.ok(fsrDtoList);
+    }
+
     @PostMapping()
     public ResponseEntity<Void> createFormSubmission(@RequestBody FormSubmissionDto request){
         formSubmissionService.createFormSubmission(request);
@@ -68,7 +74,7 @@ public class FormSubmissionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateFormSubmissionStatus(@PathVariable Long id, @RequestBody FormSubmissionUpdateDto status){
-        formSubmissionService.updateFormSubmissionStatus(id, status.getStatus());
+        formSubmissionService.updateFormSubmissionStatus(id, status.getStatus(), status.getAccountId());
         return ResponseEntity.ok().build();
     }
 
