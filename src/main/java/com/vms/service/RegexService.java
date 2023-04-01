@@ -1,6 +1,9 @@
 package com.vms.service;
 
 import com.vms.dto.RegexDto;
+import com.vms.exception.DuplicatePatternsException;
+import com.vms.exception.ReferentialIntegrityException;
+import com.vms.exception.RegexNotFoundException;
 import com.vms.model.Regex;
 import com.vms.repository.RegexRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,7 @@ public class RegexService {
 
     public void createRegex(RegexDto request){
         if(regexRepository.existsByPattern(request.getPattern())){
-            throw new RuntimeException("Existing pattern found");
+            throw new DuplicatePatternsException("Existing pattern found");
         }
 
         Regex regex = Regex.builder()
@@ -31,7 +34,7 @@ public class RegexService {
         Regex regex = getRegexById(id);
         if(regex.getFields().isEmpty()){
             // Reject delete if it violates referential integrity
-            throw new RuntimeException("Not allowed. Please ensure no other fields are using the regex before deleting.");
+            throw new ReferentialIntegrityException("Not allowed. Please ensure no other fields are using the regex before deleting.");
         }
 
         regexRepository.delete(regex);
@@ -40,12 +43,12 @@ public class RegexService {
     public void updateRegex(Long id, RegexDto request){
         Regex regex = getRegexById(id);
         if(regexRepository.existsByPattern(request.getPattern())){
-            throw new RuntimeException("Existing pattern found");
+            throw new DuplicatePatternsException("Existing pattern found");
         }
 
         if(regex.getFields().isEmpty()){
             // Check for referential integrity violation
-           throw new RuntimeException("Not allowed. Please ensure no other fields are using the regex before deleting.");
+           throw new ReferentialIntegrityException("Not allowed. Please ensure no other fields are using the regex before deleting.");
         }
 
         regex.setName(request.getName());
@@ -71,7 +74,7 @@ public class RegexService {
     }
     public Regex getRegexById(Long id){
         return regexRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Regex not found"));
+                .orElseThrow(() -> new RegexNotFoundException("Regex not found"));
     }
 
     public Boolean isPatternMatched(String input, String pattern){

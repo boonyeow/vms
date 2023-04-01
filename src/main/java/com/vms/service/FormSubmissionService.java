@@ -4,12 +4,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
 import com.vms.dto.*;
+import com.vms.exception.FormSubmissionImmutableException;
+import com.vms.exception.FormSubmissionNotFoundException;
+import com.vms.exception.InvalidSequenceException;
 import com.vms.model.*;
 import com.vms.model.enums.AccountType;
 import com.vms.model.enums.StatusType;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.repository.FormSubmissionRepository;
-import jdk.jshell.Snippet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +83,7 @@ public class FormSubmissionService {
         if (formSubmission.getStatus() == StatusType.DRAFT) {
             formSubmission.setFieldResponses(request.getFieldResponses());
         } else {
-            throw new RuntimeException("Form Submission has been submitted and cannot be changed");
+            throw new FormSubmissionImmutableException("Form Submission has been submitted and cannot be changed");
         }
 
         formSubmission.setStatus(request.getStatus());
@@ -100,7 +102,7 @@ public class FormSubmissionService {
                 Form form = formService.getFormByFck(fck);
                 List<FormSubmission> fsr = formSubmissionRepository.findByWorkflowAndForm(formSubmission.getWorkflow(), form);
                 if ((fsr.get(0).getStatus() != StatusType.APPROVED)) {
-                    throw new RuntimeException("Forms must be reviewed and approved in the sequence specified");
+                    throw new InvalidSequenceException("Forms must be reviewed and approved in the sequence specified");
                 }
             }
         }
@@ -205,7 +207,7 @@ public class FormSubmissionService {
     }
 
     public FormSubmission getFormSubmissionById(Long id){
-        return formSubmissionRepository.findById(id).orElseThrow(() -> new RuntimeException("Form submission not found"));
+        return formSubmissionRepository.findById(id).orElseThrow(() -> new FormSubmissionNotFoundException("Form submission not found"));
     }
 
     private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap){

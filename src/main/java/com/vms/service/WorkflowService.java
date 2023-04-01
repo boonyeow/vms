@@ -1,6 +1,9 @@
 package com.vms.service;
 
 import com.vms.dto.*;
+import com.vms.exception.FormFinalStateException;
+import com.vms.exception.WorkflowFinalStateException;
+import com.vms.exception.WorkflowNotFoundException;
 import com.vms.model.Account;
 import com.vms.model.Form;
 import com.vms.model.Workflow;
@@ -40,7 +43,7 @@ public class WorkflowService {
     public void removeWorkflow(Long workflowId){
         Workflow workflow = getWorkflowById(workflowId);
         if(workflow.isFinal()){
-            throw new RuntimeException("Final workflow cannot be deleted.");
+            throw new WorkflowFinalStateException("Final workflow cannot be deleted.");
         }
         workflowRepository.delete(workflow);
     }
@@ -61,7 +64,7 @@ public class WorkflowService {
         Workflow workflow = getWorkflowById(id);
 
         if (workflow.isFinal()) {
-            throw new RuntimeException("Workflow is final and cannot be updated");
+            throw new WorkflowFinalStateException("Workflow is final and cannot be updated");
         }
 
         workflow.setName(request.getName());
@@ -76,7 +79,7 @@ public class WorkflowService {
             Form form = formService.getFormByFck(fck);
 
             if (!form.isFinal()){
-                throw new RuntimeException("Form must be final before it can be added");
+                throw new FormFinalStateException("Form must be final before it can be added");
             }
 
             workflowFormAssignments.add(WorkflowFormAssignment.builder()
@@ -139,7 +142,7 @@ public class WorkflowService {
 
 
     public Workflow getWorkflowById(Long id){
-        return workflowRepository.findById(id).orElseThrow(() -> new RuntimeException("Workflow not found"));
+        return workflowRepository.findById(id).orElseThrow(() -> new WorkflowNotFoundException("Workflow not found"));
     }
 
 }

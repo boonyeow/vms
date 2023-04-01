@@ -3,6 +3,7 @@ package com.vms.service;
 import com.vms.dto.AccountDto;
 import com.vms.dto.FieldRequestDto;
 import com.vms.dto.FieldResponseDto;
+import com.vms.exception.RecursiveStructureException;
 import com.vms.model.Account;
 import com.vms.model.Field;
 import com.vms.model.Form;
@@ -16,6 +17,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.vms.exception.FieldNotFoundException;
 
 import java.util.*;
 import java.util.function.Function;
@@ -71,7 +73,7 @@ public class FieldService {
                             .form(form)
                             .build();
                     Map<String, Field> innerNextFields = FieldDtotoField(nextField.getOptions());
-                    System.out.println(innerNextFields);
+                    // System.out.println(innerNextFields);
                     // convert innerNextFields to String String
                     List<String> innerNextFieldsString = new ArrayList<>();
                     for (String innerOption : innerNextFields.keySet()) {
@@ -135,9 +137,9 @@ public class FieldService {
             for (String option : nextFieldsId.keySet()) {
                 Long linkedFieldId = nextFieldsId.get(option);
                 Field linkedField = fieldRepository.findById(linkedFieldId)
-                        .orElseThrow(() -> new RuntimeException("Field not found"));
+                        .orElseThrow(() -> new FieldNotFoundException("Field not found"));
                 if (linkedField.getFieldType() != FieldType.TEXTBOX) {
-                    throw new RuntimeException("Recursive structure found");
+                    throw new RecursiveStructureException("Recursive structure found");
                 }
                 nextFieldsMap.put(option, linkedField);
             }
@@ -147,7 +149,7 @@ public class FieldService {
 
     public void deleteField(Long id) {
         Field field = fieldRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Field not found"));
+                .orElseThrow(() -> new FieldNotFoundException("Field not found"));
         fieldRepository.delete(field);
     }
 
@@ -163,10 +165,10 @@ public class FieldService {
                 for (String option : optionsAlternativeHolder) {
                     nextFieldsId.put(option, null);
                 }
-                System.out.println(nextFieldsId);
+                // System.out.println(nextFieldsId);
 
             }
-            System.out.println(nextFieldsId);
+            // System.out.println(nextFieldsId);
             fieldResponseDtos.add(convertToDto(field, nextFieldsId));
         }
         return fieldResponseDtos;
@@ -174,7 +176,7 @@ public class FieldService {
 
     public FieldResponseDto getFieldDtoById(Long id) {
         Field field = fieldRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Field not found"));
+                .orElseThrow(() -> new FieldNotFoundException("Field not found"));
 
         // extract out the value of the field option in one line
         Map<String, Long> nextFieldsId = field.getOptions().entrySet().stream()
@@ -185,16 +187,16 @@ public class FieldService {
             for (String option : optionsAlternativeHolder) {
                 nextFieldsId.put(option, null);
             }
-            System.out.println(nextFieldsId);
+//            System.out.println(nextFieldsId);
 
         }
-        System.out.println(nextFieldsId);
+//        System.out.println(nextFieldsId);
         return convertToDto(field, nextFieldsId);
     }
 
     public Field getFieldById(Long id) {
         return fieldRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Field not found"));
+                .orElseThrow(() -> new FieldNotFoundException("Field not found"));
     }
 
     private FieldResponseDto convertToDto(Field field, Map<String, Long> nextFieldsId) {
@@ -232,21 +234,21 @@ public class FieldService {
                 for (String option : optionsAlternativeHolder) {
                     nextFieldsId.put(option, null);
                 }
-                System.out.println(nextFieldsId);
+//                System.out.println(nextFieldsId);
 
             }
-            System.out.println(nextFieldsId);
+//            System.out.println(nextFieldsId);
             fieldResponseDtoList.add(convertToDto(field, nextFieldsId));
         }
         return fieldResponseDtoList;
     }
 
     private Map<String, Long> getNextFieldsIdFromMap(Map<String, Field> nextFieldsMap) {
-        System.out.println(nextFieldsMap);
+//        System.out.println(nextFieldsMap);
 
         Map<String, Long> nextFieldsId = new HashMap<>();
         for (String option : nextFieldsMap.keySet()) {
-            System.out.println(option);
+//            System.out.println(option);
             Field nextField = nextFieldsMap.get(option);
             if (nextField != null) {
                 nextFieldsId.put(option, nextField.getId());

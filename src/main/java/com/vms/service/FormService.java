@@ -1,6 +1,9 @@
 package com.vms.service;
 
 import com.vms.dto.*;
+import com.vms.exception.FormFinalStateException;
+import com.vms.exception.FormNotFoundException;
+import com.vms.exception.ReferentialIntegrityException;
 import com.vms.model.Account;
 import com.vms.model.Field;
 import com.vms.model.Form;
@@ -32,7 +35,7 @@ public class FormService {
         Integer currentRevisionNo = formRepository.findByFormId_Id(fck.getId()).stream()
                 .mapToInt(f -> f.getId().getRevisionNo())
                 .max()
-                .orElseThrow(() -> new RuntimeException("surprise"));
+                .orElseThrow(() -> new FormNotFoundException("Unexpected Error, form cannot be found"));
 
         Form duplicatedForm = Form.builder()
                 .id(new FormCompositeKey(fck.getId(), currentRevisionNo + 1))
@@ -54,7 +57,7 @@ public class FormService {
         Form form = getFormByFck(fck);
 
         if(form.isFinal()){
-            throw new RuntimeException("Form is final. No more changes are allowed");
+            throw new FormFinalStateException("Form is final. No more changes are allowed");
         }
 
         List<Field> currentFields = form.getFields();
@@ -84,10 +87,10 @@ public class FormService {
     public void deleteForm(FormCompositeKey fck) {
         Form form = getFormByFck(fck);
         if (!form.getWorkflows().isEmpty()) {
-            throw new RuntimeException("Unable to delete form due to referential violation");
+            throw new ReferentialIntegrityException("Unable to delete form due to referential violation");
         }
         if (form.isFinal()) {
-            throw new RuntimeException("Unable to delete form that is final");
+            throw new FormFinalStateException("Unable to delete form that is final");
         }
         formRepository.delete(form);
     };
@@ -150,7 +153,7 @@ public class FormService {
 
     public Form getFormByFck(FormCompositeKey fck) {
         return formRepository.findById(fck)
-                .orElseThrow(() -> new RuntimeException("Form not found"));
+                .orElseThrow(() -> new FormNotFoundException("Form not found"));
     }
 
     public List<FieldResponseDto> getFieldsByFck(FormCompositeKey fck) {
@@ -166,10 +169,10 @@ public class FormService {
                 for (String option : optionsAlternativeHolder) {
                     nextFieldsId.put(option, null);
                 }
-                System.out.println(nextFieldsId);
+//                System.out.println(nextFieldsId);
 
             }
-            System.out.println(nextFieldsId);
+//            System.out.println(nextFieldsId);
             fieldResponseDtos.add(convertToDto(field, nextFieldsId));
         }
         return fieldResponseDtos;

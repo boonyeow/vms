@@ -1,6 +1,7 @@
 package com.vms.service;
 
 import com.vms.dto.AccountDto;
+import com.vms.exception.AccountNotFoundException;
 import com.vms.model.Account;
 import com.vms.model.enums.AccountType;
 import com.vms.repository.AccountRepository;
@@ -17,7 +18,7 @@ public class AccountService {
     private AccountRepository accountRepository;
 
     public Account getAccountById(Long id){
-        return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        return accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException("Account cannot be found. Ensure that Account exists."));
     }
 
     public AccountDto getAccountDto(Account account){
