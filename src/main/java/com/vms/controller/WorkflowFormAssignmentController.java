@@ -21,4 +21,8 @@ public class WorkflowFormAssignmentController {
         return ResponseEntity.ok(workflowFormAssignmentService.findWorkflowFormAssignmentsNotInFormSubmissionByAccountId(accountId));
     }
 
+    @GetMapping("/getUnsubmitted")
+    public ResponseEntity<List<WorkflowFormAssignmentResponseDto>> getAllUnsubmittedForm() {
+        return ResponseEntity.ok(workflowFormAssignmentService.findWorkflowFormAssignmentsNotInFormSubmission());
+    }
 }

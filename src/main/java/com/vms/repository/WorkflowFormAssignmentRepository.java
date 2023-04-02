@@ -24,6 +24,14 @@ public interface WorkflowFormAssignmentRepository extends CrudRepository<Workflo
             "WHERE fs.id IS NULL AND wfa.account.id = :accountId")
     List<WorkflowFormAssignment> findUnsubmittedWorkflowFormAssignmentsByAccountId(Long accountId);
 
+    @Query("SELECT wfa FROM WorkflowFormAssignment wfa " +
+            "LEFT JOIN FormSubmission fs ON wfa.form.id = fs.form.id " +
+            "AND wfa.form.id.revisionNo = fs.form.id.revisionNo " +
+            "AND wfa.workflow.id = fs.workflow.id " +
+            "AND fs.status != 'DRAFT'" +
+            "WHERE fs.id IS NULL")
+    List<WorkflowFormAssignment> findUnsubmittedWorkflowFormAssignments();
+
 
 }
 

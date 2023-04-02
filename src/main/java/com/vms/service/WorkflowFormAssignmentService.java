@@ -61,4 +61,25 @@ public class WorkflowFormAssignmentService {
         }
         return response;
     }
+
+    public List<WorkflowFormAssignmentResponseDto> findWorkflowFormAssignmentsNotInFormSubmission()  {
+        List<WorkflowFormAssignment> workflowFormAssignments = workflowFormAssignmentRepository.findUnsubmittedWorkflowFormAssignments();
+        List<WorkflowFormAssignmentResponseDto> response = new ArrayList<>();
+        for (WorkflowFormAssignment workflowFormAssignment : workflowFormAssignments) {
+            FormCompositeKey fck = new FormCompositeKey(workflowFormAssignment.getForm().getId().getId(), workflowFormAssignment.getForm().getId().getRevisionNo());
+            FormRequestDto formId = FormRequestDto.builder()
+                    .id(workflowFormAssignment.getForm().getId().getId())
+                    .revisionNo(workflowFormAssignment.getForm().getId().getRevisionNo())
+                    .build();
+            Form form = formService.getFormByFck(fck);
+            response.add(WorkflowFormAssignmentResponseDto.builder()
+                    .account(accountService.getAccountDto(workflowFormAssignment.getAccount()))
+                    .workflowId(workflowFormAssignment.getWorkflow().getId())
+                    .formId(formId)
+                    .formName(form.getName())
+                    .formIsFinal(form.isFinal())
+                    .build());
+        }
+        return response;
+    }
 }
