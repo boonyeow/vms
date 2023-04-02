@@ -10,6 +10,7 @@ import com.vms.model.enums.AccountType;
 import com.vms.model.enums.StatusType;
 import com.vms.model.keys.FormCompositeKey;
 import com.vms.repository.FormSubmissionRepository;
+import com.vms.repository.WorkflowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,10 @@ import java.util.stream.StreamSupport;
 public class FormSubmissionService {
     @Autowired
     private FormSubmissionRepository formSubmissionRepository;
+
+    @Autowired
+    private WorkflowRepository workflowRepository;
+
     @Autowired
     private FormService formService;
     @Autowired
@@ -150,6 +155,20 @@ public class FormSubmissionService {
         }
 
         formSubmission.setStatus(statusType);
+        System.out.println(statusType);
+        if (statusType == StatusType.APPROVED) {
+            Workflow workflow = formSubmission.getWorkflow();
+            double fraction = 1.0 / workflow.getWorkflowFormAssignments().size() * 100;
+            double add = Math.ceil(fraction);
+            int currentProgress = workflow.getProgress();
+            int updatedProgress = currentProgress + (int) add;
+            if (updatedProgress > 100) {
+                updatedProgress = 100;
+            }
+            workflow.setProgress(updatedProgress);
+            workflowRepository.save(workflow);
+        }
+
         formSubmissionRepository.save(formSubmission);
     }
 
