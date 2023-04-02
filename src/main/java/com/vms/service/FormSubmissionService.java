@@ -59,6 +59,8 @@ public class FormSubmissionService {
 
         Map<Long, String> fieldResponses = request.getFieldResponses();
         StatusType status;
+
+
         if (request.getStatus() != StatusType.DRAFT) {
             if (accountType == AccountType.VENDOR) {
                 status = StatusType.AWAITING_ADMIN;
@@ -113,9 +115,9 @@ public class FormSubmissionService {
         };
 
         if (request.getStatus() != StatusType.DRAFT) {
-            if (reviewer.getAccountType() == AccountType.ADMIN) {
-                formSubmission.setReviewedByAdmin(reviewer);
-            } else if (reviewer.getAccountType() == AccountType.APPROVER) {
+            if (account.getAccountType() == AccountType.ADMIN) {
+                formSubmission.setReviewedByAdmin(account);
+            } else if (account.getAccountType() == AccountType.APPROVER) {
                 formSubmission.setReviewedByApprover(reviewer);
             }
         }
