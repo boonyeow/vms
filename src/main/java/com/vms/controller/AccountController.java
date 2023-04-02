@@ -31,4 +31,10 @@ public class AccountController {
         accountService.updateAccount(request);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> archiveAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.ok().build();
+    }
 }
