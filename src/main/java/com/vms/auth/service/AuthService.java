@@ -30,6 +30,11 @@ public class AuthService {
                 .company(request.getCompany())
                 .password(passwordEncoder.encode(request.getPassword())) // saves encrypted value of password
                 .accountType(request.getAccountType())
+                .contactNumber(request.getContactNumber())
+                .registrationNumber(request.getRegistrationNumber())
+                .natureOfBusiness(request.getNatureOfBusiness())
+                .gstRegistrationNumber(request.getGstRegistrationNumber())
+                .isArchived(request.getIsArchived())
                 .build();
         accountRepository.save(account);
 
