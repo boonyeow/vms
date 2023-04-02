@@ -106,7 +106,11 @@ public class FormSubmissionService {
             throw new FormSubmissionImmutableException("Form Submission has been submitted and cannot be changed");
         }
 
-        Account reviewer = accountService.getAccountById(request.getReviewerId());
+        Account reviewer = null;
+
+        if (request.getReviewerId() != null) {
+            reviewer = accountService.getAccountById(request.getReviewerId());
+        };
 
         if (request.getStatus() != StatusType.DRAFT) {
             if (reviewer.getAccountType() == AccountType.ADMIN) {
